@@ -11,18 +11,6 @@ class ProfileManager {
         this.renderProfileScreen();
     }
 
-    applyLevelTheme() {
-    const level = this.currentUser.level.toLowerCase();
-    document.body.className = '';
-    document.body.classList.add(`level-${level}`);
-    
-    // Обновляем CSS переменные
-    document.documentElement.style.setProperty('--accent-primary', `var(--level-color-primary)`);
-    document.documentElement.style.setProperty('--accent-secondary', `var(--level-color-secondary)`);
-    document.documentElement.style.setProperty('--accent-hover', `var(--level-color-hover)`);
-    document.documentElement.style.setProperty('--accent-light', `var(--level-color-light)`);
-    }
-
     bindProfileEvents() {
         document.addEventListener('click', (e) => {
             if (e.target.id === 'copy-referral-btn' || e.target.closest('#copy-referral-btn')) {
@@ -409,6 +397,23 @@ class ProfileManager {
             }, 3000);
         }
     }
+    applyLevelTheme() {
+        const level = this.currentUser.level.toLowerCase();
+    
+    // Убираем все классы уровней
+        document.body.classList.remove('level-bronze', 'level-silver', 'level-gold', 'level-diamond');
+    
+    // Добавляем текущий класс уровня
+        document.body.classList.add(`level-${level}`);
+    
+    // Обновляем градиент главного экрана
+        const mainBackground = document.querySelector('.main-background');
+        if (mainBackground) {
+            mainBackground.style.background = `var(--gradient-hero, linear-gradient(135deg, #000000 0%, #1a1b2e 100%))`;
+        }
+    
+        console.log(`Applied ${level} theme`);
+}
 }
 
 const profileManager = new ProfileManager();
