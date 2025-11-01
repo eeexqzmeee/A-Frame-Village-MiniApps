@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>A-FRAME | Бронирование</title>
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div id="app">
+        <!-- Главный экран -->
+        <div id="main-screen" class="screen active">
+            <div class="main-background"></div>
+            <div class="main-content">
+                <div class="logo-section">
+                    <h1 class="logo">A-FRAME</h1>
+                    <p class="tagline">Эко-дома среди сосен</p>
+                </div>
+                
+                <div class="booking-card">
+                    <div class="card-header">
+                        <h2>Забронировать дом</h2>
+                        <p>Выберите даты и подходящий дом для отдыха</p>
+                    </div>
+                    
+                    <div class="quick-stats">
+                        <div class="stat">
+                            <span class="stat-number">8</span>
+                            <span class="stat-label">домов</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-number">12</span>
+                            <span class="stat-label">гостей макс</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-number">24/7</span>
+                            <span class="stat-label">поддержка</span>
+                        </div>
+                    </div>
+                    
+                    <button class="book-btn primary" onclick="app.showScreen('calendar-screen')">
+                        <span>Начать бронирование</span>
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                            <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" stroke-width="2"/>
+                        </svg>
+                    </button>
+                    <button class="btn-secondary" id="my-bookings-btn">
+    Мои брони
+                    </button>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Экран выбора даты -->
+        <div id="calendar-screen" class="screen">
+            <header class="header">
+                <button class="header-btn back" onclick="app.showScreen('main-screen')">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                        <path d="M19 12H5M5 12L12 19M5 12L12 5" stroke="currentColor" stroke-width="2"/>
+                    </svg>
+                </button>
+                <div class="header-title">Выберите даты</div>
+                <div class="header-actions"></div>
+            </header>
+
+            <div class="screen-content">
+                <div class="calendar-container">
+                    <div class="calendar-header">
+                        <button class="nav-btn prev" id="prev-month">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                                <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2"/>
+                            </svg>
+                        </button>
+                        
+                        <div class="month-display">
+                            <div class="month-name" id="current-month"></div>
+                            <div class="year" id="current-year"></div>
+                        </div>
+                        
+                        <button class="nav-btn next" id="next-month">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                                <path d="M9 18L15 12L9 6" stroke="currentColor" stroke-width="2"/>
+                            </svg>
+                        </button>
+                    </div>
+
+                    <div class="calendar-weekdays">
+                        <div>ПН</div>
+                        <div>ВТ</div>
+                        <div>СР</div>
+                        <div>ЧТ</div>
+                        <div>ПТ</div>
+                        <div>СБ</div>
+                        <div>ВС</div>
+                    </div>
+
+                    <div class="calendar-grid" id="calendar-grid">
+                        <!-- Динамически генерируется -->
+                    </div>
+                </div>
+
+                <div class="selected-dates-preview" id="dates-preview">
+                    <div class="dates-info">
+                        <div class="date-range">
+                            <div class="date-item">
+                                <div class="date-label">Заезд</div>
+                                <div class="date-value" id="checkin-preview">--</div>
+                            </div>
+                            <div class="date-separator">
+                                <div class="line"></div>
+                                <div class="nights" id="nights-count">0 ночей</div>
+                            </div>
+                            <div class="date-item">
+                                <div class="date-label">Выезд</div>
+                                <div class="date-value" id="checkout-preview">--</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button class="continue-btn" id="continue-to-houses" onclick="app.showScreen('houses-screen')">
+                        Выбрать дом
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                            <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" stroke-width="2"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Экран выбора дома -->
+        <div id="houses-screen" class="screen">
+            <header class="header">
+                <button class="header-btn back" onclick="app.showScreen('calendar-screen')">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                        <path d="M19 12H5M5 12L12 19M5 12L12 5" stroke="currentColor" stroke-width="2"/>
+                    </svg>
+                </button>
+                <div class="header-title">Выберите дом</div>
+                <div class="header-actions">
+                    <div class="dates-badge" id="header-dates"></div>
+                </div>
+            </header>
+
+            <div class="screen-content">
+                <div class="houses-container">
+                    <div class="houses-category">
+                        <h3 class="category-title">Большие дома (1-6)</h3>
+                        <p class="category-subtitle">До 12 гостей, с сауной</p>
+                        
+                        <div class="houses-grid" id="large-houses">
+                            <!-- Большие дома -->
+                        </div>
+                    </div>
+
+                    <div class="houses-category">
+                        <h3 class="category-title">Для двоих</h3>
+                        <p class="category-subtitle">Уютные домики для пар</p>
+                        
+                        <div class="houses-grid">
+                            <div class="house-card" data-house-id="7" data-type="couple">
+                                <div class="house-image">
+                                    <div class="image-placeholder">🏠</div>
+                                    <div class="house-badge">Для двоих</div>
+                                </div>
+                                <div class="house-info">
+                                    <h4>Дом для двоих</h4>
+                                    <div class="house-features">
+                                        <span class="feature">👥 2 гостя</span>
+                                        <span class="feature">⏰ 13:00-11:00</span>
+                                    </div>
+                                    <div class="house-pricing">
+                                        <span class="price">8 000₽ - 10 000₽</span>
+                                        <span class="price-note">за ночь</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="houses-category">
+                        <h3 class="category-title">Для семьи</h3>
+                        <p class="category-subtitle">Комфорт для 4 человек</p>
+                        
+                        <div class="houses-grid">
+                            <div class="house-card" data-house-id="8" data-type="family">
+                                <div class="house-image">
+                                    <div class="image-placeholder">🏠</div>
+                                    <div class="house-badge">Для семьи</div>
+                                </div>
+                                <div class="house-info">
+                                    <h4>Дом на четверых</h4>
+                                    <div class="house-features">
+                                        <span class="feature">👥 4 гостя</span>
+                                        <span class="feature">⏰ 13:00-11:00</span>
+                                    </div>
+                                    <div class="house-pricing">
+                                        <span class="price">10 000₽ - 12 000₽</span>
+                                        <span class="price-note">за ночь</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Экран деталей дома -->
+        <div id="house-detail-screen" class="screen">
+            <!-- Контент будет сгенерирован динамически -->
+        </div>
+
+        <!-- Экран бронирования -->
+        <div id="booking-screen" class="screen">
+            <!-- Контент будет сгенерирован динамически -->
+        </div>
+
+        <!-- Экран оплаты -->
+        <div id="payment-screen" class="screen">
+            <!-- Контент будет сгенерирован динамически -->
+        </div>
+        <div id="my-bookings-screen" class="screen">
+    <!-- Контент генерируется динамически -->
+        </div>
+    </div>
+
+    <script src="js/data.js"></script>
+    <script src="js/calendar.js"></script>
+    <script src="js/houses.js"></script>
+    <script src="js/booking.js"></script>
+    <script src="js/payment.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
