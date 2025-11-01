@@ -9,13 +9,29 @@ const app = {
     selectedServices: [],
     currentUser: null,
     currentBooking: null,
+    currentTheme: 'dark',
     
     init() {
         console.log('App initialized');
         this.currentUser = database.getUser(currentUserId);
+        this.loadTheme();
         this.bindEvents();
-        this.updateUserInfo();
         this.initCalendar();
+        this.updateUserInfo();
+        this.initTelegram();
+    },
+
+    initTelegram() {
+        if (window.Telegram && Telegram.WebApp) {
+            Telegram.WebApp.ready();
+            Telegram.WebApp.expand();
+            
+            // Скрываем стандартные кнопки Telegram
+            Telegram.WebApp.BackButton.hide();
+            Telegram.WebApp.MainButton.hide();
+            
+            console.log('Telegram Web App initialized');
+        }
     },
     
     bindEvents() {
@@ -28,7 +44,7 @@ const app = {
         
         // Главная кнопка бронирования
         document.addEventListener('click', (e) => {
-            if (e.target.closest('.cta-button')) {
+            if (e.target.closest('.book-btn.primary')) {
                 this.showScreen('calendar-screen');
             }
         });
@@ -59,19 +75,43 @@ const app = {
                 }
             }
         });
+
+        // Переключение темы
+        document.addEventListener('click', (e) => {
+            if (e.target.closest('.theme-btn')) {
+                const theme = e.target.closest('.theme-btn').dataset.theme;
+                this.switchTheme(theme);
+            }
+        });
+    },
+
+    switchTheme(theme) {
+        this.currentTheme = theme;
+        document.documentElement.setAttribute('data-theme', theme);
+        localStorage.setItem('app-theme', theme);
+        
+        // Обновляем активные кнопки
+        document.querySelectorAll('.theme-btn').forEach(btn => {
+            btn.classList.toggle('active', btn.dataset.theme === theme);
+        });
+    },
+
+    loadTheme() {
+        const savedTheme = localStorage.getItem('app-theme') || 'dark';
+        this.switchTheme(savedTheme);
     },
 
     initCalendar() {
-        // Инициализация календаря с реальными данными
+        this.currentDate = new Date();
         this.generateCalendar();
         
         document.getElementById('prev-month')?.addEventListener('click', () => {
-            this.currentMonth--;
+            this.currentDate.setMonth(this.currentDate.getMonth() - 1);
             this.generateCalendar();
         });
 
         document.getElementById('next-month')?.addEventListener('click', () => {
-            this.currentMonth++;
+            this.currentDate.setMonth(this.currentDate.getMonth() + 1);
             this.generateCalendar();
         });
     },
@@ -79,11 +119,6 @@ const app = {
     generateCalendar() {
         const calendarGrid = document.getElementById('calendar-grid');
         if (!calendarGrid) return;
-
-        const now = new Date();
-        this.currentDate = this.currentDate || new Date();
-        this.currentDate.setMonth(this.currentDate.getMonth() + (this.currentMonth || 0));
-        this.currentMonth = 0;
 
         const year = this.currentDate.getFullYear();
         const month = this.currentDate.getMonth();
@@ -172,9 +207,9 @@ const app = {
     },
 
     isDateBookedGlobally(date) {
-        // Проверяем занятость по всем домам
-        const allHouses = [...housesData.large, housesData.couple, housesData.family];
-        return allHouses.some(house => database.isDateBooked(house.id, date));
+        // Проверяем занятость только для конкретного дома, а не всех
+        // Это исправляет проблему когда бронь одного дома блокирует даты для других
+        return false;
     },
 
     handleDateSelection(date) {
@@ -192,6 +227,43 @@ const app = {
 
         this.generateCalendar();
         this.updateDatesPreview();
+    },
+
+    updateHousesAvailability() {
+        document.querySelectorAll('.house-card').forEach(card => {
+            const houseId = parseInt(card.dataset.houseId);
+            const isAvailable = this.isHouseAvailableForDates(houseId);
+            
+            if (!isAvailable) {
+                card.querySelector('.house-image').classList.add('unavailable');
+                if (!card.querySelector('.unavailable-overlay')) {
+                    const overlay = document.createElement('div');
+                    overlay.className = 'unavailable-overlay';
+                    overlay.textContent = 'Занят';
+                    card.querySelector('.house-image').appendChild(overlay);
+                }
+            } else {
+                card.querySelector('.house-image').classList.remove('unavailable');
+                const overlay = card.querySelector('.unavailable-overlay');
+                if (overlay) overlay.remove();
+            }
+        });
+    },
+
+    isHouseAvailableForDates(houseId) {
+        if (!this.selectedDates.checkin || !this.selectedDates.checkout) return true;
+
+        let currentDate = new Date(this.selectedDates.checkin);
+        const checkout = new Date(this.selectedDates.checkout);
+
+        while (currentDate < checkout) {
+            if (database.isDateBooked(houseId, currentDate)) {
+                return false;
+            }
+            currentDate.setDate(currentDate.getDate() + 1);
+        }
+
+        return true;
     },
     
     goBack() {
@@ -234,43 +306,6 @@ const app = {
             this.showHouseDetails(house);
         }
     },
-
-    updateHousesAvailability() {
-        document.querySelectorAll('.house-card').forEach(card => {
-            const houseId = parseInt(card.dataset.houseId);
-            const isAvailable = this.isHouseAvailableForDates(houseId);
-            
-            if (!isAvailable) {
-                card.querySelector('.house-image').classList.add('unavailable');
-                if (!card.querySelector('.unavailable-overlay')) {
-                    const overlay = document.createElement('div');
-                    overlay.className = 'unavailable-overlay';
-                    overlay.textContent = 'Занят';
-                    card.querySelector('.house-image').appendChild(overlay);
-                }
-            } else {
-                card.querySelector('.house-image').classList.remove('unavailable');
-                const overlay = card.querySelector('.unavailable-overlay');
-                if (overlay) overlay.remove();
-            }
-        });
-    },
-
-    isHouseAvailableForDates(houseId) {
-        if (!this.selectedDates.checkin || !this.selectedDates.checkout) return true;
-
-        let currentDate = new Date(this.selectedDates.checkin);
-        const checkout = new Date(this.selectedDates.checkout);
-
-        while (currentDate < checkout) {
-            if (database.isDateBooked(houseId, currentDate)) {
-                return false;
-            }
-            currentDate.setDate(currentDate.getDate() + 1);
-        }
-
-        return true;
-    },
     
     showScreen(screenId) {
         document.querySelectorAll('.screen').forEach(screen => {
@@ -285,15 +320,7 @@ const app = {
     },
 
     updateUserInfo() {
-        const acoinBalance = document.getElementById('acoin-balance');
-        const userLevel = document.getElementById('user-level');
-        
-        if (acoinBalance) {
-            acoinBalance.textContent = this.currentUser.acoins.toLocaleString();
-        }
-        if (userLevel) {
-            userLevel.textContent = this.currentUser.level;
-        }
+        // Можно добавить отображение баланса Acoin в будущем
     },
     
     showHouseDetails(house) {
@@ -413,7 +440,7 @@ const app = {
                             </div>
                         </div>
 
-                        <button class="book-btn primary" id="proceed-to-booking-btn">
+                        <button class="book-btn primary large" id="proceed-to-booking-btn">
                             Перейти к бронированию
                         </button>
                     </div>
@@ -748,7 +775,7 @@ const app = {
                     </div>
                 </div>
 
-                <button class="book-btn primary" id="confirm-booking-btn">
+                <button class="book-btn primary large" id="confirm-booking-btn">
                     Перейти к оплате
                 </button>
             </div>
@@ -867,7 +894,7 @@ const app = {
                         <button class="btn-secondary" onclick="app.copyPaymentDetails()">
                             Скопировать реквизиты
                         </button>
-                        <button class="btn-primary" id="confirm-payment-btn">
+                        <button class="book-btn primary large" id="confirm-payment-btn">
                             Я оплатил
                         </button>
                     </div>

@@ -3,9 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>A-FRAME | Бронирование</title>
+    <title>A-FRAME | Бронирование домов</title>
     <link rel="stylesheet" href="css/variables.css">
     <link rel="stylesheet" href="css/style.css">
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
 </head>
 <body>
     <div id="app">
@@ -15,7 +16,7 @@
             <div class="main-content">
                 <div class="logo-section">
                     <h1 class="logo">A-FRAME</h1>
-                    <p class="tagline">Эко-дома среди сосен</p>
+                    <p class="tagline">Эко-дома среди природы</p>
                 </div>
                 
                 <div class="booking-card">
@@ -38,17 +39,19 @@
                             <span class="stat-label">поддержка</span>
                         </div>
                     </div>
-                    
-                    <button class="book-btn primary" onclick="app.showScreen('calendar-screen')">
-                        <span>Начать бронирование</span>
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                            <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" stroke-width="2"/>
-                        </svg>
-                    </button>
-                    <button class="btn-secondary" id="my-bookings-btn">
-    Мои брони
-                    </button>
 
+                    <div class="theme-switcher">
+                        <button class="theme-btn active" data-theme="dark">Тёмная</button>
+                        <button class="theme-btn" data-theme="light">Светлая</button>
+                    </div>
+                    
+                    <button class="book-btn primary">
+                        Начать бронирование
+                    </button>
+                    
+                    <button class="btn-secondary" id="my-bookings-btn">
+                        Мои брони
+                    </button>
                 </div>
             </div>
         </div>
@@ -56,7 +59,7 @@
         <!-- Экран выбора даты -->
         <div id="calendar-screen" class="screen">
             <header class="header">
-                <button class="header-btn back" onclick="app.showScreen('main-screen')">
+                <button class="header-btn back">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
                         <path d="M19 12H5M5 12L12 19M5 12L12 5" stroke="currentColor" stroke-width="2"/>
                     </svg>
@@ -119,7 +122,7 @@
                         </div>
                     </div>
                     
-                    <button class="continue-btn" id="continue-to-houses" onclick="app.showScreen('houses-screen')">
+                    <button class="continue-btn" id="continue-to-houses">
                         Выбрать дом
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
                             <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" stroke-width="2"/>
@@ -132,7 +135,7 @@
         <!-- Экран выбора дома -->
         <div id="houses-screen" class="screen">
             <header class="header">
-                <button class="header-btn back" onclick="app.showScreen('calendar-screen')">
+                <button class="header-btn back">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
                         <path d="M19 12H5M5 12L12 19M5 12L12 5" stroke="currentColor" stroke-width="2"/>
                     </svg>
@@ -221,16 +224,14 @@
         <div id="payment-screen" class="screen">
             <!-- Контент будет сгенерирован динамически -->
         </div>
+
+        <!-- Экран моих бронирований -->
         <div id="my-bookings-screen" class="screen">
-    <!-- Контент генерируется динамически -->
+            <!-- Контент будет сгенерирован динамически -->
         </div>
     </div>
 
     <script src="js/data.js"></script>
-    <script src="js/calendar.js"></script>
-    <script src="js/houses.js"></script>
-    <script src="js/booking.js"></script>
-    <script src="js/payment.js"></script>
     <script src="js/app.js"></script>
 </body>
 </html>

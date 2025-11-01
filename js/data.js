@@ -306,11 +306,13 @@ const database = {
         );
     },
 
+    // ИСПРАВЛЕНИЕ: Проверяем занятость только для конкретного дома
     isDateBooked(houseId, date) {
         const activeBookings = this.getActiveBookings();
         const dateStr = new Date(date).toISOString().split('T')[0];
         
         return activeBookings.some(booking => {
+            // Проверяем только брони этого дома
             if (booking.house.id !== houseId) return false;
             
             const checkin = new Date(booking.dates.checkin);
