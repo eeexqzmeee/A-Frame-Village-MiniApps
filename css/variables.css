@@ -11,10 +11,17 @@
     --text-muted: rgba(255, 255, 255, 0.5);
     --text-accent: #007AFF;
     
-    --accent-primary: #007AFF;
-    --accent-secondary: #0056CC;
-    --accent-hover: #409CFF;
-    --accent-light: rgba(0, 122, 255, 0.15);
+    /* Динамические цвета для уровней - будут переопределяться JavaScript */
+    --level-color-primary: #007AFF;
+    --level-color-secondary: #0056CC;
+    --level-color-hover: #409CFF;
+    --level-color-light: rgba(0, 122, 255, 0.15);
+    
+    /* Основные акцентные цвета (будут переопределяться в зависимости от уровня) */
+    --accent-primary: var(--level-color-primary);
+    --accent-secondary: var(--level-color-secondary);
+    --accent-hover: var(--level-color-hover);
+    --accent-light: var(--level-color-light);
     
     --success-color: #30D158;
     --warning-color: #FF9F0A;
@@ -22,7 +29,7 @@
     
     --border-color: rgba(255, 255, 255, 0.15);
     --border-light: rgba(255, 255, 255, 0.1);
-    --border-accent: #007AFF;
+    --border-accent: var(--accent-primary);
 
     /* Размеры */
     --header-height: 60px;
@@ -43,8 +50,8 @@
     --shadow-sm: 0 4px 20px rgba(0, 0, 0, 0.15);
     --shadow-md: 0 8px 30px rgba(0, 0, 0, 0.2);
     --shadow-lg: 0 12px 40px rgba(0, 0, 0, 0.25);
-    --shadow-accent: 0 0 30px rgba(0, 122, 255, 0.3);
-    --shadow-accent-lg: 0 0 50px rgba(0, 122, 255, 0.2);
+    --shadow-accent: 0 0 30px var(--accent-light);
+    --shadow-accent-lg: 0 0 50px var(--accent-light);
 
     /* Анимации */
     --transition-fast: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
@@ -75,6 +82,35 @@
     --z-tooltip: 1060;
 }
 
+/* Классы для разных уровней */
+.level-bronze {
+    --level-color-primary: #CD7F32;
+    --level-color-secondary: #A57128;
+    --level-color-hover: #D6893C;
+    --level-color-light: rgba(205, 127, 50, 0.15);
+}
+
+.level-silver {
+    --level-color-primary: #C0C0C0;
+    --level-color-secondary: #A0A0A0;
+    --level-color-hover: #D0D0D0;
+    --level-color-light: rgba(192, 192, 192, 0.15);
+}
+
+.level-gold {
+    --level-color-primary: #FFD700;
+    --level-color-secondary: #D4AF37;
+    --level-color-hover: #FFE44D;
+    --level-color-light: rgba(255, 215, 0, 0.15);
+}
+
+.level-diamond {
+    --level-color-primary: #B9F2FF;
+    --level-color-secondary: #89C2D9;
+    --level-color-hover: #C9F7FF;
+    --level-color-light: rgba(185, 242, 255, 0.15);
+}
+
 /* Градиенты Liquid Glass */
 .gradient-primary {
     background: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 100%);
@@ -91,7 +127,7 @@
 /* Цвета для разных типов домов */
 .house-type-large {
     --house-color: var(--accent-primary);
-    --house-color-light: rgba(0, 122, 255, 0.15);
+    --house-color-light: var(--accent-light);
 }
 
 .house-type-couple {
@@ -102,4 +138,37 @@
 .house-type-family {
     --house-color: #30D158;
     --house-color-light: rgba(48, 209, 88, 0.15);
+}
+
+/* Применение темы уровня ко всему приложению */
+body.level-bronze {
+    --accent-primary: var(--level-color-primary);
+    --accent-secondary: var(--level-color-secondary);
+    --accent-hover: var(--level-color-hover);
+    --accent-light: var(--level-color-light);
+    --border-accent: var(--level-color-primary);
+}
+
+body.level-silver {
+    --accent-primary: var(--level-color-primary);
+    --accent-secondary: var(--level-color-secondary);
+    --accent-hover: var(--level-color-hover);
+    --accent-light: var(--level-color-light);
+    --border-accent: var(--level-color-primary);
+}
+
+body.level-gold {
+    --accent-primary: var(--level-color-primary);
+    --accent-secondary: var(--level-color-secondary);
+    --accent-hover: var(--level-color-hover);
+    --accent-light: var(--accent-light);
+    --border-accent: var(--level-color-primary);
+}
+
+body.level-diamond {
+    --accent-primary: var(--level-color-primary);
+    --accent-secondary: var(--level-color-secondary);
+    --accent-hover: var(--level-color-hover);
+    --accent-light: var(--accent-light);
+    --border-accent: var(--level-color-primary);
 }

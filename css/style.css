@@ -3109,3 +3109,203 @@ body {
 .swipe-screen.active ~ .bottom-nav {
     display: flex !important;
 }
+/* Улучшенные анимации переключения экранов */
+.swipe-screen {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), 
+                opacity 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+    overflow-y: auto;
+    will-change: transform;
+    backface-visibility: hidden;
+    transform: translateZ(0);
+}
+
+.swipe-screen:not(.active) {
+    transform: translateX(100%);
+    opacity: 0;
+    pointer-events: none;
+}
+
+.swipe-screen.active {
+    transform: translateX(0);
+    opacity: 1;
+    pointer-events: all;
+}
+
+.swipe-screen.slide-left:not(.active) {
+    transform: translateX(-100%);
+}
+
+/* Уменьшение эффекта Liquid Glass */
+.main-background::before {
+    animation: liquidShift 60s ease-in-out infinite;
+    opacity: 0.5;
+}
+
+/* Фикс горизонтального скролла в профиле */
+#profile-screen .screen-content {
+    overflow-x: hidden;
+    max-width: 100%;
+}
+
+.profile-section,
+.profile-stats,
+.referral-card,
+.shop-card,
+.feedback-buttons,
+.transactions-list {
+    max-width: 100%;
+    overflow-x: hidden;
+}
+
+/* Модальное окно "В разработке" */
+.development-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: var(--z-modal);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-md);
+}
+
+.modal-backdrop {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--bg-overlay);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+}
+
+.modal-content {
+    position: relative;
+    background: var(--bg-card);
+    backdrop-filter: blur(40px) saturate(180%);
+    -webkit-backdrop-filter: blur(40px) saturate(180%);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-xl);
+    padding: var(--space-xl);
+    max-width: 400px;
+    width: 100%;
+    animation: scaleIn 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--space-lg);
+}
+
+.modal-header h3 {
+    margin: 0;
+    color: var(--text-primary);
+}
+
+.modal-close {
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: var(--space-xs);
+    border-radius: var(--border-radius);
+    transition: all 0.2s ease;
+}
+
+.modal-close:hover {
+    background: var(--bg-tertiary);
+}
+
+.modal-body {
+    text-align: center;
+    margin-bottom: var(--space-xl);
+}
+
+.development-icon {
+    font-size: 3rem;
+    margin-bottom: var(--space-lg);
+    opacity: 0.7;
+}
+
+.modal-body h4 {
+    margin-bottom: var(--space-md);
+    color: var(--text-primary);
+}
+
+.modal-body p {
+    color: var(--text-secondary);
+    line-height: 1.5;
+}
+
+.modal-footer {
+    text-align: center;
+}
+
+/* Улучшенные плавные анимации */
+* {
+    animation-duration: 0.4s !important;
+    animation-timing-function: cubic-bezier(0.2, 0.8, 0.2, 1) !important;
+}
+
+.book-btn,
+.btn-secondary,
+.calendar-day,
+.house-card,
+.service-item,
+.nav-btn,
+.header-btn {
+    transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1) !important;
+}
+
+/* Оптимизация производительности */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* Улучшенный скролл */
+.screen-content {
+    -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth;
+    transform: translateZ(0);
+}
+
+/* Анимация для перехода между экранами */
+.screen {
+    transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+    transform: translateZ(0);
+}
+
+.screen.active {
+    transform: translateX(0);
+}
+
+.screen:not(.active) {
+    transform: translateX(100%);
+}
+
+/* Фикс для мерцания при скролле */
+.screen-content > * {
+    transform: translateZ(0);
+    backface-visibility: hidden;
+}
+
+/* Улучшенная навигация */
+.bottom-nav {
+    transform: translateZ(0);
+    backface-visibility: hidden;
+}

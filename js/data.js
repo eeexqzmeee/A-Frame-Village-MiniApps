@@ -19,16 +19,13 @@ const housesData = {
                     id: "chan", 
                     name: "Чан", 
                     price: 2000, 
-                    unit: "час", 
-                    min_hours: 2,
+                    unit: "час",
                     description: "Деревянная купель с подогревом"
                 },
                 { 
                     id: "sauna", 
                     name: "Сауна", 
-                    price: 0, 
-                    original_price: 3000, 
-                    note: "бесплатно",
+                    price: 0,
                     description: "Финская сауна входит в стоимость"
                 }
             ]
@@ -52,15 +49,12 @@ const housesData = {
                     id: "chan", 
                     name: "Чан", 
                     price: 2000, 
-                    unit: "час", 
-                    min_hours: 2 
+                    unit: "час"
                 },
                 { 
                     id: "sauna", 
                     name: "Сауна", 
-                    price: 0, 
-                    original_price: 3000, 
-                    note: "бесплатно" 
+                    price: 0
                 }
             ]
         },
@@ -83,15 +77,12 @@ const housesData = {
                     id: "chan", 
                     name: "Чан", 
                     price: 2000, 
-                    unit: "час", 
-                    min_hours: 2 
+                    unit: "час"
                 },
                 { 
                     id: "sauna", 
                     name: "Сауна", 
-                    price: 0, 
-                    original_price: 3000, 
-                    note: "бесплатно" 
+                    price: 0
                 }
             ]
         },
@@ -114,15 +105,12 @@ const housesData = {
                     id: "chan", 
                     name: "Чан", 
                     price: 2000, 
-                    unit: "час", 
-                    min_hours: 2 
+                    unit: "час"
                 },
                 { 
                     id: "sauna", 
                     name: "Сауна", 
-                    price: 0, 
-                    original_price: 3000, 
-                    note: "бесплатно" 
+                    price: 0
                 }
             ]
         },
@@ -145,15 +133,12 @@ const housesData = {
                     id: "chan", 
                     name: "Чан", 
                     price: 2000, 
-                    unit: "час", 
-                    min_hours: 2 
+                    unit: "час"
                 },
                 { 
                     id: "sauna", 
                     name: "Сауна", 
-                    price: 0, 
-                    original_price: 3000, 
-                    note: "бесплатно" 
+                    price: 0
                 }
             ]
         },
@@ -176,15 +161,12 @@ const housesData = {
                     id: "chan", 
                     name: "Чан", 
                     price: 2000, 
-                    unit: "час", 
-                    min_hours: 2 
+                    unit: "час"
                 },
                 { 
                     id: "sauna", 
                     name: "Сауна", 
-                    price: 0, 
-                    original_price: 3000, 
-                    note: "бесплатно" 
+                    price: 0
                 }
             ]
         }
@@ -206,15 +188,13 @@ const housesData = {
             { 
                 id: "chan", 
                 name: "Чан", 
-                price: 3000, 
-                unit: "сеанс",
+                price: 3000,
                 description: "Деревянная купель для двоих"
             },
             { 
                 id: "banya", 
                 name: "Баня", 
-                price: 3000, 
-                unit: "сеанс",
+                price: 3000,
                 description: "Русская баня с вениками"
             }
         ]
@@ -236,22 +216,19 @@ const housesData = {
             { 
                 id: "chan", 
                 name: "Чан", 
-                price: 3000, 
-                unit: "сеанс",
+                price: 3000,
                 description: "Большая купель для всей семьи"
             },
             { 
                 id: "sauna", 
                 name: "Сауна", 
-                price: 3000, 
-                unit: "3 часа",
+                price: 3000,
                 description: "Финская сауна на 3 часа"
             }
         ]
     }
 };
 
-// Данные о занятости
 const bookedDates = {
     1: ['2024-11-15', '2024-11-16'],
     2: ['2024-11-20', '2024-11-21'], 
@@ -260,7 +237,6 @@ const bookedDates = {
     8: ['2024-11-22', '2024-11-23']
 };
 
-// База данных в localStorage
 const database = {
     init() {
         if (!localStorage.getItem('bookings')) {
@@ -276,7 +252,6 @@ const database = {
             localStorage.setItem('payments', JSON.stringify([]));
         }
         
-        // Инициализируем сгорание коинов
         this.burnExpiredCoins();
     },
 
@@ -386,13 +361,10 @@ const database = {
         return payments.find(p => p.bookingId === bookingId);
     },
 
-    // Реферальная система
     processReferralBooking(referrerUserId, booking) {
-        // Начисляем бонус пригласившему
         const referralBonus = 500;
         this.addAcoins(referrerUserId, referralBonus, `Реферальное бронирование ${booking.bookingNumber}`);
         
-        // Обновляем статистику рефералов
         const users = JSON.parse(localStorage.getItem('users') || '{}');
         if (users[referrerUserId]) {
             users[referrerUserId].referrals = (users[referrerUserId].referrals || 0) + 1;
@@ -403,7 +375,6 @@ const database = {
         return referralBonus;
     },
 
-    // Механизм сгорания коинов
     burnExpiredCoins() {
         const users = JSON.parse(localStorage.getItem('users') || '{}');
         const currentDate = new Date();
@@ -411,15 +382,13 @@ const database = {
         const currentMonth = currentDate.getMonth();
         const currentYear = currentDate.getFullYear();
         
-        // Проверяем, не сжигали ли коины в этом месяце
         if (lastBurnDate) {
             const lastBurn = new Date(lastBurnDate);
             if (lastBurn.getMonth() === currentMonth && lastBurn.getFullYear() === currentYear) {
-                return; // Уже сжигали в этом месяце
+                return;
             }
         }
         
-        // Сгорание в последний день месяца или в первый день нового месяца
         const lastDayOfMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
         if (currentDate.getDate() === 1 || currentDate.getDate() === lastDayOfMonth) {
             let totalBurned = 0;
@@ -430,7 +399,6 @@ const database = {
                     totalBurned += burnedCoins;
                     users[userId].acoins = 0;
                     
-                    // Записываем в историю
                     this.addAcoins(userId, -burnedCoins, 'Ежемесячное сгорание A-Coin');
                 }
             });
@@ -438,13 +406,11 @@ const database = {
             if (totalBurned > 0) {
                 localStorage.setItem('lastCoinBurn', currentDate.toISOString().split('T')[0]);
                 localStorage.setItem('users', JSON.stringify(users));
-                console.log(`Сгорело A-Coin: ${totalBurned}`);
             }
         }
     }
 };
 
-// Система уровней лояльности
 const loyaltySystem = {
     levels: {
         Bronze: { minBookings: 0, cashback: 0.05 },
@@ -466,7 +432,6 @@ const loyaltySystem = {
     }
 };
 
-// Генератор ID пользователя
 function generateUserId() {
     let userId = localStorage.getItem('userId');
     if (!userId) {
@@ -486,6 +451,5 @@ function generateUserId() {
     return userId;
 }
 
-// Инициализация базы данных
 database.init();
 const currentUserId = generateUserId();

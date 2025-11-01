@@ -20,6 +20,7 @@ const app = {
         this.renderLargeHouses();
         this.initSwipeNavigation();
         this.updateProfileData();
+        this.applyLevelTheme();
     },
 
     initSwipeNavigation() {
@@ -34,38 +35,38 @@ const app = {
                 const targetScreen = e.currentTarget.dataset.screen;
                 this.showSwipeScreen(targetScreen);
                 
-                // Обновляем активное состояние
                 navItems.forEach(nav => nav.classList.remove('active'));
                 e.currentTarget.classList.add('active');
             });
         });
 
-        // Обработчики для кнопок главного экрана
         document.getElementById('view-houses-btn')?.addEventListener('click', () => {
             this.showScreen('houses-screen');
         });
     },
 
     showSwipeScreen(screenId) {
-        document.querySelectorAll('.swipe-screen').forEach(screen => {
-            screen.classList.remove('active');
-        });
-        
+        const currentScreen = document.querySelector('.swipe-screen.active');
         const targetScreen = document.getElementById(screenId);
-        if (targetScreen) {
-            targetScreen.classList.add('active');
-            this.updateProfileData();
+        if (currentScreen && targetScreen) {
+        // Определяем направление анимации
+        const screens = ['main-screen', 'profile-screen'];
+        const currentIndex = screens.indexOf(currentScreen.id);
+        const targetIndex = screens.indexOf(screenId);
+        
+        currentScreen.classList.remove('active');
+        if (targetIndex > currentIndex) {
+            targetScreen.classList.remove('slide-left');
+        } else {
+            targetScreen.classList.add('slide-left');
         }
-    },
-
-    updateBottomNav(screenId) {
-        const navItems = document.querySelectorAll('.nav-item');
-        navItems.forEach(nav => {
-            nav.classList.remove('active');
-            if (nav.dataset.screen === screenId) {
-                nav.classList.add('active');
-            }
-        });
+        
+        setTimeout(() => {
+            targetScreen.classList.add('active');
+        }, 10);
+        
+        this.updateBottomNav(screenId);
+    }
     },
 
     updateProfileData() {
@@ -74,15 +75,39 @@ const app = {
         }
     },
 
+    applyLevelTheme() {
+        const levelInfo = this.getLevelInfo(this.currentUser.level);
+        document.documentElement.style.setProperty('--accent-primary', levelInfo.color);
+        document.documentElement.style.setProperty('--accent-secondary', this.lightenColor(levelInfo.color, -20));
+        document.documentElement.style.setProperty('--accent-hover', this.lightenColor(levelInfo.color, 20));
+        document.documentElement.style.setProperty('--accent-light', levelInfo.color + '20');
+    },
+
+    getLevelInfo(level) {
+        const levels = {
+            'Bronze': { color: '#CD7F32' },
+            'Silver': { color: '#C0C0C0' },
+            'Gold': { color: '#FFD700' },
+            'Diamond': { color: '#B9F2FF' }
+        };
+        return levels[level] || levels['Bronze'];
+    },
+
+    lightenColor(color, percent) {
+        const num = parseInt(color.replace("#",""), 16),
+              amt = Math.round(2.55 * percent),
+              R = (num >> 16) + amt,
+              G = (num >> 8 & 0x00FF) + amt,
+              B = (num & 0x0000FF) + amt;
+        return "#" + (0x1000000 + (R<255?R<1?0:R:255)*0x10000 + (G<255?G<1?0:G:255)*0x100 + (B<255?B<1?0:B:255)).toString(16).slice(1);
+    },
+
     initTelegram() {
         if (window.Telegram && Telegram.WebApp) {
             Telegram.WebApp.ready();
             Telegram.WebApp.expand();
-            
             Telegram.WebApp.BackButton.hide();
             Telegram.WebApp.MainButton.hide();
-            
-            console.log('Telegram Web App initialized');
         }
     },
 
@@ -125,16 +150,9 @@ const app = {
     },
     
     bindEvents() {
-        // Глобальный обработчик для кнопок назад
         document.addEventListener('click', (e) => {
             if (e.target.closest('.header-btn.back')) {
                 this.goBack();
-            }
-        });
-        
-        document.addEventListener('click', (e) => {
-            if (e.target.closest('#my-bookings-btn')) {
-                this.showMyBookings();
             }
         });
         
@@ -148,15 +166,13 @@ const app = {
         document.addEventListener('click', (e) => {
             if (e.target.closest('#continue-to-houses')) {
                 if (this.selectedDates.checkin && this.selectedDates.checkout) {
-                    this.showScreen('houses-screen');
-                    this.updateHousesAvailability();
+                    this.showBookingScreen();
                 } else {
                     this.showNotification('Выберите даты заезда и выезда', 'warning');
                 }
             }
         });
 
-        // Обработчик для кнопки "Посмотреть дома" на главной
         document.addEventListener('click', (e) => {
             if (e.target.id === 'view-houses-btn' || e.target.closest('#view-houses-btn')) {
                 this.showScreen('houses-screen');
@@ -326,9 +342,8 @@ const app = {
         const swipeScreen = document.querySelector('.swipe-screen.active')?.id;
         
         if (currentScreen && currentScreen !== 'main-screen' && currentScreen !== 'profile-screen') {
-            // Находимся на экране бронирования/домов/календаря
             const screens = {
-                'calendar-screen': 'main-screen',
+                'calendar-screen': 'house-detail-screen',
                 'houses-screen': 'main-screen',
                 'house-detail-screen': 'houses-screen',
                 'booking-screen': 'house-detail-screen',
@@ -342,7 +357,6 @@ const app = {
                 this.showScreen('main-screen');
             }
         } else if (swipeScreen === 'profile-screen') {
-            // Находимся в профиле - переключаем на главную
             this.showSwipeScreen('main-screen');
             this.updateBottomNav('main-screen');
         }
@@ -372,7 +386,6 @@ const app = {
     },
     
     showScreen(screenId) {
-        // Скрываем все экраны
         document.querySelectorAll('.screen').forEach(screen => {
             screen.classList.remove('active');
         });
@@ -386,7 +399,6 @@ const app = {
             targetScreen.classList.add('active');
             this.currentScreen = screenId;
             
-            // Показываем/скрываем нижнюю навигацию
             const bottomNav = document.querySelector('.bottom-nav');
             if (screenId === 'main-screen' || screenId === 'profile-screen') {
                 bottomNav.style.display = 'flex';
@@ -397,14 +409,12 @@ const app = {
     },
 
     updateUserInfo() {
+        this.applyLevelTheme();
     },
     
     showHouseDetails(house) {
         const screen = document.getElementById('house-detail-screen');
         if (!screen) return;
-        
-        const nights = this.calculateNights();
-        const pricing = this.calculateTotalPrice(house, nights, this.selectedGuests, this.selectedServices);
         
         screen.innerHTML = `
             <header class="header">
@@ -496,28 +506,15 @@ const app = {
 
                         <div class="pricing-summary">
                             <div class="price-line">
-                                <span>Проживание (${nights} ${this.getNightText(nights)})</span>
-                                <span>${pricing.basePrice.toLocaleString()}₽</span>
+                                <span>Проживание</span>
+                                <span>0₽</span>
                             </div>
-                            ${pricing.extraGuestsPrice > 0 ? `
-                            <div class="price-line">
-                                <span>Дополнительные гости</span>
-                                <span>${pricing.extraGuestsPrice.toLocaleString()}₽</span>
-                            </div>
-                            ` : ''}
-                            ${pricing.servicesPrice > 0 ? `
-                            <div class="price-line">
-                                <span>Дополнительные услуги</span>
-                                <span>${pricing.servicesPrice.toLocaleString()}₽</span>
-                            </div>
-                            ` : ''}
                             <div class="price-total">
-                                <span>Итого к оплате:</span>
-                                <span>${pricing.total.toLocaleString()}₽</span>
+                                <span>Выберите даты для расчета</span>
                             </div>
                         </div>
 
-                        <button class="book-btn primary large" id="proceed-to-booking-btn">
+                        <button class="book-btn primary large" id="select-dates-btn">
                             Выбрать даты
                         </button>
                     </div>
@@ -525,9 +522,9 @@ const app = {
             </div>
         `;
 
-        const proceedButton = document.getElementById('proceed-to-booking-btn');
-        if (proceedButton) {
-            proceedButton.onclick = () => {
+        const selectDatesBtn = document.getElementById('select-dates-btn');
+        if (selectDatesBtn) {
+            selectDatesBtn.onclick = () => {
                 this.showCalendarScreen();
             };
         }
@@ -537,8 +534,6 @@ const app = {
         }
 
         this.bindServicesEvents(house);
-        
-        // Добавляем обработчики для ползунка времени
         this.bindTimeSliderEvents(house);
 
         this.showScreen('house-detail-screen');
@@ -557,7 +552,6 @@ const app = {
         
         const selectedChan = this.selectedServices.find(s => s.id === 'chan');
         const initialHours = selectedChan ? selectedChan.hours || 2 : 2;
-        const initialPrice = service.price * initialHours;
         
         return `
             <div class="time-slider-section" data-service-id="${service.id}">
@@ -568,22 +562,6 @@ const app = {
                         <button class="time-option ${initialHours === 4 ? 'active' : ''}" data-hours="4">4 часа</button>
                         <button class="time-option ${initialHours === 8 ? 'active' : ''}" data-hours="8">Вся ночь</button>
                     </div>
-                    <div class="slider-container">
-                        <input type="range" min="2" max="8" step="2" value="${initialHours}" class="time-slider-input" list="time-ticks">
-                        <datalist id="time-ticks">
-                            <option value="2" label="2ч"></option>
-                            <option value="4" label="4ч"></option>
-                            <option value="8" label="Вся ночь"></option>
-                        </datalist>
-                        <div class="slider-labels">
-                            <span>2ч</span>
-                            <span>4ч</span>
-                            <span>Вся ночь</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="selected-time">
-                    Выбрано: <strong>${initialHours} ${this.getHourText(initialHours)}</strong> - ${initialPrice}₽
                 </div>
             </div>
         `;
@@ -591,93 +569,38 @@ const app = {
 
     bindTimeSliderEvents(house) {
         const timeOptions = document.querySelectorAll('.time-option');
-        const timeSlider = document.querySelector('.time-slider-input');
-        
-        if (!timeOptions.length) return;
         
         timeOptions.forEach(option => {
             option.addEventListener('click', (e) => {
                 const hours = parseInt(e.target.dataset.hours);
                 
-                // Обновляем активное состояние
                 timeOptions.forEach(opt => opt.classList.remove('active'));
                 e.target.classList.add('active');
-                
-                // Обновляем ползунок
-                if (timeSlider) {
-                    timeSlider.value = hours;
-                }
                 
                 this.updateSelectedTime(hours, house);
             });
         });
-        
-        if (timeSlider) {
-            timeSlider.addEventListener('input', (e) => {
-                let hours = parseInt(e.target.value);
-                // Привязываем к ближайшему значению (2, 4, 8)
-                if (hours <= 3) hours = 2;
-                else if (hours <= 6) hours = 4;
-                else hours = 8;
-                
-                e.target.value = hours;
-                
-                // Обновляем активную кнопку
-                timeOptions.forEach(opt => {
-                    opt.classList.toggle('active', parseInt(opt.dataset.hours) === hours);
-                });
-                
-                this.updateSelectedTime(hours, house);
-            });
-
-            // Блокируем промежуточные значения
-            timeSlider.addEventListener('change', (e) => {
-                let hours = parseInt(e.target.value);
-                if (![2, 4, 8].includes(hours)) {
-                    if (hours <= 3) hours = 2;
-                    else if (hours <= 6) hours = 4;
-                    else hours = 8;
-                    e.target.value = hours;
-                }
-            });
-        }
     },
 
     updateSelectedTime(hours, house) {
-        const selectedTime = document.querySelector('.selected-time');
         const chanService = house.services.find(s => s.id === 'chan');
-        const totalPrice = chanService.price * hours;
         
-        if (selectedTime) {
-            selectedTime.innerHTML = `Выбрано: <strong>${hours} ${this.getHourText(hours)}</strong> - ${totalPrice}₽`;
-        }
-        
-        // Обновляем стоимость услуги в выбранных услугах
         const chanInSelected = this.selectedServices.find(s => s.id === 'chan');
         if (chanInSelected) {
             chanInSelected.hours = hours;
-            chanInSelected.totalPrice = totalPrice;
+            chanInSelected.totalPrice = chanService.price * hours;
         } else if (this.selectedServices.some(s => s.id === 'chan')) {
-            // Если услуга уже выбрана, обновляем её
             this.selectedServices = this.selectedServices.map(service => {
                 if (service.id === 'chan') {
                     return {
                         ...service,
                         hours: hours,
-                        totalPrice: totalPrice
+                        totalPrice: chanService.price * hours
                     };
                 }
                 return service;
             });
         }
-        
-        this.updateHousePricing(house);
-    },
-
-    getHourText(hours) {
-        if (hours === 1) return 'час';
-        if (hours >= 2 && hours <= 4) return 'часа';
-        return 'часов';
     },
 
     bindServicesEvents(house) {
@@ -688,7 +611,6 @@ const app = {
                 const service = house.services.find(s => s.id === serviceId);
                 
                 if (e.target.checked) {
-                    // Для чана добавляем начальное время
                     const serviceToAdd = service.id === 'chan' ? 
                         { ...service, hours: 2, totalPrice: service.price * 2 } : 
                         service;
@@ -696,8 +618,6 @@ const app = {
                 } else {
                     this.selectedServices = this.selectedServices.filter(s => s.id !== serviceId);
                 }
-                
-                this.updateHousePricing(house);
             });
         });
     },
@@ -711,7 +631,6 @@ const app = {
             if (this.selectedGuests > 1) {
                 this.selectedGuests--;
                 guestsCount.textContent = this.selectedGuests;
-                this.updateHousePricing(house);
             }
         });
 
@@ -719,7 +638,6 @@ const app = {
             if (this.selectedGuests < house.max_guests) {
                 this.selectedGuests++;
                 guestsCount.textContent = this.selectedGuests;
-                this.updateHousePricing(house);
             }
         });
     },
@@ -762,7 +680,6 @@ const app = {
 
         services.forEach(service => {
             if (service.price > 0) {
-                // Для чана используем totalPrice если есть
                 if (service.id === 'chan' && service.totalPrice) {
                     servicesPrice += service.totalPrice;
                 } else if (service.unit === 'час' && service.min_hours) {
@@ -782,137 +699,7 @@ const app = {
             total
         };
     },
-    
-    updateHousePricing(house) {
-        const nights = this.calculateNights();
-        const pricing = this.calculateTotalPrice(house, nights, this.selectedGuests, this.selectedServices);
-        
-        const basePriceElement = document.querySelector('.pricing-summary .price-line:first-child span:last-child');
-        const totalElement = document.querySelector('.price-total span:last-child');
-        
-        if (basePriceElement) basePriceElement.textContent = pricing.basePrice.toLocaleString() + '₽';
-        if (totalElement) totalElement.textContent = pricing.total.toLocaleString() + '₽';
 
-        this.updatePricingLines(pricing);
-    },
-
-    updatePricingLines(pricing) {
-        const pricingSummary = document.querySelector('.pricing-summary');
-        if (!pricingSummary) return;
-        
-        document.querySelectorAll('.pricing-summary .price-line:not(:first-child):not(.price-total)').forEach(el => el.remove());
-
-        if (pricing.extraGuestsPrice > 0) {
-            const extraGuestsLine = document.createElement('div');
-            extraGuestsLine.className = 'price-line';
-            extraGuestsLine.innerHTML = `<span>Дополнительные гости</span><span>${pricing.extraGuestsPrice.toLocaleString()}₽</span>`;
-            pricingSummary.insertBefore(extraGuestsLine, document.querySelector('.price-total'));
-        }
-
-        if (pricing.servicesPrice > 0) {
-            const servicesLine = document.createElement('div');
-            servicesLine.className = 'price-line';
-            servicesLine.innerHTML = `<span>Дополнительные услуги</span><span>${pricing.servicesPrice.toLocaleString()}₽</span>`;
-            pricingSummary.insertBefore(servicesLine, document.querySelector('.price-total'));
-        }
-    },
-    
-    getNightText(nights) {
-        if (nights === 1) return 'ночь';
-        if (nights >= 2 && nights <= 4) return 'ночи';
-        return 'ночей';
-    },
-
-    showMyBookings() {
-        const screen = document.getElementById('my-bookings-screen');
-        if (!screen) return;
-
-        const userBookings = database.getUserBookings(currentUserId);
-        
-        screen.innerHTML = `
-            <header class="header">
-                <button class="header-btn back">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                        <path d="M19 12H5M5 12L12 19M5 12L12 5" stroke="currentColor" stroke-width="2"/>
-                    </svg>
-                </button>
-                <div class="header-title">Мои бронирования</div>
-                <div class="header-actions"></div>
-            </header>
-
-            <div class="screen-content">
-                <div class="profile-card">
-                    <div class="profile-header">
-                        <div class="user-info">
-                            <div class="user-stats">
-                                <div class="stat">
-                                    <div class="stat-value">${this.currentUser.acoins}</div>
-                                    <div class="stat-label">Acoin</div>
-                                </div>
-                                <div class="stat">
-                                    <div class="stat-value">${this.currentUser.bookingsCount || 0}</div>
-                                    <div class="stat-label">Броней</div>
-                                </div>
-                                <div class="stat">
-                                    <div class="stat-value">${this.currentUser.level}</div>
-                                    <div class="stat-label">Уровень</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="bookings-list">
-                    <h3>История бронирований</h3>
-                    ${userBookings.length === 0 ? `
-                        <div class="empty-state">
-                            <div class="empty-icon">📝</div>
-                            <p>У вас пока нет бронирований</p>
-                            <button class="btn-secondary" onclick="app.showScreen('main-screen')">
-                                Забронировать дом
-                            </button>
-                        </div>
-                    ` : `
-                        <div class="bookings-container">
-                            ${userBookings.map(booking => `
-                                <div class="booking-item">
-                                    <div class="booking-header">
-                                        <span class="booking-number">${booking.bookingNumber}</span>
-                                        <span class="booking-status ${booking.status}">${this.getStatusText(booking.status)}</span>
-                                    </div>
-                                    <div class="booking-details">
-                                        <div class="booking-house">${booking.house.name}</div>
-                                        <div class="booking-dates">${new Date(booking.dates.checkin).toLocaleDateString('ru-RU')} - ${new Date(booking.dates.checkout).toLocaleDateString('ru-RU')}</div>
-                                        <div class="booking-price">${booking.total.toLocaleString()}₽</div>
-                                        ${booking.paymentProof ? `
-                                            <div class="payment-proof">
-                                                <button class="btn-small" onclick="app.viewPaymentProof('${booking.id}')">
-                                                    Посмотреть чек
-                                                </button>
-                                            </div>
-                                        ` : ''}
-                                    </div>
-                                </div>
-                            `).join('')}
-                        </div>
-                    `}
-                </div>
-            </div>
-        `;
-
-        this.showScreen('my-bookings-screen');
-    },
-
-    getStatusText(status) {
-        const statuses = {
-            'pending': 'Ожидает оплаты',
-            'confirmed': 'Подтверждено',
-            'completed': 'Завершено',
-            'cancelled': 'Отменено'
-        };
-        return statuses[status] || status;
-    },
-    
     showBookingScreen() {
         if (!this.selectedHouse) {
             this.showNotification('Выберите дом для бронирования', 'warning');
@@ -924,19 +711,11 @@ const app = {
             return;
         }
         
-        if (!this.isHouseAvailableForDates(this.selectedHouse.id)) {
-            this.showNotification('Дом занят на выбранные даты', 'error');
-            return;
-        }
+        const nights = this.calculateNights();
+        const pricing = this.calculateTotalPrice(this.selectedHouse, nights, this.selectedGuests, this.selectedServices);
         
         const screen = document.getElementById('booking-screen');
         if (!screen) return;
-        
-        const house = this.selectedHouse;
-        const nights = this.calculateNights();
-        const pricing = this.calculateTotalPrice(house, nights, this.selectedGuests, this.selectedServices);
-        const cashback = loyaltySystem.calculateCashback(pricing.total, this.currentUser.level);
-        const coinsEarned = this.calculateBookingCoins(pricing.total);
         
         screen.innerHTML = `
             <header class="header">
@@ -955,7 +734,7 @@ const app = {
                     <div class="summary-details">
                         <div class="summary-item">
                             <span>Дом:</span>
-                            <span>${house.name}</span>
+                            <span>${this.selectedHouse.name}</span>
                         </div>
                         <div class="summary-item">
                             <span>Даты:</span>
@@ -983,10 +762,6 @@ const app = {
                         <div class="summary-item total">
                             <span>К оплате:</span>
                             <span>${pricing.total.toLocaleString()}₽</span>
-                        </div>
-                        <div class="summary-item bonus">
-                            <span>Вы получите:</span>
-                            <span>+${coinsEarned} A-Coin</span>
                         </div>
                     </div>
                 </div>
@@ -1020,12 +795,10 @@ const app = {
         this.showScreen('booking-screen');
     },
 
-    calculateBookingCoins(bookingTotal) {
-        // Минимальное начисление за бронирование: 10-100 коинов
-        const minCoins = 10;
-        const maxCoins = 100;
-        const coins = Math.min(maxCoins, Math.max(minCoins, Math.round(bookingTotal * 0.01)));
-        return coins;
+    getHourText(hours) {
+        if (hours === 1) return 'час';
+        if (hours >= 2 && hours <= 4) return 'часа';
+        return 'часов';
     },
 
     createBooking() {
@@ -1053,7 +826,6 @@ const app = {
         const house = this.selectedHouse;
         const nights = this.calculateNights();
         const pricing = this.calculateTotalPrice(house, nights, this.selectedGuests, this.selectedServices);
-        const coinsEarned = this.calculateBookingCoins(pricing.total);
 
         const booking = {
             id: Date.now().toString(),
@@ -1066,9 +838,7 @@ const app = {
             total: pricing.total,
             guestInfo: { name, phone, email },
             status: 'pending',
-            createdAt: new Date().toISOString(),
-            cashbackAwarded: 0,
-            coinsEarned: coinsEarned
+            createdAt: new Date().toISOString()
         };
 
         this.currentBooking = database.saveBooking(booking);
@@ -1192,23 +962,7 @@ const app = {
             confirmedAt: new Date().toISOString()
         });
 
-        // Начисляем A-Coin за бронирование
-        database.addAcoins(currentUserId, this.currentBooking.coinsEarned, `Бронирование ${this.currentBooking.bookingNumber}`);
-
-        const userBookings = database.getUserBookings(currentUserId);
-        const confirmedBookings = userBookings.filter(b => b.status === 'confirmed' || b.status === 'completed');
-        const bookingsCount = confirmedBookings.length;
-        const newLevel = loyaltySystem.getUserLevel(bookingsCount);
-        
-        database.updateUser(currentUserId, {
-            bookingsCount: bookingsCount,
-            level: newLevel,
-            totalSpent: (this.currentUser.totalSpent || 0) + this.currentBooking.total
-        });
-
-        this.currentUser = database.getUser(currentUserId);
-
-        this.showNotification(`Бронь подтверждена! Дом "${this.currentBooking.house.name}" забронирован. +${this.currentBooking.coinsEarned} A-Coin`, 'success');
+        this.showNotification(`Бронь подтверждена! Дом "${this.currentBooking.house.name}" забронирован.`, 'success');
 
         setTimeout(() => {
             this.showScreen('main-screen');
@@ -1270,6 +1024,12 @@ const app = {
         }
     },
     
+    getNightText(nights) {
+        if (nights === 1) return 'ночь';
+        if (nights >= 2 && nights <= 4) return 'ночи';
+        return 'ночей';
+    },
+
     showNotification(message, type = 'info') {
         document.querySelectorAll('.notification').forEach(n => n.remove());
 
@@ -1278,9 +1038,13 @@ const app = {
         notification.innerHTML = `
             <div class="notification-content">
                 <span class="notification-message">${message}</span>
-                <button class="notification-close" onclick="this.parentElement.parentElement.remove()">×</button>
+                <button class="notification-close">×</button>
             </div>
         `;
+
+        notification.querySelector('.notification-close').onclick = () => {
+            notification.remove();
+        };
 
         document.body.appendChild(notification);
 
