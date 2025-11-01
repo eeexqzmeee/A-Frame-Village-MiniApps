@@ -13,16 +13,16 @@ html {
 
 body {
     min-height: 100vh;
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
     background: var(--bg-primary);
     color: var(--text-primary);
     line-height: 1.5;
     font-weight: var(--font-weight-normal);
     overflow-x: hidden;
-    transition: background-color var(--transition-normal), color var(--transition-normal);
-    /* Исправление для Telegram */
     padding-top: env(safe-area-inset-top);
     padding-bottom: env(safe-area-inset-bottom);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
 }
 
 /* Анимации */
@@ -73,26 +73,24 @@ body {
 .screen-content {
     padding: var(--space-md);
     animation: fadeIn 0.4s ease-out;
-    /* Исправление для Telegram */
     padding-top: calc(var(--space-md) + env(safe-area-inset-top));
     padding-bottom: calc(var(--space-md) + env(safe-area-inset-bottom));
 }
 
-
-/* Header с учетом Telegram кнопок */
+/* Header в стиле iOS */
 .header {
     position: sticky;
     top: 0;
     height: var(--header-height);
-    background: var(--bg-primary);
-    border-bottom: 1px solid var(--border-color);
+    background: rgba(0, 0, 0, 0.8);
     display: flex;
     align-items: center;
     justify-content: space-between;
     padding: 0 var(--space-md);
     z-index: var(--z-sticky);
-    backdrop-filter: blur(10px);
-    /* Исправление для Telegram */
+    backdrop-filter: blur(50px);
+    -webkit-backdrop-filter: blur(50px);
+    border-bottom: 0.5px solid var(--border-color);
     margin-top: env(safe-area-inset-top);
     padding-top: env(safe-area-inset-top);
     min-height: calc(var(--header-height) + env(safe-area-inset-top));
@@ -105,11 +103,13 @@ body {
     align-items: center;
     justify-content: center;
     border: none;
-    background: var(--bg-secondary);
+    background: rgba(255, 255, 255, 0.1);
     color: var(--text-primary);
     border-radius: var(--border-radius);
     transition: var(--transition-fast);
     z-index: 1000;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
 }
 
 .header-btn:active {
@@ -130,22 +130,24 @@ body {
 }
 
 .dates-badge {
-    background: var(--bg-secondary);
+    background: rgba(255, 255, 255, 0.1);
     padding: var(--space-xs) var(--space-sm);
     border-radius: var(--border-radius);
     font-size: var(--font-size-sm);
     color: var(--text-secondary);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
 }
 
-/* Главный экран */
+/* Главный экран Liquid Glass */
 .main-background {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: var(--gradient-hero, linear-gradient(135deg, var(--bg-primary) 0%, #1a1b2e 100%));
-    opacity: 0.9;
+    background: linear-gradient(135deg, #000000 0%, #1a1b2e 50%, #2d1b69 100%);
+    opacity: 0.8;
 }
 
 .main-content {
@@ -156,7 +158,6 @@ body {
     flex-direction: column;
     justify-content: space-between;
     padding: var(--space-xxl) var(--space-lg);
-    /* Исправление для Telegram */
     padding-top: calc(var(--space-xxl) + env(safe-area-inset-top));
     padding-bottom: calc(var(--space-xxl) + env(safe-area-inset-bottom));
 }
@@ -172,6 +173,7 @@ body {
     color: var(--text-primary);
     margin-bottom: var(--space-sm);
     letter-spacing: 2px;
+    text-shadow: 0 0 30px rgba(0, 122, 255, 0.3);
 }
 
 .tagline {
@@ -184,8 +186,12 @@ body {
     background: var(--bg-card);
     border-radius: var(--border-radius-xl);
     padding: var(--space-xl);
-    box-shadow: var(--shadow-lg);
     animation: fadeIn 0.8s ease-out 0.2s both;
+    backdrop-filter: blur(50px);
+    -webkit-backdrop-filter: blur(50px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: var(--shadow-lg);
+    background: rgba(255, 255, 255, 0.1);
 }
 
 .card-header {
@@ -231,7 +237,7 @@ body {
     letter-spacing: 0.5px;
 }
 
-/* Кнопки */
+/* Кнопки в стиле iOS */
 .book-btn {
     width: 100%;
     display: flex;
@@ -245,10 +251,12 @@ body {
     border-radius: var(--border-radius-lg);
     font-size: var(--font-size-base);
     font-weight: var(--font-weight-semibold);
-    transition: var(--transition-fast);
+    transition: all var(--transition-normal);
     cursor: pointer;
     text-decoration: none;
     min-height: var(--touch-target);
+    position: relative;
+    overflow: hidden;
 }
 
 .book-btn.primary {
@@ -258,8 +266,7 @@ body {
 
 .book-btn.primary:active {
     background: var(--accent-secondary);
-    transform: translateY(1px);
-    box-shadow: var(--shadow-sm);
+    transform: scale(0.98);
 }
 
 .book-btn.large {
@@ -271,60 +278,36 @@ body {
 .btn-secondary {
     width: 100%;
     padding: var(--space-lg);
-    background: var(--bg-secondary);
+    background: rgba(255, 255, 255, 0.1);
     color: var(--text-primary);
     border: 1px solid var(--border-color);
     border-radius: var(--border-radius-lg);
     font-size: var(--font-size-base);
     font-weight: var(--font-weight-semibold);
     cursor: pointer;
-    transition: var(--transition-fast);
+    transition: var(--transition-normal);
     margin-top: var(--space-md);
     min-height: var(--touch-target);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
 }
 
 .btn-secondary:active {
-    background: var(--bg-tertiary);
-    transform: translateY(1px);
+    background: rgba(255, 255, 255, 0.2);
+    transform: scale(0.98);
 }
 
-/* Переключатель темы */
-.theme-switcher {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: var(--space-md);
-    margin: var(--space-lg) 0;
-    padding: var(--space-md);
-    background: var(--bg-secondary);
-    border-radius: var(--border-radius-lg);
-}
-
-.theme-btn {
-    flex: 1;
-    padding: var(--space-md);
-    background: transparent;
-    border: 2px solid transparent;
-    border-radius: var(--border-radius);
-    color: var(--text-secondary);
-    font-weight: var(--font-weight-medium);
-    cursor: pointer;
-    transition: var(--transition-fast);
-}
-
-.theme-btn.active {
-    background: var(--accent-primary);
-    color: var(--bg-primary);
-    border-color: var(--accent-primary);
-}
-
-/* Календарь */
+/* Календарь Liquid Glass */
 .calendar-container {
     background: var(--bg-card);
     border-radius: var(--border-radius-xl);
     padding: var(--space-lg);
-    box-shadow: var(--shadow-md);
     margin-bottom: var(--space-lg);
+    backdrop-filter: blur(50px);
+    -webkit-backdrop-filter: blur(50px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.1);
+    box-shadow: var(--shadow-md);
 }
 
 .calendar-header {
@@ -340,12 +323,14 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    background: var(--bg-secondary);
+    background: rgba(255, 255, 255, 0.1);
     border: 1px solid var(--border-color);
     border-radius: var(--border-radius);
     color: var(--text-primary);
     transition: var(--transition-fast);
     cursor: pointer;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
 }
 
 .nav-btn:active {
@@ -396,7 +381,7 @@ body {
     align-items: center;
     justify-content: center;
     border-radius: var(--border-radius);
-    background: var(--bg-secondary);
+    background: rgba(255, 255, 255, 0.05);
     color: var(--text-primary);
     font-size: var(--font-size-sm);
     font-weight: var(--font-weight-medium);
@@ -404,6 +389,8 @@ body {
     cursor: pointer;
     position: relative;
     border: 1px solid transparent;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
 }
 
 .calendar-day:hover {
@@ -418,7 +405,7 @@ body {
 
 .calendar-day.disabled {
     color: var(--text-muted);
-    background: var(--bg-primary);
+    background: rgba(255, 255, 255, 0.02);
     cursor: not-allowed;
 }
 
@@ -442,6 +429,10 @@ body {
     background: var(--bg-card);
     border-radius: var(--border-radius-xl);
     padding: var(--space-lg);
+    backdrop-filter: blur(50px);
+    -webkit-backdrop-filter: blur(50px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.1);
     box-shadow: var(--shadow-md);
     animation: fadeIn 0.4s ease-out;
 }
@@ -506,14 +497,14 @@ body {
     border-radius: var(--border-radius-lg);
     font-size: var(--font-size-base);
     font-weight: var(--font-weight-semibold);
-    transition: var(--transition-fast);
+    transition: var(--transition-normal);
     cursor: pointer;
     min-height: var(--touch-target);
 }
 
 .continue-btn:active {
     background: var(--accent-secondary);
-    transform: translateY(1px);
+    transform: scale(0.98);
 }
 
 .continue-btn:disabled {
@@ -522,7 +513,7 @@ body {
     transform: none;
 }
 
-/* Дома */
+/* Дома в стиле Liquid Glass */
 .houses-container {
     display: flex;
     flex-direction: column;
@@ -555,22 +546,23 @@ body {
     background: var(--bg-card);
     border-radius: var(--border-radius-lg);
     overflow: hidden;
-    box-shadow: var(--shadow-sm);
-    transition: all var(--transition-normal);
     cursor: pointer;
-    border: 1px solid var(--border-color);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all var(--transition-normal);
+    backdrop-filter: blur(30px);
+    -webkit-backdrop-filter: blur(30px);
+    background: rgba(255, 255, 255, 0.1);
 }
 
-.house-card:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-accent-lg);
+.house-card:active {
+    transform: scale(0.98);
     border-color: var(--accent-primary);
 }
 
 .house-image {
     position: relative;
     height: 160px;
-    background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-tertiary) 100%);
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -640,14 +632,18 @@ body {
     background: var(--bg-card);
     border-radius: var(--border-radius-xl);
     overflow: hidden;
-    box-shadow: var(--shadow-lg);
     margin-bottom: var(--space-lg);
+    backdrop-filter: blur(50px);
+    -webkit-backdrop-filter: blur(50px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.1);
+    box-shadow: var(--shadow-lg);
 }
 
 .house-gallery {
     position: relative;
     height: 200px;
-    background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-tertiary) 100%);
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
 }
 
 .gallery-main {
@@ -706,6 +702,8 @@ body {
     font-size: 1.5rem;
     flex-shrink: 0;
     color: var(--accent-primary);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
 }
 
 .feature-info {
@@ -726,10 +724,13 @@ body {
 
 /* Выбор гостей */
 .guests-selector {
-    background: var(--bg-secondary);
+    background: rgba(255, 255, 255, 0.1);
     border-radius: var(--border-radius-lg);
     padding: var(--space-lg);
     margin-bottom: var(--space-xl);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--border-color);
 }
 
 .guests-selector h4 {
@@ -760,7 +761,7 @@ body {
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    transition: var(--transition-fast);
+    transition: var(--transition-normal);
 }
 
 .guest-btn:active {
@@ -802,11 +803,13 @@ body {
 }
 
 .service-item {
-    background: var(--bg-secondary);
+    background: rgba(255, 255, 255, 0.1);
     border-radius: var(--border-radius-lg);
     padding: var(--space-lg);
     border: 1px solid var(--border-color);
-    transition: var(--transition-fast);
+    transition: var(--transition-normal);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
 }
 
 .service-item:active {
@@ -830,11 +833,13 @@ body {
     height: 20px;
     border: 2px solid var(--border-light);
     border-radius: var(--border-radius);
-    background: var(--bg-primary);
+    background: rgba(255, 255, 255, 0.1);
     position: relative;
     flex-shrink: 0;
     margin-top: 2px;
-    transition: var(--transition-fast);
+    transition: var(--transition-normal);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
 }
 
 .service-checkbox input[type="checkbox"]:checked + .checkmark {
@@ -880,10 +885,13 @@ body {
 
 /* Цены */
 .pricing-summary {
-    background: var(--bg-secondary);
+    background: rgba(255, 255, 255, 0.1);
     border-radius: var(--border-radius-lg);
     padding: var(--space-lg);
     margin-bottom: var(--space-xl);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--border-color);
 }
 
 .price-line {
@@ -916,6 +924,10 @@ body {
     border-radius: var(--border-radius-lg);
     padding: var(--space-xl);
     margin-bottom: var(--space-lg);
+    backdrop-filter: blur(50px);
+    -webkit-backdrop-filter: blur(50px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.1);
     box-shadow: var(--shadow-md);
 }
 
@@ -966,17 +978,20 @@ body {
 .form-input {
     width: 100%;
     padding: var(--space-lg);
-    background: var(--bg-secondary);
+    background: rgba(255, 255, 255, 0.1);
     border: 1px solid var(--border-color);
     border-radius: var(--border-radius);
     font-size: var(--font-size-base);
     color: var(--text-primary);
-    transition: var(--transition-fast);
+    transition: var(--transition-normal);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
 }
 
 .form-input:focus {
     border-color: var(--accent-primary);
     outline: none;
+    box-shadow: 0 0 0 2px rgba(0, 122, 255, 0.2);
 }
 
 .form-input::placeholder {
@@ -1007,6 +1022,8 @@ textarea.form-input {
     color: var(--text-primary);
     font-weight: var(--font-weight-semibold);
     font-size: var(--font-size-base);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
 }
 
 /* Профиль и бронирования */
@@ -1015,6 +1032,10 @@ textarea.form-input {
     border-radius: var(--border-radius-lg);
     padding: var(--space-xl);
     margin-bottom: var(--space-lg);
+    backdrop-filter: blur(50px);
+    -webkit-backdrop-filter: blur(50px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.1);
 }
 
 .user-stats {
@@ -1060,6 +1081,9 @@ textarea.form-input {
     padding: var(--space-lg);
     margin-bottom: var(--space-md);
     border: 1px solid var(--border-color);
+    backdrop-filter: blur(30px);
+    -webkit-backdrop-filter: blur(30px);
+    background: rgba(255, 255, 255, 0.1);
 }
 
 .booking-header {
@@ -1114,12 +1138,14 @@ textarea.form-input {
 
 .btn-small {
     padding: var(--space-sm) var(--space-md);
-    background: var(--bg-secondary);
+    background: rgba(255, 255, 255, 0.1);
     color: var(--text-primary);
     border: 1px solid var(--border-color);
     border-radius: var(--border-radius);
     font-size: var(--font-size-sm);
     cursor: pointer;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
 }
 
 .payment-proof {
@@ -1137,9 +1163,10 @@ textarea.form-input {
     padding: var(--space-md);
     z-index: 10000;
     animation: slideDown 0.3s ease-out;
-    /* Исправление для Telegram */
     margin-top: env(safe-area-inset-top);
     padding-top: calc(var(--space-md) + env(safe-area-inset-top));
+    backdrop-filter: blur(50px);
+    -webkit-backdrop-filter: blur(50px);
 }
 
 .notification-success {
@@ -1198,6 +1225,11 @@ textarea.form-input {
     border-radius: var(--border-radius-xl);
     padding: var(--space-xl);
     margin-bottom: var(--space-lg);
+    backdrop-filter: blur(50px);
+    -webkit-backdrop-filter: blur(50px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.1);
+    box-shadow: var(--shadow-lg);
 }
 
 .payment-header {
@@ -1241,12 +1273,14 @@ textarea.form-input {
     align-items: center;
     gap: var(--space-lg);
     padding: var(--space-lg);
-    background: var(--bg-secondary);
+    background: rgba(255, 255, 255, 0.1);
     border: 2px solid var(--border-color);
     border-radius: var(--border-radius-lg);
     margin-bottom: var(--space-md);
     cursor: pointer;
-    transition: var(--transition-fast);
+    transition: var(--transition-normal);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
 }
 
 .payment-option.selected {
@@ -1269,10 +1303,13 @@ textarea.form-input {
 }
 
 .payment-instructions {
-    background: var(--bg-secondary);
+    background: rgba(255, 255, 255, 0.1);
     border-radius: var(--border-radius-lg);
     padding: var(--space-lg);
     margin: var(--space-xl) 0;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--border-color);
 }
 
 .payment-instructions h4 {
@@ -1291,10 +1328,12 @@ textarea.form-input {
 }
 
 .bank-info {
-    background: var(--bg-primary);
+    background: rgba(255, 255, 255, 0.1);
     padding: var(--space-lg);
     border-radius: var(--border-radius);
     border: 1px solid var(--border-color);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
 }
 
 .bank-info div {

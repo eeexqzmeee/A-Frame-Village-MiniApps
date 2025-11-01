@@ -1,35 +1,35 @@
 :root {
-    /* Тёмная тема (по умолчанию) */
-    --bg-primary: #0f0f0f;
-    --bg-secondary: #1a1a1a;
-    --bg-tertiary: #252525;
-    --bg-card: #1e1e1e;
+    /* Тёмная тема Liquid Glass */
+    --bg-primary: #000000;
+    --bg-secondary: rgba(15, 15, 15, 0.8);
+    --bg-tertiary: rgba(25, 25, 25, 0.6);
+    --bg-card: rgba(255, 255, 255, 0.1);
     --bg-overlay: rgba(0, 0, 0, 0.8);
     
     --text-primary: #ffffff;
-    --text-secondary: #a0a0a0;
-    --text-muted: #666666;
-    --text-accent: #6366f1;
+    --text-secondary: rgba(255, 255, 255, 0.7);
+    --text-muted: rgba(255, 255, 255, 0.5);
+    --text-accent: #007AFF;
     
-    --accent-primary: #6366f1;
-    --accent-secondary: #4f46e5;
-    --accent-hover: #7c73f9;
-    --accent-light: rgba(99, 102, 241, 0.1);
+    --accent-primary: #007AFF;
+    --accent-secondary: #0056CC;
+    --accent-hover: #409CFF;
+    --accent-light: rgba(0, 122, 255, 0.15);
     
-    --success-color: #10b981;
-    --warning-color: #f59e0b;
-    --error-color: #ef4444;
+    --success-color: #30D158;
+    --warning-color: #FF9F0A;
+    --error-color: #FF453A;
     
-    --border-color: #2a2a2a;
-    --border-light: #333333;
-    --border-accent: #6366f1;
+    --border-color: rgba(255, 255, 255, 0.15);
+    --border-light: rgba(255, 255, 255, 0.1);
+    --border-accent: #007AFF;
 
     /* Размеры */
     --header-height: 60px;
     --touch-target: 44px;
-    --border-radius: 8px;
-    --border-radius-lg: 12px;
-    --border-radius-xl: 16px;
+    --border-radius: 14px;
+    --border-radius-lg: 20px;
+    --border-radius-xl: 25px;
 
     /* Отступы */
     --space-xs: 4px;
@@ -40,16 +40,16 @@
     --space-xxl: 48px;
 
     /* Тени */
-    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
-    --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.4);
-    --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.5);
-    --shadow-accent: 0 0 20px rgba(99, 102, 241, 0.3);
-    --shadow-accent-lg: 0 0 40px rgba(99, 102, 241, 0.2);
+    --shadow-sm: 0 4px 20px rgba(0, 0, 0, 0.15);
+    --shadow-md: 0 8px 30px rgba(0, 0, 0, 0.2);
+    --shadow-lg: 0 12px 40px rgba(0, 0, 0, 0.25);
+    --shadow-accent: 0 0 30px rgba(0, 122, 255, 0.3);
+    --shadow-accent-lg: 0 0 50px rgba(0, 122, 255, 0.2);
 
     /* Анимации */
     --transition-fast: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-    --transition-normal: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    --transition-slow: 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-normal: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-slow: 0.6s cubic-bezier(0.4, 0, 0.2, 1);
 
     /* Типографика */
     --font-size-xs: 0.75rem;
@@ -75,68 +75,31 @@
     --z-tooltip: 1060;
 }
 
-[data-theme="light"] {
-    /* Светлая тема */
-    --bg-primary: #ffffff;
-    --bg-secondary: #f8fafc;
-    --bg-tertiary: #f1f5f9;
-    --bg-card: #ffffff;
-    --bg-overlay: rgba(255, 255, 255, 0.8);
-    
-    --text-primary: #1e293b;
-    --text-secondary: #64748b;
-    --text-muted: #94a3b8;
-    --text-accent: #6366f1;
-    
-    --accent-primary: #6366f1;
-    --accent-secondary: #4f46e5;
-    --accent-hover: #7c73f9;
-    --accent-light: rgba(99, 102, 241, 0.1);
-    
-    --success-color: #10b981;
-    --warning-color: #f59e0b;
-    --error-color: #ef4444;
-    
-    --border-color: #e2e8f0;
-    --border-light: #cbd5e1;
-    --border-accent: #6366f1;
-
-    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.1);
-    --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.15);
-    --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.2);
-    --shadow-accent: 0 0 20px rgba(99, 102, 241, 0.2);
-    --shadow-accent-lg: 0 0 40px rgba(99, 102, 241, 0.15);
-}
-
-/* Градиенты для новой темы */
+/* Градиенты Liquid Glass */
 .gradient-primary {
     background: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 100%);
 }
 
 .gradient-card {
-    background: linear-gradient(135deg, var(--bg-card) 0%, var(--bg-secondary) 100%);
+    background: linear-gradient(135deg, var(--bg-card) 0%, rgba(255, 255, 255, 0.05) 100%);
 }
 
 .gradient-hero {
-    background: linear-gradient(135deg, var(--bg-primary) 0%, #1a1b2e 100%);
-}
-
-[data-theme="light"] .gradient-hero {
-    background: linear-gradient(135deg, var(--bg-primary) 0%, #f0f4ff 100%);
+    background: linear-gradient(135deg, #000000 0%, #1a1b2e 100%);
 }
 
 /* Цвета для разных типов домов */
 .house-type-large {
     --house-color: var(--accent-primary);
-    --house-color-light: rgba(99, 102, 241, 0.1);
+    --house-color-light: rgba(0, 122, 255, 0.15);
 }
 
 .house-type-couple {
-    --house-color: #ec4899;
-    --house-color-light: rgba(236, 72, 153, 0.1);
+    --house-color: #FF2D55;
+    --house-color-light: rgba(255, 45, 85, 0.15);
 }
 
 .house-type-family {
-    --house-color: #10b981;
-    --house-color-light: rgba(16, 185, 129, 0.1);
+    --house-color: #30D158;
+    --house-color-light: rgba(48, 209, 88, 0.15);
 }

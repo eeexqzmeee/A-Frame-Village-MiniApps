@@ -9,12 +9,10 @@ const app = {
     selectedServices: [],
     currentUser: null,
     currentBooking: null,
-    currentTheme: 'dark',
     
     init() {
         console.log('App initialized');
         this.currentUser = database.getUser(currentUserId);
-        this.loadTheme();
         this.bindEvents();
         this.initCalendar();
         this.updateUserInfo();
@@ -108,28 +106,6 @@ const app = {
                 }
             }
         });
-
-        document.addEventListener('click', (e) => {
-            if (e.target.closest('.theme-btn')) {
-                const theme = e.target.closest('.theme-btn').dataset.theme;
-                this.switchTheme(theme);
-            }
-        });
-    },
-
-    switchTheme(theme) {
-        this.currentTheme = theme;
-        document.documentElement.setAttribute('data-theme', theme);
-        localStorage.setItem('app-theme', theme);
-        
-        document.querySelectorAll('.theme-btn').forEach(btn => {
-            btn.classList.toggle('active', btn.dataset.theme === theme);
-        });
-    },
-
-    loadTheme() {
-        const savedTheme = localStorage.getItem('app-theme') || 'dark';
-        this.switchTheme(savedTheme);
     },
 
     initCalendar() {
