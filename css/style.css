@@ -22,15 +22,14 @@ body {
     overflow: hidden;
     padding-top: env(safe-area-inset-top);
     padding-bottom: env(safe-area-inset-bottom);
-    /* Убираем blur для производительности */
-    backdrop-filter: none;
-    -webkit-backdrop-filter: none;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
 }
 
-/* Анимации с оптимизацией */
+/* Анимации */
 @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
+    from { opacity: 0; transform: translateY(30px) scale(0.95); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
 }
 
 @keyframes slideInRight {
@@ -44,13 +43,83 @@ body {
 }
 
 @keyframes scaleIn {
-    from { opacity: 0; transform: scale(0.9); }
-    to { opacity: 1; transform: scale(1); }
+    from { opacity: 0; transform: scale(0.8) rotate(-2deg); }
+    to { opacity: 1; transform: scale(1) rotate(0); }
 }
 
 @keyframes gentleFloat {
-    0%, 100% { transform: translateY(0px) scale(1); }
-    50% { transform: translateY(-5px) scale(1.02); }
+    0%, 100% { 
+        transform: translateY(0px) rotate(0deg) scale(1); 
+    }
+    33% { 
+        transform: translateY(-3px) rotate(0.5deg) scale(1.01); 
+    }
+    66% { 
+        transform: translateY(2px) rotate(-0.5deg) scale(0.99); 
+    }
+}
+
+@keyframes liquidShift {
+    0%, 100% { 
+        background-position: 0% 50%;
+        filter: hue-rotate(0deg) brightness(1);
+    }
+    50% { 
+        background-position: 100% 50%;
+        filter: hue-rotate(5deg) brightness(1.05);
+    }
+}
+
+@keyframes shimmer {
+    0% { transform: translateX(-100%) rotate(12deg); }
+    100% { transform: translateX(100%) rotate(12deg); }
+}
+
+@keyframes pulseGlow {
+    0%, 100% { 
+        box-shadow: 0 0 20px rgba(0, 122, 255, 0.3);
+    }
+    50% { 
+        box-shadow: 0 0 40px rgba(0, 122, 255, 0.6),
+                   0 0 60px rgba(0, 122, 255, 0.3);
+    }
+}
+
+@keyframes bounceIn {
+    0% { 
+        opacity: 0; 
+        transform: scale(0.3) rotate(-10deg); 
+    }
+    50% { 
+        opacity: 0.7; 
+        transform: scale(1.05) rotate(5deg); 
+    }
+    100% { 
+        opacity: 1; 
+        transform: scale(1) rotate(0); 
+    }
+}
+
+@keyframes slideUp {
+    from { 
+        opacity: 0; 
+        transform: translateY(50px) scale(0.9); 
+    }
+    to { 
+        opacity: 1; 
+        transform: translateY(0) scale(1); 
+    }
+}
+
+@keyframes ripple {
+    0% {
+        transform: scale(0);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(4);
+        opacity: 0;
+    }
 }
 
 /* Основная структура */
@@ -59,6 +128,23 @@ body {
     background: var(--bg-primary);
     position: relative;
     overflow: hidden;
+}
+
+/* Анимированный фон */
+#app::before {
+    content: '';
+    position: fixed;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: 
+        radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.15) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 40% 40%, rgba(120, 219, 255, 0.08) 0%, transparent 50%);
+    animation: liquidShift 20s ease-in-out infinite;
+    pointer-events: none;
+    z-index: -1;
 }
 
 .screen {
@@ -72,7 +158,6 @@ body {
     transition: transform var(--transition-normal);
     overflow-y: auto;
     z-index: 10;
-    /* Убираем горизонтальный скролл */
     overflow-x: hidden;
 }
 
@@ -82,43 +167,41 @@ body {
 
 .screen-content {
     padding: var(--space-md);
-    animation: fadeIn 0.4s ease-out;
+    animation: fadeIn 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     padding-top: calc(var(--space-md) + env(safe-area-inset-top));
     padding-bottom: calc(var(--space-md) + env(safe-area-inset-bottom));
-    /* Фиксируем ширину */
     max-width: 100%;
     box-sizing: border-box;
 }
 
-/* Header в стиле iOS */
+/* Header с Liquid Glass */
 .header {
     position: sticky;
     top: 0;
     height: var(--header-height);
-    background: var(--bg-secondary);
     display: flex;
     align-items: center;
     justify-content: space-between;
     padding: 0 var(--space-md);
     z-index: var(--z-sticky);
-    /* Матовый эффект вместо blur */
-    background: rgba(15, 15, 15, 0.95);
-    border-bottom: 0.5px solid var(--border-color);
+    backdrop-filter: blur(40px) saturate(180%);
+    -webkit-backdrop-filter: blur(40px) saturate(180%);
+    background: rgba(15, 15, 15, 0.7);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
     margin-top: env(safe-area-inset-top);
     padding-top: env(safe-area-inset-top);
     min-height: calc(var(--header-height) + env(safe-area-inset-top));
-    /* Анимация появления */
-    animation: slideDown 0.3s ease-out;
+    animation: slideDown 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
 @keyframes slideDown {
     from {
         opacity: 0;
-        transform: translateY(-10px);
+        transform: translateY(-20px) scale(0.95);
     }
     to {
         opacity: 1;
-        transform: translateY(0);
+        transform: translateY(0) scale(1);
     }
 }
 
@@ -132,13 +215,33 @@ body {
     background: rgba(255, 255, 255, 0.1);
     color: var(--text-primary);
     border-radius: var(--border-radius);
-    transition: all var(--transition-fast);
+    transition: all var(--transition-normal);
     z-index: 1000;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    position: relative;
+    overflow: hidden;
+}
+
+.header-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.6s;
+}
+
+.header-btn:active::before {
+    left: 100%;
 }
 
 .header-btn:active {
     background: var(--accent-primary);
-    transform: scale(0.95);
+    transform: scale(0.92);
+    animation: bounceIn 0.4s ease-out;
 }
 
 .header-title {
@@ -154,22 +257,27 @@ body {
 }
 
 .dates-badge {
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.15);
     padding: var(--space-xs) var(--space-sm);
     border-radius: var(--border-radius);
     font-size: var(--font-size-sm);
     color: var(--text-secondary);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    animation: gentleFloat 3s ease-in-out infinite;
 }
 
-/* Главный экран */
+/* Главный экран с анимациями */
 .main-background {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: linear-gradient(135deg, #000000 0%, #1a1b2e 50%, #2d1b69 100%);
-    opacity: 1;
+    background: 
+        linear-gradient(135deg, #000000 0%, #1a1b2e 30%, #2d1b69 70%, #000000 100%);
+    opacity: 0.9;
+    animation: liquidShift 15s ease-in-out infinite;
 }
 
 .main-content {
@@ -182,14 +290,13 @@ body {
     padding: var(--space-xxl) var(--space-lg);
     padding-top: calc(var(--space-xxl) + env(safe-area-inset-top));
     padding-bottom: calc(var(--space-xxl) + env(safe-area-inset-bottom));
-    /* Фиксируем ширину */
     max-width: 100%;
     box-sizing: border-box;
 }
 
 .logo-section {
     text-align: center;
-    animation: gentleFloat 6s ease-in-out infinite;
+    animation: gentleFloat 8s ease-in-out infinite;
 }
 
 .logo {
@@ -198,36 +305,64 @@ body {
     color: var(--text-primary);
     margin-bottom: var(--space-sm);
     letter-spacing: 2px;
-    text-shadow: 0 0 30px rgba(0, 122, 255, 0.3);
+    text-shadow: 0 0 30px rgba(0, 122, 255, 0.4);
+    position: relative;
+    display: inline-block;
+}
+
+.logo::after {
+    content: '';
+    position: absolute;
+    top: -10%;
+    left: -10%;
+    right: -10%;
+    bottom: -10%;
+    background: linear-gradient(45deg, transparent 30%, rgba(0, 122, 255, 0.1) 50%, transparent 70%);
+    animation: shimmer 3s ease-in-out infinite;
+    pointer-events: none;
+    border-radius: 20px;
 }
 
 .tagline {
     font-size: var(--font-size-lg);
     color: var(--text-secondary);
     font-weight: var(--font-weight-light);
-    animation: fadeIn 1s ease-out 0.5s both;
+    animation: fadeIn 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.3s both;
 }
 
 .booking-card {
-    background: var(--bg-card);
+    background: rgba(255, 255, 255, 0.1);
     border-radius: var(--border-radius-xl);
     padding: var(--space-xl);
-    animation: scaleIn 0.8s ease-out 0.2s both;
-    /* Матовый эффект с легкой текстурой */
-    background: rgba(30, 30, 30, 0.95);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    animation: scaleIn 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.2s both;
+    backdrop-filter: blur(40px) saturate(180%);
+    -webkit-backdrop-filter: blur(40px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.2);
     box-shadow: 
-        0 20px 40px rgba(0, 0, 0, 0.3),
+        0 25px 50px rgba(0, 0, 0, 0.25),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1),
         0 0 0 1px rgba(255, 255, 255, 0.05);
-    /* Фиксируем ширину */
+    position: relative;
+    overflow: hidden;
     max-width: 100%;
     box-sizing: border-box;
+}
+
+.booking-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, transparent 50%);
+    pointer-events: none;
 }
 
 .card-header {
     text-align: center;
     margin-bottom: var(--space-lg);
-    animation: fadeIn 0.6s ease-out 0.4s both;
+    animation: fadeIn 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.4s both;
 }
 
 .card-header h2 {
@@ -246,13 +381,14 @@ body {
     justify-content: space-around;
     margin: var(--space-xl) 0;
     padding: var(--space-lg) 0;
-    border-top: 1px solid var(--border-color);
-    border-bottom: 1px solid var(--border-color);
-    animation: fadeIn 0.6s ease-out 0.6s both;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    animation: fadeIn 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.6s both;
 }
 
 .stat {
     text-align: center;
+    position: relative;
 }
 
 .stat-number {
@@ -260,7 +396,12 @@ body {
     font-size: var(--font-size-xxl);
     font-weight: var(--font-weight-bold);
     color: var(--accent-primary);
+    animation: gentleFloat 4s ease-in-out infinite;
 }
+
+.stat-number:nth-child(1) { animation-delay: 0s; }
+.stat-number:nth-child(2) { animation-delay: 0.2s; }
+.stat-number:nth-child(3) { animation-delay: 0.4s; }
 
 .stat-label {
     font-size: var(--font-size-xs);
@@ -269,7 +410,7 @@ body {
     letter-spacing: 0.5px;
 }
 
-/* Кнопки в стиле iOS */
+/* Кнопки с анимациями */
 .book-btn {
     width: 100%;
     display: flex;
@@ -289,7 +430,6 @@ body {
     min-height: var(--touch-target);
     position: relative;
     overflow: hidden;
-    /* Отключаем сложные эффекты для производительности */
     transform: translateZ(0);
     backface-visibility: hidden;
     perspective: 1000px;
@@ -298,17 +438,34 @@ body {
 .book-btn.primary {
     background: var(--accent-primary);
     box-shadow: 
-        0 10px 30px rgba(0, 122, 255, 0.3),
-        0 4px 10px rgba(0, 122, 255, 0.2);
-    animation: fadeIn 0.6s ease-out 0.8s both;
+        0 10px 30px rgba(0, 122, 255, 0.4),
+        0 4px 10px rgba(0, 122, 255, 0.3);
+    animation: fadeIn 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.8s both,
+               pulseGlow 3s ease-in-out infinite 1s;
 }
 
-.book-btn.primary:active {
+.book-btn::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    transition: width 0.6s, height 0.6s;
+}
+
+.book-btn:active::before {
+    width: 300px;
+    height: 300px;
+}
+
+.book-btn:active {
     background: var(--accent-secondary);
-    transform: scale(0.98);
-    box-shadow: 
-        0 5px 15px rgba(0, 122, 255, 0.3),
-        0 2px 5px rgba(0, 122, 255, 0.2);
+    transform: scale(0.96);
+    animation: none;
 }
 
 .book-btn.large {
@@ -320,42 +477,72 @@ body {
 .btn-secondary {
     width: 100%;
     padding: var(--space-lg);
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.15);
     color: var(--text-primary);
-    border: 1px solid var(--border-color);
+    border: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: var(--border-radius-lg);
     font-size: var(--font-size-base);
     font-weight: var(--font-weight-semibold);
     cursor: pointer;
-    transition: var(--transition-normal);
+    transition: all var(--transition-normal);
     margin-top: var(--space-md);
     min-height: var(--touch-target);
-    animation: fadeIn 0.6s ease-out 1s both;
-    /* Отключаем сложные эффекты */
+    animation: fadeIn 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) 1s both;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
     transform: translateZ(0);
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-secondary::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    transition: left 0.6s;
+}
+
+.btn-secondary:active::before {
+    left: 100%;
 }
 
 .btn-secondary:active {
-    background: rgba(255, 255, 255, 0.2);
-    transform: scale(0.98);
+    background: rgba(255, 255, 255, 0.25);
+    transform: scale(0.96);
 }
 
-/* Календарь */
+/* Календарь с анимациями */
 .calendar-container {
-    background: var(--bg-card);
+    background: rgba(255, 255, 255, 0.1);
     border-radius: var(--border-radius-xl);
     padding: var(--space-lg);
     margin-bottom: var(--space-lg);
-    /* Матовый эффект */
-    background: rgba(30, 30, 30, 0.95);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(40px) saturate(180%);
+    -webkit-backdrop-filter: blur(40px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.2);
     box-shadow: 
-        0 15px 35px rgba(0, 0, 0, 0.2),
-        0 0 0 1px rgba(255, 255, 255, 0.05);
-    animation: scaleIn 0.5s ease-out;
-    /* Фиксируем ширину */
+        0 20px 40px rgba(0, 0, 0, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    animation: scaleIn 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     max-width: 100%;
     box-sizing: border-box;
+    position: relative;
+    overflow: hidden;
+}
+
+.calendar-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, transparent 50%);
+    pointer-events: none;
 }
 
 .calendar-header {
@@ -371,22 +558,46 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid var(--border-color);
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: var(--border-radius);
     color: var(--text-primary);
-    transition: var(--transition-fast);
+    transition: all var(--transition-normal);
     cursor: pointer;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
     transform: translateZ(0);
+    position: relative;
+    overflow: hidden;
+}
+
+.nav-btn::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    transition: width 0.3s, height 0.3s;
+}
+
+.nav-btn:active::before {
+    width: 100px;
+    height: 100px;
 }
 
 .nav-btn:active {
     background: var(--accent-primary);
     border-color: var(--accent-primary);
+    transform: scale(0.9);
 }
 
 .month-display {
     text-align: center;
+    animation: gentleFloat 6s ease-in-out infinite;
 }
 
 .month-name {
@@ -414,6 +625,7 @@ body {
     color: var(--text-muted);
     font-weight: var(--font-weight-medium);
     padding: var(--space-sm) 0;
+    animation: fadeIn 0.6s ease-out;
 }
 
 .calendar-grid {
@@ -428,36 +640,59 @@ body {
     align-items: center;
     justify-content: center;
     border-radius: var(--border-radius);
-    background: rgba(255, 255, 255, 0.05);
+    background: rgba(255, 255, 255, 0.08);
     color: var(--text-primary);
     font-size: var(--font-size-sm);
     font-weight: var(--font-weight-medium);
-    transition: all var(--transition-fast);
+    transition: all var(--transition-normal);
     cursor: pointer;
     position: relative;
     border: 1px solid transparent;
     transform: translateZ(0);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+.calendar-day::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: inherit;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.calendar-day:hover::before {
+    opacity: 1;
 }
 
 .calendar-day:hover {
     border-color: var(--accent-primary);
+    transform: scale(1.05);
 }
 
 .calendar-day.selected {
     background: var(--accent-primary);
     color: var(--bg-primary);
-    box-shadow: 0 4px 15px rgba(0, 122, 255, 0.3);
-    animation: gentleFloat 0.3s ease-out;
+    box-shadow: 0 8px 25px rgba(0, 122, 255, 0.4);
+    animation: bounceIn 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+               gentleFloat 3s ease-in-out infinite;
+    border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
 .calendar-day.disabled {
     color: var(--text-muted);
-    background: rgba(255, 255, 255, 0.02);
+    background: rgba(255, 255, 255, 0.03);
     cursor: not-allowed;
 }
 
 .calendar-day.disabled:hover {
     border-color: transparent;
+    transform: none;
 }
 
 .calendar-day.today::before {
@@ -469,23 +704,36 @@ body {
     height: 6px;
     background: var(--accent-primary);
     border-radius: 50%;
+    animation: pulseGlow 2s ease-in-out infinite;
 }
 
 /* Предпросмотр выбранных дат */
 .selected-dates-preview {
-    background: var(--bg-card);
+    background: rgba(255, 255, 255, 0.1);
     border-radius: var(--border-radius-xl);
     padding: var(--space-lg);
-    /* Матовый эффект */
-    background: rgba(30, 30, 30, 0.95);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(40px) saturate(180%);
+    -webkit-backdrop-filter: blur(40px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.2);
     box-shadow: 
-        0 15px 35px rgba(0, 0, 0, 0.2),
-        0 0 0 1px rgba(255, 255, 255, 0.05);
-    animation: scaleIn 0.5s ease-out 0.1s both;
-    /* Фиксируем ширину */
+        0 20px 40px rgba(0, 0, 0, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    animation: scaleIn 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.1s both;
     max-width: 100%;
     box-sizing: border-box;
+    position: relative;
+    overflow: hidden;
+}
+
+.selected-dates-preview::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, transparent 50%);
+    pointer-events: none;
 }
 
 .dates-info {
@@ -501,7 +749,11 @@ body {
 .date-item {
     text-align: center;
     flex: 1;
+    animation: gentleFloat 4s ease-in-out infinite;
 }
+
+.date-item:nth-child(1) { animation-delay: 0s; }
+.date-item:nth-child(3) { animation-delay: 0.2s; }
 
 .date-label {
     font-size: var(--font-size-sm);
@@ -520,6 +772,7 @@ body {
     flex-direction: column;
     align-items: center;
     padding: 0 var(--space-md);
+    animation: gentleFloat 5s ease-in-out infinite;
 }
 
 .date-separator .line {
@@ -548,35 +801,57 @@ body {
     border-radius: var(--border-radius-lg);
     font-size: var(--font-size-base);
     font-weight: var(--font-weight-semibold);
-    transition: var(--transition-normal);
+    transition: all var(--transition-normal);
     cursor: pointer;
     min-height: var(--touch-target);
     transform: translateZ(0);
+    position: relative;
+    overflow: hidden;
+    animation: pulseGlow 2s ease-in-out infinite;
+}
+
+.continue-btn::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    transition: width 0.6s, height 0.6s;
+}
+
+.continue-btn:active::before {
+    width: 300px;
+    height: 300px;
 }
 
 .continue-btn:active {
     background: var(--accent-secondary);
-    transform: scale(0.98);
+    transform: scale(0.96);
+    animation: none;
 }
 
 .continue-btn:disabled {
     background: var(--text-muted);
     cursor: not-allowed;
     transform: none;
+    animation: none;
 }
 
-/* Дома */
+/* Дома с анимациями */
 .houses-container {
     display: flex;
     flex-direction: column;
     gap: var(--space-xl);
-    /* Фиксируем ширину */
     max-width: 100%;
     box-sizing: border-box;
 }
 
 .houses-category {
-    animation: fadeIn 0.6s ease-out;
+    animation: fadeIn 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
 .category-title {
@@ -584,12 +859,14 @@ body {
     font-weight: var(--font-weight-semibold);
     margin-bottom: var(--space-xs);
     color: var(--text-primary);
+    animation: slideUp 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
 .category-subtitle {
     font-size: var(--font-size-sm);
     color: var(--text-secondary);
     margin-bottom: var(--space-lg);
+    animation: slideUp 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.1s both;
 }
 
 .houses-grid {
@@ -598,23 +875,43 @@ body {
 }
 
 .house-card {
-    background: var(--bg-card);
+    background: rgba(255, 255, 255, 0.1);
     border-radius: var(--border-radius-lg);
     overflow: hidden;
     cursor: pointer;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
     transition: all var(--transition-normal);
-    /* Матовый эффект */
-    background: rgba(30, 30, 30, 0.95);
+    backdrop-filter: blur(30px) saturate(180%);
+    -webkit-backdrop-filter: blur(30px) saturate(180%);
     box-shadow: 
-        0 10px 25px rgba(0, 0, 0, 0.2),
-        0 0 0 1px rgba(255, 255, 255, 0.05);
+        0 15px 35px rgba(0, 0, 0, 0.15),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
     transform: translateZ(0);
-    animation: scaleIn 0.5s ease-out;
+    animation: scaleIn 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    position: relative;
+    overflow: hidden;
+}
+
+.house-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, transparent 50%);
+    pointer-events: none;
+}
+
+.house-card:hover {
+    transform: translateY(-5px) scale(1.02);
+    box-shadow: 
+        0 25px 50px rgba(0, 0, 0, 0.25),
+        0 0 0 1px rgba(255, 255, 255, 0.1);
 }
 
 .house-card:active {
-    transform: scale(0.98);
+    transform: translateY(-2px) scale(0.98);
     border-color: var(--accent-primary);
 }
 
@@ -625,11 +922,24 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
+    overflow: hidden;
+}
+
+.house-image::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.05) 50%, transparent 70%);
+    animation: shimmer 4s ease-in-out infinite;
 }
 
 .image-placeholder {
     font-size: 3rem;
     opacity: 0.7;
+    animation: gentleFloat 6s ease-in-out infinite;
 }
 
 .house-badge {
@@ -642,6 +952,7 @@ body {
     border-radius: var(--border-radius);
     font-size: var(--font-size-xs);
     font-weight: var(--font-weight-semibold);
+    animation: bounceIn 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
 .house-info {
@@ -653,6 +964,7 @@ body {
     font-weight: var(--font-weight-semibold);
     margin-bottom: var(--space-sm);
     color: var(--text-primary);
+    animation: fadeIn 0.6s ease-out 0.2s both;
 }
 
 .house-features {
@@ -667,12 +979,16 @@ body {
     display: flex;
     align-items: center;
     gap: var(--space-xs);
+    animation: fadeIn 0.6s ease-out 0.3s both;
 }
+
+.feature:nth-child(2) { animation-delay: 0.4s; }
 
 .house-pricing {
     display: flex;
     align-items: baseline;
     gap: var(--space-sm);
+    animation: fadeIn 0.6s ease-out 0.5s both;
 }
 
 .price {
@@ -688,26 +1004,53 @@ body {
 
 /* Стили для деталей дома */
 .house-detail-card {
-    background: var(--bg-card);
+    background: rgba(255, 255, 255, 0.1);
     border-radius: var(--border-radius-xl);
     overflow: hidden;
     margin-bottom: var(--space-lg);
-    /* Матовый эффект */
-    background: rgba(30, 30, 30, 0.95);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(40px) saturate(180%);
+    -webkit-backdrop-filter: blur(40px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.2);
     box-shadow: 
         0 20px 40px rgba(0, 0, 0, 0.3),
-        0 0 0 1px rgba(255, 255, 255, 0.05);
-    animation: scaleIn 0.5s ease-out;
-    /* Фиксируем ширину */
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    animation: scaleIn 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     max-width: 100%;
     box-sizing: border-box;
+    position: relative;
+    overflow: hidden;
+}
+
+.house-detail-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, transparent 50%);
+    pointer-events: none;
 }
 
 .house-gallery {
     position: relative;
     height: 200px;
     background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.house-gallery::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.05) 50%, transparent 70%);
+    animation: shimmer 5s ease-in-out infinite;
 }
 
 .gallery-main {
@@ -720,6 +1063,7 @@ body {
 .image-placeholder.large {
     font-size: 4rem;
     opacity: 0.8;
+    animation: gentleFloat 8s ease-in-out infinite;
 }
 
 .house-detail-info {
@@ -731,7 +1075,7 @@ body {
     font-weight: var(--font-weight-semibold);
     margin-bottom: var(--space-md);
     color: var(--text-primary);
-    animation: fadeIn 0.6s ease-out 0.2s both;
+    animation: fadeIn 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.2s both;
 }
 
 .house-description {
@@ -740,8 +1084,8 @@ body {
     line-height: 1.6;
     margin-bottom: var(--space-xl);
     padding-bottom: var(--space-lg);
-    border-bottom: 1px solid var(--border-color);
-    animation: fadeIn 0.6s ease-out 0.3s both;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    animation: fadeIn 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.3s both;
 }
 
 .detail-features {
@@ -755,7 +1099,7 @@ body {
     display: flex;
     align-items: center;
     gap: var(--space-lg);
-    animation: fadeIn 0.6s ease-out;
+    animation: slideUp 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
 }
 
 .feature-item:nth-child(1) { animation-delay: 0.4s; }
@@ -773,7 +1117,14 @@ body {
     font-size: 1.5rem;
     flex-shrink: 0;
     color: var(--accent-primary);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    animation: gentleFloat 4s ease-in-out infinite;
 }
+
+.feature-icon:nth-child(1) { animation-delay: 0s; }
+.feature-icon:nth-child(2) { animation-delay: 0.2s; }
+.feature-icon:nth-child(3) { animation-delay: 0.4s; }
 
 .feature-info {
     flex: 1;
@@ -797,8 +1148,23 @@ body {
     border-radius: var(--border-radius-lg);
     padding: var(--space-lg);
     margin-bottom: var(--space-xl);
-    border: 1px solid var(--border-color);
-    animation: scaleIn 0.5s ease-out 0.7s both;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    animation: scaleIn 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.7s both;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    position: relative;
+    overflow: hidden;
+}
+
+.guests-selector::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, transparent 50%);
+    pointer-events: none;
 }
 
 .guests-selector h4 {
@@ -829,8 +1195,28 @@ body {
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    transition: var(--transition-normal);
+    transition: all var(--transition-normal);
     transform: translateZ(0);
+    position: relative;
+    overflow: hidden;
+}
+
+.guest-btn::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    transition: width 0.3s, height 0.3s;
+}
+
+.guest-btn:active::before {
+    width: 100px;
+    height: 100px;
 }
 
 .guest-btn:active {
@@ -844,6 +1230,7 @@ body {
     color: var(--text-primary);
     min-width: 60px;
     text-align: center;
+    animation: gentleFloat 3s ease-in-out infinite;
 }
 
 .guests-note {
@@ -856,7 +1243,7 @@ body {
 /* Услуги */
 .services-section {
     margin-bottom: var(--space-xl);
-    animation: fadeIn 0.6s ease-out 0.8s both;
+    animation: fadeIn 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.8s both;
 }
 
 .services-section h4 {
@@ -876,10 +1263,25 @@ body {
     background: rgba(255, 255, 255, 0.1);
     border-radius: var(--border-radius-lg);
     padding: var(--space-lg);
-    border: 1px solid var(--border-color);
-    transition: var(--transition-normal);
-    animation: fadeIn 0.6s ease-out;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    transition: all var(--transition-normal);
+    animation: slideUp 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
     transform: translateZ(0);
+    position: relative;
+    overflow: hidden;
+}
+
+.service-item::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, transparent 50%);
+    pointer-events: none;
 }
 
 .service-item:nth-child(1) { animation-delay: 0.9s; }
@@ -887,6 +1289,7 @@ body {
 
 .service-item:active {
     border-color: var(--accent-primary);
+    transform: scale(0.98);
 }
 
 .service-checkbox {
@@ -904,19 +1307,21 @@ body {
 .checkmark {
     width: 20px;
     height: 20px;
-    border: 2px solid var(--border-light);
+    border: 2px solid rgba(255, 255, 255, 0.3);
     border-radius: var(--border-radius);
     background: rgba(255, 255, 255, 0.1);
     position: relative;
     flex-shrink: 0;
     margin-top: 2px;
-    transition: var(--transition-normal);
+    transition: all var(--transition-normal);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
 }
 
 .service-checkbox input[type="checkbox"]:checked + .checkmark {
     background: var(--accent-primary);
     border-color: var(--accent-primary);
-    animation: gentleFloat 0.3s ease-out;
+    animation: bounceIn 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
 .service-checkbox input[type="checkbox"]:checked + .checkmark::after {
@@ -961,8 +1366,23 @@ body {
     border-radius: var(--border-radius-lg);
     padding: var(--space-lg);
     margin-bottom: var(--space-xl);
-    border: 1px solid var(--border-color);
-    animation: scaleIn 0.5s ease-out 1.1s both;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    animation: scaleIn 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) 1.1s both;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    position: relative;
+    overflow: hidden;
+}
+
+.pricing-summary::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, transparent 50%);
+    pointer-events: none;
 }
 
 .price-line {
@@ -970,8 +1390,8 @@ body {
     justify-content: space-between;
     align-items: center;
     padding: var(--space-sm) 0;
-    border-bottom: 1px solid var(--border-color);
-    animation: fadeIn 0.4s ease-out;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    animation: fadeIn 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
 }
 
 .price-line:nth-child(1) { animation-delay: 1.2s; }
@@ -991,26 +1411,39 @@ body {
     border-top: 2px solid var(--accent-primary);
     font-size: var(--font-size-lg);
     font-weight: var(--font-weight-semibold);
-    animation: gentleFloat 0.5s ease-out 1.5s both;
+    animation: gentleFloat 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) 1.5s both;
 }
 
 /* Форма бронирования */
 .booking-summary-card,
 .guest-info-card {
-    background: var(--bg-card);
+    background: rgba(255, 255, 255, 0.1);
     border-radius: var(--border-radius-lg);
     padding: var(--space-xl);
     margin-bottom: var(--space-lg);
-    /* Матовый эффект */
-    background: rgba(30, 30, 30, 0.95);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(40px) saturate(180%);
+    -webkit-backdrop-filter: blur(40px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.2);
     box-shadow: 
-        0 15px 35px rgba(0, 0, 0, 0.2),
-        0 0 0 1px rgba(255, 255, 255, 0.05);
-    animation: scaleIn 0.5s ease-out;
-    /* Фиксируем ширину */
+        0 20px 40px rgba(0, 0, 0, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    animation: scaleIn 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     max-width: 100%;
     box-sizing: border-box;
+    position: relative;
+    overflow: hidden;
+}
+
+.booking-summary-card::before,
+.guest-info-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, transparent 50%);
+    pointer-events: none;
 }
 
 .booking-summary-card h3,
@@ -1019,6 +1452,7 @@ body {
     font-weight: var(--font-weight-semibold);
     margin-bottom: var(--space-lg);
     color: var(--text-primary);
+    animation: fadeIn 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.2s both;
 }
 
 .summary-details {
@@ -1032,8 +1466,8 @@ body {
     justify-content: space-between;
     align-items: center;
     padding: var(--space-sm) 0;
-    border-bottom: 1px solid var(--border-color);
-    animation: fadeIn 0.4s ease-out;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    animation: slideUp 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
 }
 
 .summary-item:nth-child(1) { animation-delay: 0.2s; }
@@ -1052,19 +1486,19 @@ body {
     color: var(--accent-primary);
     padding-top: var(--space-md);
     margin-top: var(--space-md);
-    border-top: 2px solid var(--border-color);
-    animation: gentleFloat 0.5s ease-out 0.7s both;
+    border-top: 2px solid rgba(255, 255, 255, 0.1);
+    animation: gentleFloat 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.7s both;
 }
 
 .summary-item.bonus {
     color: var(--success-color);
     font-weight: var(--font-weight-semibold);
-    animation: gentleFloat 0.5s ease-out 0.8s both;
+    animation: gentleFloat 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.8s both;
 }
 
 .form-group {
     margin-bottom: var(--space-lg);
-    animation: fadeIn 0.4s ease-out;
+    animation: slideUp 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
 }
 
 .form-group:nth-child(1) { animation-delay: 0.2s; }
@@ -1075,19 +1509,21 @@ body {
     width: 100%;
     padding: var(--space-lg);
     background: rgba(255, 255, 255, 0.1);
-    border: 1px solid var(--border-color);
+    border: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: var(--border-radius);
     font-size: var(--font-size-base);
     color: var(--text-primary);
-    transition: var(--transition-normal);
+    transition: all var(--transition-normal);
     transform: translateZ(0);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
 }
 
 .form-input:focus {
     border-color: var(--accent-primary);
     outline: none;
     box-shadow: 0 0 0 2px rgba(0, 122, 255, 0.2);
-    animation: gentleFloat 0.3s ease-out;
+    animation: gentleFloat 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
 .form-input::placeholder {
@@ -1118,21 +1554,36 @@ textarea.form-input {
     color: var(--text-primary);
     font-weight: var(--font-weight-semibold);
     font-size: var(--font-size-base);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
 }
 
 /* Профиль и бронирования */
 .profile-card {
-    background: var(--bg-card);
+    background: rgba(255, 255, 255, 0.1);
     border-radius: var(--border-radius-lg);
     padding: var(--space-xl);
     margin-bottom: var(--space-lg);
-    /* Матовый эффект */
-    background: rgba(30, 30, 30, 0.95);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(40px) saturate(180%);
+    -webkit-backdrop-filter: blur(40px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.2);
     box-shadow: 
-        0 15px 35px rgba(0, 0, 0, 0.2),
-        0 0 0 1px rgba(255, 255, 255, 0.05);
-    animation: scaleIn 0.5s ease-out;
+        0 20px 40px rgba(0, 0, 0, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    animation: scaleIn 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    position: relative;
+    overflow: hidden;
+}
+
+.profile-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, transparent 50%);
+    pointer-events: none;
 }
 
 .user-stats {
@@ -1146,7 +1597,7 @@ textarea.form-input {
     font-weight: var(--font-weight-bold);
     color: var(--accent-primary);
     margin-bottom: var(--space-xs);
-    animation: gentleFloat 2s ease-in-out infinite;
+    animation: gentleFloat 3s ease-in-out infinite;
 }
 
 .stat-value:nth-child(1) { animation-delay: 0s; }
@@ -1169,7 +1620,7 @@ textarea.form-input {
     text-align: center;
     padding: var(--space-xxl);
     color: var(--text-secondary);
-    animation: gentleFloat 4s ease-in-out infinite;
+    animation: gentleFloat 6s ease-in-out infinite;
 }
 
 .empty-icon {
@@ -1179,14 +1630,27 @@ textarea.form-input {
 }
 
 .booking-item {
-    background: var(--bg-card);
+    background: rgba(255, 255, 255, 0.1);
     border-radius: var(--border-radius-lg);
     padding: var(--space-lg);
     margin-bottom: var(--space-md);
-    border: 1px solid var(--border-color);
-    /* Матовый эффект */
-    background: rgba(30, 30, 30, 0.95);
-    animation: scaleIn 0.5s ease-out;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(30px) saturate(180%);
+    -webkit-backdrop-filter: blur(30px) saturate(180%);
+    animation: scaleIn 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    position: relative;
+    overflow: hidden;
+}
+
+.booking-item::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, transparent 50%);
+    pointer-events: none;
 }
 
 .booking-header {
@@ -1206,6 +1670,7 @@ textarea.form-input {
     border-radius: var(--border-radius);
     font-size: var(--font-size-sm);
     font-weight: var(--font-weight-medium);
+    animation: bounceIn 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
 .booking-status.pending {
@@ -1243,11 +1708,30 @@ textarea.form-input {
     padding: var(--space-sm) var(--space-md);
     background: rgba(255, 255, 255, 0.1);
     color: var(--text-primary);
-    border: 1px solid var(--border-color);
+    border: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: var(--border-radius);
     font-size: var(--font-size-sm);
     cursor: pointer;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
     transform: translateZ(0);
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-small::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    transition: left 0.6s;
+}
+
+.btn-small:active::before {
+    left: 100%;
 }
 
 .payment-proof {
@@ -1267,21 +1751,22 @@ textarea.form-input {
     animation: slideDown 0.3s ease-out;
     margin-top: env(safe-area-inset-top);
     padding-top: calc(var(--space-md) + env(safe-area-inset-top));
-    /* Матовый эффект */
-    background: rgba(0, 122, 255, 0.95);
+    backdrop-filter: blur(40px) saturate(180%);
+    -webkit-backdrop-filter: blur(40px) saturate(180%);
+    background: rgba(0, 122, 255, 0.9);
     border-bottom: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .notification-success {
-    background: rgba(16, 185, 129, 0.95);
+    background: rgba(16, 185, 129, 0.9);
 }
 
 .notification-warning {
-    background: rgba(245, 158, 11, 0.95);
+    background: rgba(245, 158, 11, 0.9);
 }
 
 .notification-error {
-    background: rgba(239, 68, 68, 0.95);
+    background: rgba(239, 68, 68, 0.9);
 }
 
 .notification-content {
@@ -1311,39 +1796,40 @@ textarea.form-input {
     justify-content: center;
 }
 
-@keyframes slideDown {
-    from {
-        transform: translateY(-100%);
-        opacity: 0;
-    }
-    to {
-        transform: translateY(0);
-        opacity: 1;
-    }
-}
-
 /* Стили для экрана оплаты */
 .payment-card {
-    background: var(--bg-card);
+    background: rgba(255, 255, 255, 0.1);
     border-radius: var(--border-radius-xl);
     padding: var(--space-xl);
     margin-bottom: var(--space-lg);
-    /* Матовый эффект */
-    background: rgba(30, 30, 30, 0.95);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(40px) saturate(180%);
+    -webkit-backdrop-filter: blur(40px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.2);
     box-shadow: 
-        0 20px 40px rgba(0, 0, 0, 0.3),
-        0 0 0 1px rgba(255, 255, 255, 0.05);
-    animation: scaleIn 0.5s ease-out;
-    /* Фиксируем ширину */
+        0 25px 50px rgba(0, 0, 0, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    animation: scaleIn 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     max-width: 100%;
     box-sizing: border-box;
+    position: relative;
+    overflow: hidden;
+}
+
+.payment-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, transparent 50%);
+    pointer-events: none;
 }
 
 .payment-header {
     text-align: center;
     margin-bottom: var(--space-xl);
-    animation: fadeIn 0.6s ease-out 0.2s both;
+    animation: fadeIn 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.2s both;
 }
 
 .payment-header h2 {
@@ -1365,8 +1851,8 @@ textarea.form-input {
     font-weight: var(--font-weight-semibold);
     margin-bottom: var(--space-lg);
     padding-bottom: var(--space-lg);
-    border-bottom: 2px solid var(--border-color);
-    animation: fadeIn 0.6s ease-out 0.3s both;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+    animation: fadeIn 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.3s both;
 }
 
 .payment-amount .amount {
@@ -1376,7 +1862,7 @@ textarea.form-input {
 
 .payment-methods {
     margin: var(--space-xl) 0;
-    animation: fadeIn 0.6s ease-out 0.4s both;
+    animation: fadeIn 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.4s both;
 }
 
 .payment-option {
@@ -1385,18 +1871,33 @@ textarea.form-input {
     gap: var(--space-lg);
     padding: var(--space-lg);
     background: rgba(255, 255, 255, 0.1);
-    border: 2px solid var(--border-color);
+    border: 2px solid rgba(255, 255, 255, 0.2);
     border-radius: var(--border-radius-lg);
     margin-bottom: var(--space-md);
     cursor: pointer;
-    transition: var(--transition-normal);
-    animation: scaleIn 0.5s ease-out;
+    transition: all var(--transition-normal);
+    animation: scaleIn 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    position: relative;
+    overflow: hidden;
+}
+
+.payment-option::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, transparent 50%);
+    pointer-events: none;
 }
 
 .payment-option.selected {
     border-color: var(--accent-primary);
     background: var(--accent-light);
-    animation: gentleFloat 0.3s ease-out;
+    animation: gentleFloat 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
 .payment-icon {
@@ -1418,8 +1919,23 @@ textarea.form-input {
     border-radius: var(--border-radius-lg);
     padding: var(--space-lg);
     margin: var(--space-xl) 0;
-    border: 1px solid var(--border-color);
-    animation: fadeIn 0.6s ease-out 0.5s both;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    animation: fadeIn 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.5s both;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    position: relative;
+    overflow: hidden;
+}
+
+.payment-instructions::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, transparent 50%);
+    pointer-events: none;
 }
 
 .payment-instructions h4 {
@@ -1435,7 +1951,7 @@ textarea.form-input {
 .payment-instructions li {
     margin-bottom: var(--space-sm);
     color: var(--text-secondary);
-    animation: fadeIn 0.4s ease-out;
+    animation: slideUp 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
 }
 
 .payment-instructions li:nth-child(1) { animation-delay: 0.6s; }
@@ -1446,8 +1962,23 @@ textarea.form-input {
     background: rgba(255, 255, 255, 0.1);
     padding: var(--space-lg);
     border-radius: var(--border-radius);
-    border: 1px solid var(--border-color);
-    animation: scaleIn 0.5s ease-out 0.9s both;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    animation: scaleIn 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.9s both;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    position: relative;
+    overflow: hidden;
+}
+
+.bank-info::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, transparent 50%);
+    pointer-events: none;
 }
 
 .bank-info div {
@@ -1458,7 +1989,7 @@ textarea.form-input {
     display: flex;
     gap: var(--space-md);
     margin: var(--space-xl) 0;
-    animation: fadeIn 0.6s ease-out 1s both;
+    animation: fadeIn 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) 1s both;
 }
 
 /* Адаптивность */
@@ -1518,14 +2049,6 @@ textarea.form-input {
 .mt-5 { margin-top: var(--space-xl); }
 
 /* Оптимизации для производительности */
-* {
-    /* Включаем аппаратное ускорение */
-    transform: translateZ(0);
-    backface-visibility: hidden;
-    perspective: 1000px;
-}
-
-/* Отключаем сложные эффекты на слабых устройствах */
 @media (prefers-reduced-motion: reduce) {
     * {
         animation-duration: 0.01ms !important;
@@ -1534,7 +2057,33 @@ textarea.form-input {
     }
 }
 
-/* Фиксируем все контейнеры от горизонтального скролла */
+/* Аппаратное ускорение для всех анимируемых элементов */
+.book-btn,
+.btn-secondary,
+.calendar-day,
+.house-card,
+.service-item,
+.nav-btn,
+.header-btn {
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    perspective: 1000px;
+    will-change: transform;
+}
+
+/* Плавный скролл */
+.screen {
+    -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth;
+}
+
+/* Убираем мигание при скролле */
+.header {
+    transform: translateZ(0);
+    will-change: transform;
+}
+
+/* Фиксируем все контейнеры */
 .screen,
 .screen-content,
 .booking-card,
@@ -1548,18 +2097,6 @@ textarea.form-input {
     max-width: 100%;
     box-sizing: border-box;
     overflow-x: hidden;
-}
-
-/* Убираем мигание при скролле */
-.header {
-    transform: translateZ(0);
-    will-change: transform;
-}
-
-/* Плавный скролл */
-.screen {
-    -webkit-overflow-scrolling: touch;
-    scroll-behavior: smooth;
 }
 
 /* Улучшаем рендеринг текста */
