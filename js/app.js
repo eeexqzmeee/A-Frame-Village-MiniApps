@@ -24,13 +24,13 @@ const app = {
 
     initSwipeNavigation() {
         this.setupBottomNavigation();
-        this.setupSwipeGestures();
     },
 
     setupBottomNavigation() {
         const navItems = document.querySelectorAll('.nav-item');
         navItems.forEach(item => {
             item.addEventListener('click', (e) => {
+                e.preventDefault();
                 const targetScreen = e.currentTarget.dataset.screen;
                 this.showSwipeScreen(targetScreen);
                 
@@ -43,55 +43,6 @@ const app = {
         // Обработчики для кнопок главного экрана
         document.getElementById('view-houses-btn')?.addEventListener('click', () => {
             this.showScreen('houses-screen');
-        });
-    },
-
-    setupSwipeGestures() {
-        const container = document.getElementById('swipe-container');
-        let startX = 0;
-        let currentX = 0;
-        let isSwiping = false;
-
-        container.addEventListener('touchstart', (e) => {
-            startX = e.touches[0].clientX;
-            isSwiping = true;
-            container.style.transition = 'none';
-        });
-
-        container.addEventListener('touchmove', (e) => {
-            if (!isSwiping) return;
-            currentX = e.touches[0].clientX;
-            const diff = currentX - startX;
-            
-            // Ограничиваем свайп чтобы не уехало слишком далеко
-            if (Math.abs(diff) < 200) {
-                container.style.transform = `translateX(${diff}px)`;
-            }
-        });
-
-        container.addEventListener('touchend', () => {
-            if (!isSwiping) return;
-            
-            const diff = currentX - startX;
-            const swipeThreshold = 50;
-            const currentScreen = document.querySelector('.swipe-screen.active').id;
-
-            container.style.transition = 'transform 0.3s ease';
-            container.style.transform = 'translateX(0)';
-
-            if (Math.abs(diff) > swipeThreshold) {
-                if (diff > 0 && currentScreen === 'profile-screen') {
-                    // Swipe right - show main
-                    this.showSwipeScreen('main-screen');
-                    this.updateBottomNav('main-screen');
-                } else if (diff < 0 && currentScreen === 'main-screen') {
-                    // Swipe left - show profile
-                    this.showSwipeScreen('profile-screen');
-                    this.updateBottomNav('profile-screen');
-                }
-            }
-            
-            isSwiping = false;
         });
     },
 
@@ -174,6 +125,7 @@ const app = {
     },
     
     bindEvents() {
+        // Глобальный обработчик для кнопок назад
         document.addEventListener('click', (e) => {
             if (e.target.closest('.header-btn.back')) {
                 this.goBack();
@@ -201,6 +153,13 @@ const app = {
                 } else {
                     this.showNotification('Выберите даты заезда и выезда', 'warning');
                 }
+            }
+        });
+
+        // Обработчик для кнопки "Посмотреть дома" на главной
+        document.addEventListener('click', (e) => {
+            if (e.target.id === 'view-houses-btn' || e.target.closest('#view-houses-btn')) {
+                this.showScreen('houses-screen');
             }
         });
     },
@@ -363,20 +322,29 @@ const app = {
     },
     
     goBack() {
-        const screens = {
-            'calendar-screen': 'main-screen',
-            'houses-screen': 'main-screen',
-            'house-detail-screen': 'houses-screen',
-            'booking-screen': 'house-detail-screen',
-            'payment-screen': 'booking-screen',
-            'my-bookings-screen': 'main-screen'
-        };
+        const currentScreen = document.querySelector('.screen.active')?.id;
+        const swipeScreen = document.querySelector('.swipe-screen.active')?.id;
         
-        const currentScreen = document.querySelector('.screen.active').id;
-        if (screens[currentScreen]) {
-            this.showScreen(screens[currentScreen]);
-        } else {
-            this.showScreen('main-screen');
+        if (currentScreen && currentScreen !== 'main-screen' && currentScreen !== 'profile-screen') {
+            // Находимся на экране бронирования/домов/календаря
+            const screens = {
+                'calendar-screen': 'main-screen',
+                'houses-screen': 'main-screen',
+                'house-detail-screen': 'houses-screen',
+                'booking-screen': 'house-detail-screen',
+                'payment-screen': 'booking-screen',
+                'my-bookings-screen': 'main-screen'
+            };
+            
+            if (screens[currentScreen]) {
+                this.showScreen(screens[currentScreen]);
+            } else {
+                this.showScreen('main-screen');
+            }
+        } else if (swipeScreen === 'profile-screen') {
+            // Находимся в профиле - переключаем на главную
+            this.showSwipeScreen('main-screen');
+            this.updateBottomNav('main-screen');
         }
     },
     
@@ -404,7 +372,12 @@ const app = {
     },
     
     showScreen(screenId) {
+        // Скрываем все экраны
         document.querySelectorAll('.screen').forEach(screen => {
+            screen.classList.remove('active');
+        });
+        
+        document.querySelectorAll('.swipe-screen').forEach(screen => {
             screen.classList.remove('active');
         });
         
@@ -412,6 +385,14 @@ const app = {
         if (targetScreen) {
             targetScreen.classList.add('active');
             this.currentScreen = screenId;
+            
+            // Показываем/скрываем нижнюю навигацию
+            const bottomNav = document.querySelector('.bottom-nav');
+            if (screenId === 'main-screen' || screenId === 'profile-screen') {
+                bottomNav.style.display = 'flex';
+            } else {
+                bottomNav.style.display = 'none';
+            }
         }
     },
 
@@ -537,7 +518,7 @@ const app = {
                         </div>
 
                         <button class="book-btn primary large" id="proceed-to-booking-btn">
-                            Перейти к бронированию
+                            Выбрать даты
                         </button>
                     </div>
                 </div>
@@ -547,7 +528,7 @@ const app = {
         const proceedButton = document.getElementById('proceed-to-booking-btn');
         if (proceedButton) {
             proceedButton.onclick = () => {
-                this.showBookingScreen();
+                this.showCalendarScreen();
             };
         }
 
@@ -561,6 +542,14 @@ const app = {
         this.bindTimeSliderEvents(house);
 
         this.showScreen('house-detail-screen');
+    },
+
+    showCalendarScreen() {
+        if (!this.selectedHouse) {
+            this.showNotification('Выберите дом для бронирования', 'warning');
+            return;
+        }
+        this.showScreen('calendar-screen');
     },
 
     renderTimeSlider(service) {
@@ -580,11 +569,16 @@ const app = {
                         <button class="time-option ${initialHours === 8 ? 'active' : ''}" data-hours="8">Вся ночь</button>
                     </div>
                     <div class="slider-container">
-                        <input type="range" min="2" max="8" step="2" value="${initialHours}" class="time-slider-input">
+                        <input type="range" min="2" max="8" step="2" value="${initialHours}" class="time-slider-input" list="time-ticks">
+                        <datalist id="time-ticks">
+                            <option value="2" label="2ч"></option>
+                            <option value="4" label="4ч"></option>
+                            <option value="8" label="Вся ночь"></option>
+                        </datalist>
                         <div class="slider-labels">
                             <span>2ч</span>
                             <span>4ч</span>
-                            <span>8ч</span>
+                            <span>Вся ночь</span>
                         </div>
                     </div>
                 </div>
@@ -598,7 +592,6 @@ const app = {
     bindTimeSliderEvents(house) {
         const timeOptions = document.querySelectorAll('.time-option');
         const timeSlider = document.querySelector('.time-slider-input');
-        const selectedTime = document.querySelector('.selected-time');
         
         if (!timeOptions.length) return;
         
@@ -621,7 +614,13 @@ const app = {
         
         if (timeSlider) {
             timeSlider.addEventListener('input', (e) => {
-                const hours = parseInt(e.target.value);
+                let hours = parseInt(e.target.value);
+                // Привязываем к ближайшему значению (2, 4, 8)
+                if (hours <= 3) hours = 2;
+                else if (hours <= 6) hours = 4;
+                else hours = 8;
+                
+                e.target.value = hours;
                 
                 // Обновляем активную кнопку
                 timeOptions.forEach(opt => {
@@ -629,6 +628,17 @@ const app = {
                 });
                 
                 this.updateSelectedTime(hours, house);
+            });
+
+            // Блокируем промежуточные значения
+            timeSlider.addEventListener('change', (e) => {
+                let hours = parseInt(e.target.value);
+                if (![2, 4, 8].includes(hours)) {
+                    if (hours <= 3) hours = 2;
+                    else if (hours <= 6) hours = 4;
+                    else hours = 8;
+                    e.target.value = hours;
+                }
             });
         }
     },

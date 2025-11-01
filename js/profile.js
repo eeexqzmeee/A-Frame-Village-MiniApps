@@ -37,22 +37,34 @@ class ProfileManager {
         if (!screen) return;
 
         const userStats = this.getUserStats();
+        const levelInfo = this.getLevelInfo(this.currentUser.level);
         
         screen.innerHTML = `
-            <div class="profile-header">
-                <div class="user-avatar">
-                    <div class="avatar-placeholder">👤</div>
+            <div class="profile-header" style="border-color: ${levelInfo.color}40; background: ${levelInfo.color}10;">
+                <div class="user-avatar" style="background: ${levelInfo.color}20; color: ${levelInfo.color};">
+                    <div class="avatar-placeholder">${levelInfo.icon}</div>
                 </div>
                 <div class="user-info">
                     <h2 class="user-name">${this.currentUser.name || 'Пользователь'}</h2>
                     <p class="user-id">ID: ${currentUserId.slice(0, 8)}</p>
+                    <div class="user-level-badge" style="background: ${levelInfo.color};">
+                        ${this.currentUser.level}
+                    </div>
                 </div>
             </div>
 
             <div class="profile-stats">
-                <div class="stat-card">
-                    <div class="stat-value">${this.currentUser.level}</div>
+                <div class="stat-card level-card" style="border-color: ${levelInfo.color}40;">
+                    <div class="stat-value" style="color: ${levelInfo.color};">${this.currentUser.level}</div>
                     <div class="stat-label">Уровень</div>
+                    <div class="level-progress">
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: ${levelInfo.progress}%; background: ${levelInfo.color};"></div>
+                        </div>
+                        <div class="level-stats">
+                            <span>${this.currentUser.bookingsCount || 0} из ${levelInfo.nextLevelBookings} бронирований</span>
+                        </div>
+                    </div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-value">${this.currentUser.acoins}</div>
@@ -61,6 +73,13 @@ class ProfileManager {
                 <div class="stat-card">
                     <div class="stat-value">${userStats.referrals}</div>
                     <div class="stat-label">Рефералы</div>
+                </div>
+            </div>
+
+            <div class="levels-section">
+                <h3 class="section-title">Система уровней</h3>
+                <div class="levels-container">
+                    ${this.renderLevelsProgress()}
                 </div>
             </div>
 
@@ -103,8 +122,8 @@ class ProfileManager {
                             </div>
                             <div class="offer-price">
                                 <span class="coin-cost">500 A-Coin</span>
-                                <button class="btn-small" data-offer="discount_10">
-                                    Обменять
+                                <button class="btn-small" data-offer="discount_10" ${this.currentUser.acoins < 500 ? 'disabled' : ''}>
+                                    ${this.currentUser.acoins < 500 ? 'Недостаточно' : 'Обменять'}
                                 </button>
                             </div>
                         </div>
@@ -116,8 +135,8 @@ class ProfileManager {
                             </div>
                             <div class="offer-price">
                                 <span class="coin-cost">300 A-Coin</span>
-                                <button class="btn-small" data-offer="free_sauna">
-                                    Обменять
+                                <button class="btn-small" data-offer="free_sauna" ${this.currentUser.acoins < 300 ? 'disabled' : ''}>
+                                    ${this.currentUser.acoins < 300 ? 'Недостаточно' : 'Обменять'}
                                 </button>
                             </div>
                         </div>
@@ -129,8 +148,8 @@ class ProfileManager {
                             </div>
                             <div class="offer-price">
                                 <span class="coin-cost">200 A-Coin</span>
-                                <button class="btn-small" data-offer="late_checkout">
-                                    Обменять
+                                <button class="btn-small" data-offer="late_checkout" ${this.currentUser.acoins < 200 ? 'disabled' : ''}>
+                                    ${this.currentUser.acoins < 200 ? 'Недостаточно' : 'Обменять'}
                                 </button>
                             </div>
                         </div>
@@ -161,6 +180,102 @@ class ProfileManager {
                 </div>
             </div>
         `;
+
+        // Применяем цвет темы уровня
+        this.applyLevelTheme(levelInfo.color);
+    }
+
+    getLevelInfo(level) {
+        const levels = {
+            'Bronze': {
+                color: '#CD7F32',
+                icon: '🥉',
+                nextLevel: 'Silver',
+                nextLevelBookings: 3,
+                progress: 0
+            },
+            'Silver': {
+                color: '#C0C0C0', 
+                icon: '🥈',
+                nextLevel: 'Gold',
+                nextLevelBookings: 6,
+                progress: 33
+            },
+            'Gold': {
+                color: '#FFD700',
+                icon: '🥇',
+                nextLevel: 'Diamond',
+                nextLevelBookings: 10,
+                progress: 66
+            },
+            'Diamond': {
+                color: '#B9F2FF',
+                icon: '💎',
+                nextLevel: null,
+                nextLevelBookings: null,
+                progress: 100
+            }
+        };
+
+        const levelInfo = levels[level] || levels['Bronze'];
+        
+        // Рассчитываем прогресс для текущего уровня
+        if (level !== 'Diamond') {
+            const currentBookings = this.currentUser.bookingsCount || 0;
+            const prevLevelBookings = level === 'Silver' ? 3 : level === 'Gold' ? 6 : 0;
+            const neededForNext = levelInfo.nextLevelBookings - prevLevelBookings;
+            const progress = Math.min(100, Math.max(0, ((currentBookings - prevLevelBookings) / neededForNext) * 100));
+            levelInfo.progress = Math.round(progress);
+        }
+
+        return levelInfo;
+    }
+
+    renderLevelsProgress() {
+        const levels = [
+            { name: 'Bronze', bookings: 0, color: '#CD7F32', icon: '🥉' },
+            { name: 'Silver', bookings: 3, color: '#C0C0C0', icon: '🥈' },
+            { name: 'Gold', bookings: 6, color: '#FFD700', icon: '🥇' },
+            { name: 'Diamond', bookings: 10, color: '#B9F2FF', icon: '💎' }
+        ];
+
+        const currentBookings = this.currentUser.bookingsCount || 0;
+
+        return levels.map(level => `
+            <div class="level-item ${this.currentUser.level === level.name ? 'current' : ''} ${currentBookings >= level.bookings ? 'unlocked' : 'locked'}">
+                <div class="level-icon" style="background: ${level.color}20; color: ${level.color};">
+                    ${level.icon}
+                </div>
+                <div class="level-info">
+                    <div class="level-name">${level.name}</div>
+                    <div class="level-requirement">
+                        ${level.bookings === 0 ? 'Стартовый уровень' : `От ${level.bookings} бронирований`}
+                    </div>
+                </div>
+                <div class="level-status">
+                    ${this.currentUser.level === level.name ? 
+                        '<span class="current-badge">Текущий</span>' : 
+                        currentBookings >= level.bookings ? 
+                        '<span class="unlocked-badge">✓ Открыт</span>' : 
+                        '<span class="locked-badge">🔒 Заблокирован</span>'
+                    }
+                </div>
+            </div>
+        `).join('');
+    }
+
+    applyLevelTheme(color) {
+        // Применяем цвет уровня к различным элементам
+        const style = document.createElement('style');
+        style.textContent = `
+            .profile-section .section-title {
+                border-left: 3px solid ${color};
+            }
+            .level-item.current {
+                border-color: ${color};
+            }
+        `;
+        document.head.appendChild(style);
     }
 
     getUserStats() {

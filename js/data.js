@@ -450,11 +450,11 @@ const loyaltySystem = {
         Bronze: { minBookings: 0, cashback: 0.05 },
         Silver: { minBookings: 3, cashback: 0.07 },
         Gold: { minBookings: 6, cashback: 0.10 },
-        Platinum: { minBookings: 10, cashback: 0.15 }
+        Diamond: { minBookings: 10, cashback: 0.15 }
     },
 
     getUserLevel(bookingsCount) {
-        if (bookingsCount >= this.levels.Platinum.minBookings) return 'Platinum';
+        if (bookingsCount >= this.levels.Diamond.minBookings) return 'Diamond';
         if (bookingsCount >= this.levels.Gold.minBookings) return 'Gold';
         if (bookingsCount >= this.levels.Silver.minBookings) return 'Silver';
         return 'Bronze';
