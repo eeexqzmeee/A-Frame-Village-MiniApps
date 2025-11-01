@@ -1,0 +1,1286 @@
+/* Reset и базовые стили */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+}
+
+html {
+    font-size: 16px;
+    height: 100%;
+    -webkit-text-size-adjust: 100%;
+}
+
+body {
+    min-height: 100vh;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    line-height: 1.5;
+    font-weight: var(--font-weight-normal);
+    overflow-x: hidden;
+}
+
+/* Анимации */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideInRight {
+    from { transform: translateX(100%); }
+    to { transform: translateX(0); }
+}
+
+@keyframes slideInLeft {
+    from { transform: translateX(-100%); }
+    to { transform: translateX(0); }
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+
+/* Основная структура */
+#app {
+    min-height: 100vh;
+    background: var(--bg-primary);
+}
+
+.screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--bg-primary);
+    transform: translateX(100%);
+    transition: transform var(--transition-normal);
+    overflow-y: auto;
+    z-index: 10;
+}
+
+.screen.active {
+    transform: translateX(0);
+}
+
+.screen-content {
+    padding: var(--space-md);
+    animation: fadeIn 0.4s ease-out;
+}
+
+/* Header */
+.header {
+    position: sticky;
+    top: 0;
+    height: var(--header-height);
+    background: var(--bg-primary);
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 var(--space-md);
+    z-index: var(--z-sticky);
+    backdrop-filter: blur(10px);
+}
+
+.header-btn {
+    width: var(--touch-target);
+    height: var(--touch-target);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    background: none;
+    color: var(--text-primary);
+    border-radius: var(--border-radius);
+    transition: var(--transition-fast);
+}
+
+.header-btn:active {
+    background: var(--bg-secondary);
+}
+
+.header-title {
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-semibold);
+    text-align: center;
+    flex: 1;
+}
+
+.dates-badge {
+    background: var(--bg-secondary);
+    padding: var(--space-xs) var(--space-sm);
+    border-radius: var(--border-radius);
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+}
+
+/* Главный экран */
+.main-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+    opacity: 0.8;
+}
+
+.main-content {
+    position: relative;
+    z-index: 2;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: var(--space-xxl) var(--space-lg);
+}
+
+.logo-section {
+    text-align: center;
+    animation: fadeIn 0.8s ease-out;
+}
+
+.logo {
+    font-size: 3.5rem;
+    font-weight: var(--font-weight-light);
+    color: var(--text-primary);
+    margin-bottom: var(--space-sm);
+    letter-spacing: 2px;
+}
+
+.tagline {
+    font-size: var(--font-size-lg);
+    color: var(--text-secondary);
+    font-weight: var(--font-weight-light);
+}
+
+.booking-card {
+    background: var(--bg-card);
+    border-radius: var(--border-radius-xl);
+    padding: var(--space-xl);
+    box-shadow: var(--shadow-lg);
+    animation: fadeIn 0.8s ease-out 0.2s both;
+}
+
+.card-header {
+    text-align: center;
+    margin-bottom: var(--space-lg);
+}
+
+.card-header h2 {
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-semibold);
+    margin-bottom: var(--space-sm);
+}
+
+.card-header p {
+    color: var(--text-secondary);
+    font-size: var(--font-size-sm);
+}
+
+.quick-stats {
+    display: flex;
+    justify-content: space-around;
+    margin: var(--space-xl) 0;
+    padding: var(--space-lg) 0;
+    border-top: 1px solid var(--border-color);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.stat {
+    text-align: center;
+}
+
+.stat-number {
+    display: block;
+    font-size: var(--font-size-xxl);
+    font-weight: var(--font-weight-bold);
+    color: var(--accent-primary);
+}
+
+.stat-label {
+    font-size: var(--font-size-xs);
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.book-btn {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-sm);
+    padding: var(--space-lg);
+    background: var(--accent-primary);
+    color: var(--bg-primary);
+    border: none;
+    border-radius: var(--border-radius-lg);
+    font-size: var(--font-size-base);
+    font-weight: var(--font-weight-semibold);
+    transition: var(--transition-fast);
+    cursor: pointer;
+}
+
+.book-btn:active {
+    background: var(--accent-secondary);
+    transform: translateY(1px);
+}
+
+/* Календарь */
+.calendar-container {
+    background: var(--bg-card);
+    border-radius: var(--border-radius-xl);
+    padding: var(--space-lg);
+    box-shadow: var(--shadow-md);
+    margin-bottom: var(--space-lg);
+}
+
+.calendar-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--space-lg);
+}
+
+.nav-btn {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    color: var(--text-primary);
+    transition: var(--transition-fast);
+    cursor: pointer;
+}
+
+.nav-btn:active {
+    background: var(--accent-primary);
+    border-color: var(--accent-primary);
+}
+
+.month-display {
+    text-align: center;
+}
+
+.month-name {
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-semibold);
+    color: var(--text-primary);
+}
+
+.year {
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+    margin-top: var(--space-xs);
+}
+
+.calendar-weekdays {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: var(--space-xs);
+    margin-bottom: var(--space-md);
+}
+
+.calendar-weekdays div {
+    text-align: center;
+    font-size: var(--font-size-sm);
+    color: var(--text-muted);
+    font-weight: var(--font-weight-medium);
+    padding: var(--space-sm) 0;
+}
+
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: var(--space-xs);
+}
+
+.calendar-day {
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--border-radius);
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+    transition: all var(--transition-fast);
+    cursor: pointer;
+    position: relative;
+    border: 1px solid transparent;
+}
+
+.calendar-day:hover {
+    border-color: var(--accent-primary);
+}
+
+.calendar-day.selected {
+    background: var(--accent-primary);
+    color: var(--bg-primary);
+    box-shadow: var(--shadow-gold);
+}
+
+.calendar-day.disabled {
+    color: var(--text-muted);
+    background: var(--bg-primary);
+    cursor: not-allowed;
+}
+
+.calendar-day.disabled:hover {
+    border-color: transparent;
+}
+
+.calendar-day.today::before {
+    content: '';
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    width: 6px;
+    height: 6px;
+    background: var(--accent-primary);
+    border-radius: 50%;
+}
+
+/* Предпросмотр выбранных дат */
+.selected-dates-preview {
+    background: var(--bg-card);
+    border-radius: var(--border-radius-xl);
+    padding: var(--space-lg);
+    box-shadow: var(--shadow-md);
+    animation: fadeIn 0.4s ease-out;
+}
+
+.dates-info {
+    margin-bottom: var(--space-lg);
+}
+
+.date-range {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.date-item {
+    text-align: center;
+    flex: 1;
+}
+
+.date-label {
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+    margin-bottom: var(--space-xs);
+}
+
+.date-value {
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-semibold);
+    color: var(--text-primary);
+}
+
+.date-separator {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0 var(--space-md);
+}
+
+.date-separator .line {
+    width: 40px;
+    height: 1px;
+    background: var(--border-color);
+    margin: var(--space-sm) 0;
+}
+
+.nights {
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+    white-space: nowrap;
+}
+
+.continue-btn {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-sm);
+    padding: var(--space-lg);
+    background: var(--accent-primary);
+    color: var(--bg-primary);
+    border: none;
+    border-radius: var(--border-radius-lg);
+    font-size: var(--font-size-base);
+    font-weight: var(--font-weight-semibold);
+    transition: var(--transition-fast);
+    cursor: pointer;
+}
+
+.continue-btn:active {
+    background: var(--accent-secondary);
+    transform: translateY(1px);
+}
+
+.continue-btn:disabled {
+    background: var(--text-muted);
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* Дома */
+.houses-container {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xl);
+}
+
+.houses-category {
+    animation: fadeIn 0.6s ease-out;
+}
+
+.category-title {
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-semibold);
+    margin-bottom: var(--space-xs);
+    color: var(--text-primary);
+}
+
+.category-subtitle {
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+    margin-bottom: var(--space-lg);
+}
+
+.houses-grid {
+    display: grid;
+    gap: var(--space-md);
+}
+
+.house-card {
+    background: var(--bg-card);
+    border-radius: var(--border-radius-lg);
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+    transition: all var(--transition-normal);
+    cursor: pointer;
+    border: 1px solid var(--border-color);
+}
+
+.house-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+    border-color: var(--accent-primary);
+}
+
+.house-image {
+    position: relative;
+    height: 160px;
+    background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-tertiary) 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.image-placeholder {
+    font-size: 3rem;
+    opacity: 0.7;
+}
+
+.house-badge {
+    position: absolute;
+    top: var(--space-md);
+    right: var(--space-md);
+    background: var(--accent-primary);
+    color: var(--bg-primary);
+    padding: var(--space-xs) var(--space-sm);
+    border-radius: var(--border-radius);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-semibold);
+}
+
+.house-info {
+    padding: var(--space-lg);
+}
+
+.house-info h4 {
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-semibold);
+    margin-bottom: var(--space-sm);
+    color: var(--text-primary);
+}
+
+.house-features {
+    display: flex;
+    gap: var(--space-md);
+    margin-bottom: var(--space-lg);
+}
+
+.feature {
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    gap: var(--space-xs);
+}
+
+.house-pricing {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-sm);
+}
+
+.price {
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-bold);
+    color: var(--accent-primary);
+}
+
+.price-note {
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+}
+
+/* Адаптивность */
+@media (max-width: 360px) {
+    .main-content {
+        padding: var(--space-xl) var(--space-md);
+    }
+    
+    .booking-card {
+        padding: var(--space-lg);
+    }
+    
+    .logo {
+        font-size: 2.5rem;
+    }
+    
+    .quick-stats {
+        margin: var(--space-lg) 0;
+    }
+    
+    .stat-number {
+        font-size: var(--font-size-xl);
+    }
+}
+
+/* Состояния загрузки */
+.loading {
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+/* Утилитарные классы */
+.hidden {
+    display: none !important;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.mb-0 { margin-bottom: 0; }
+.mb-1 { margin-bottom: var(--space-xs); }
+.mb-2 { margin-bottom: var(--space-sm); }
+.mb-3 { margin-bottom: var(--space-md); }
+.mb-4 { margin-bottom: var(--space-lg); }
+.mb-5 { margin-bottom: var(--space-xl); }
+
+.mt-0 { margin-top: 0; }
+.mt-1 { margin-top: var(--space-xs); }
+.mt-2 { margin-top: var(--space-sm); }
+.mt-3 { margin-top: var(--space-md); }
+.mt-4 { margin-top: var(--space-lg); }
+.mt-5 { margin-top: var(--space-xl); }
+/* Стили для деталей дома */
+.house-detail-card {
+    background: var(--bg-card);
+    border-radius: var(--border-radius-xl);
+    overflow: hidden;
+    box-shadow: var(--shadow-lg);
+    margin-bottom: var(--space-lg);
+}
+
+.house-gallery {
+    position: relative;
+    height: 200px;
+    background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-tertiary) 100%);
+}
+
+.gallery-main {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.image-placeholder.large {
+    font-size: 4rem;
+    opacity: 0.8;
+}
+
+.house-detail-info {
+    padding: var(--space-xl);
+}
+
+.house-detail-info h2 {
+    font-size: var(--font-size-xxl);
+    font-weight: var(--font-weight-semibold);
+    margin-bottom: var(--space-md);
+    color: var(--text-primary);
+}
+
+.house-description {
+    font-size: var(--font-size-base);
+    color: var(--text-secondary);
+    line-height: 1.6;
+    margin-bottom: var(--space-xl);
+    padding-bottom: var(--space-lg);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.detail-features {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-lg);
+    margin-bottom: var(--space-xl);
+}
+
+.feature-item {
+    display: flex;
+    align-items: center;
+    gap: var(--space-lg);
+}
+
+.feature-icon {
+    width: 48px;
+    height: 48px;
+    background: var(--bg-secondary);
+    border-radius: var(--border-radius-lg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    flex-shrink: 0;
+}
+
+.feature-info {
+    flex: 1;
+}
+
+.feature-title {
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+    margin-bottom: var(--space-xs);
+}
+
+.feature-value {
+    font-size: var(--font-size-base);
+    font-weight: var(--font-weight-medium);
+    color: var(--text-primary);
+}
+
+/* Выбор гостей */
+.guests-selector {
+    background: var(--bg-secondary);
+    border-radius: var(--border-radius-lg);
+    padding: var(--space-lg);
+    margin-bottom: var(--space-xl);
+}
+
+.guests-selector h4 {
+    font-size: var(--font-size-base);
+    font-weight: var(--font-weight-semibold);
+    margin-bottom: var(--space-lg);
+    color: var(--text-primary);
+}
+
+.guests-control {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-lg);
+    margin-bottom: var(--space-md);
+}
+
+.guest-btn {
+    width: 44px;
+    height: 44px;
+    background: var(--accent-primary);
+    color: var(--bg-primary);
+    border: none;
+    border-radius: var(--border-radius);
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-bold);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: var(--transition-fast);
+}
+
+.guest-btn:active {
+    background: var(--accent-secondary);
+    transform: scale(0.95);
+}
+
+.guests-count {
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--text-primary);
+    min-width: 60px;
+    text-align: center;
+}
+
+.guests-note {
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+    text-align: center;
+    line-height: 1.4;
+}
+
+/* Услуги */
+.services-section {
+    margin-bottom: var(--space-xl);
+}
+
+.services-section h4 {
+    font-size: var(--font-size-base);
+    font-weight: var(--font-weight-semibold);
+    margin-bottom: var(--space-lg);
+    color: var(--text-primary);
+}
+
+.services-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+}
+
+.service-item {
+    background: var(--bg-secondary);
+    border-radius: var(--border-radius-lg);
+    padding: var(--space-lg);
+    border: 1px solid var(--border-color);
+    transition: var(--transition-fast);
+}
+
+.service-item:active {
+    border-color: var(--accent-primary);
+}
+
+.service-checkbox {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-md);
+    cursor: pointer;
+    margin: 0;
+}
+
+.service-checkbox input[type="checkbox"] {
+    display: none;
+}
+
+.checkmark {
+    width: 20px;
+    height: 20px;
+    border: 2px solid var(--border-light);
+    border-radius: var(--border-radius);
+    background: var(--bg-primary);
+    position: relative;
+    flex-shrink: 0;
+    margin-top: 2px;
+    transition: var(--transition-fast);
+}
+
+.service-checkbox input[type="checkbox"]:checked + .checkmark {
+    background: var(--accent-primary);
+    border-color: var(--accent-primary);
+}
+
+.service-checkbox input[type="checkbox"]:checked + .checkmark::after {
+    content: '';
+    position: absolute;
+    left: 5px;
+    top: 2px;
+    width: 6px;
+    height: 10px;
+    border: solid var(--bg-primary);
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+}
+
+.service-info {
+    flex: 1;
+}
+
+.service-name {
+    font-size: var(--font-size-base);
+    font-weight: var(--font-weight-medium);
+    color: var(--text-primary);
+    margin-bottom: var(--space-xs);
+}
+
+.service-description {
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+    margin-bottom: var(--space-xs);
+    line-height: 1.4;
+}
+
+.service-price {
+    font-size: var(--font-size-base);
+    font-weight: var(--font-weight-semibold);
+    color: var(--accent-primary);
+}
+
+/* Цены */
+.pricing-summary {
+    background: var(--bg-secondary);
+    border-radius: var(--border-radius-lg);
+    padding: var(--space-lg);
+    margin-bottom: var(--space-xl);
+}
+
+.price-line {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--space-sm) 0;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.price-line:last-child {
+    border-bottom: none;
+}
+
+.price-total {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: var(--space-md);
+    margin-top: var(--space-md);
+    border-top: 2px solid var(--accent-primary);
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-semibold);
+}
+
+/* Форма бронирования */
+.booking-summary-card,
+.guest-info-card {
+    background: var(--bg-card);
+    border-radius: var(--border-radius-lg);
+    padding: var(--space-xl);
+    margin-bottom: var(--space-lg);
+    box-shadow: var(--shadow-md);
+}
+
+.booking-summary-card h3,
+.guest-info-card h3 {
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-semibold);
+    margin-bottom: var(--space-lg);
+    color: var(--text-primary);
+}
+
+.summary-details {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+}
+
+.summary-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--space-sm) 0;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.summary-item:last-child {
+    border-bottom: none;
+}
+
+.summary-item.total {
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-semibold);
+    color: var(--accent-primary);
+    padding-top: var(--space-md);
+    margin-top: var(--space-md);
+    border-top: 2px solid var(--border-color);
+}
+
+.form-group {
+    margin-bottom: var(--space-lg);
+}
+
+.form-input {
+    width: 100%;
+    padding: var(--space-lg);
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    font-size: var(--font-size-base);
+    color: var(--text-primary);
+    transition: var(--transition-fast);
+}
+
+.form-input:focus {
+    border-color: var(--accent-primary);
+    outline: none;
+}
+
+.form-input::placeholder {
+    color: var(--text-muted);
+}
+
+textarea.form-input {
+    resize: vertical;
+    min-height: 100px;
+    font-family: inherit;
+}
+
+/* Состояния недоступности */
+.unavailable {
+    position: relative;
+}
+
+.unavailable-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-primary);
+    font-weight: var(--font-weight-semibold);
+    font-size: var(--font-size-base);
+}
+/* Кнопка вторичная */
+.btn-secondary {
+    width: 100%;
+    padding: var(--space-lg);
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-lg);
+    font-size: var(--font-size-base);
+    font-weight: var(--font-weight-semibold);
+    cursor: pointer;
+    transition: var(--transition-fast);
+    margin-top: var(--space-md);
+}
+
+.btn-secondary:active {
+    background: var(--bg-tertiary);
+    transform: translateY(1px);
+}
+
+/* Профиль и бронирования */
+.profile-card {
+    background: var(--bg-card);
+    border-radius: var(--border-radius-lg);
+    padding: var(--space-xl);
+    margin-bottom: var(--space-lg);
+}
+
+.user-stats {
+    display: flex;
+    justify-content: space-around;
+    text-align: center;
+}
+
+.stat-value {
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--accent-primary);
+    margin-bottom: var(--space-xs);
+}
+
+.stat-label {
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+}
+
+.bookings-list h3 {
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-semibold);
+    margin-bottom: var(--space-lg);
+    color: var(--text-primary);
+}
+
+.empty-state {
+    text-align: center;
+    padding: var(--space-xxl);
+    color: var(--text-secondary);
+}
+
+.empty-icon {
+    font-size: 3rem;
+    margin-bottom: var(--space-lg);
+    opacity: 0.5;
+}
+
+.booking-item {
+    background: var(--bg-card);
+    border-radius: var(--border-radius-lg);
+    padding: var(--space-lg);
+    margin-bottom: var(--space-md);
+    border: 1px solid var(--border-color);
+}
+
+.booking-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--space-md);
+}
+
+.booking-number {
+    font-weight: var(--font-weight-semibold);
+    color: var(--text-primary);
+}
+
+.booking-status {
+    padding: var(--space-xs) var(--space-sm);
+    border-radius: var(--border-radius);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+}
+
+.booking-status.pending {
+    background: var(--warning-color);
+    color: var(--bg-primary);
+}
+
+.booking-status.confirmed {
+    background: var(--success-color);
+    color: var(--bg-primary);
+}
+
+.booking-status.completed {
+    background: var(--text-secondary);
+    color: var(--bg-primary);
+}
+
+.booking-house {
+    font-weight: var(--font-weight-semibold);
+    margin-bottom: var(--space-xs);
+}
+
+.booking-dates {
+    color: var(--text-secondary);
+    font-size: var(--font-size-sm);
+    margin-bottom: var(--space-xs);
+}
+
+.booking-price {
+    font-weight: var(--font-weight-semibold);
+    color: var(--accent-primary);
+}
+
+/* Бонусная строка в итогах */
+.summary-item.bonus {
+    color: var(--success-color);
+    font-weight: var(--font-weight-semibold);
+}
+/* Система уведомлений */
+.notification {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    background: var(--accent-primary);
+    color: var(--bg-primary);
+    padding: var(--space-md);
+    z-index: 10000;
+    animation: slideDown 0.3s ease-out;
+}
+
+.notification-success {
+    background: var(--success-color);
+}
+
+.notification-warning {
+    background: var(--warning-color);
+}
+
+.notification-error {
+    background: var(--error-color);
+}
+
+.notification-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.notification-message {
+    flex: 1;
+    font-weight: var(--font-weight-medium);
+}
+
+.notification-close {
+    background: none;
+    border: none;
+    color: inherit;
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 0;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+@keyframes slideDown {
+    from {
+        transform: translateY(-100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* Стили для экрана оплаты */
+.payment-card {
+    background: var(--bg-card);
+    border-radius: var(--border-radius-xl);
+    padding: var(--space-xl);
+    margin-bottom: var(--space-lg);
+}
+
+.payment-header {
+    text-align: center;
+    margin-bottom: var(--space-xl);
+}
+
+.payment-header h2 {
+    font-size: var(--font-size-xxl);
+    font-weight: var(--font-weight-semibold);
+    margin-bottom: var(--space-sm);
+}
+
+.booking-number {
+    font-size: var(--font-size-lg);
+    color: var(--text-secondary);
+}
+
+.payment-amount {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-semibold);
+    margin-bottom: var(--space-lg);
+    padding-bottom: var(--space-lg);
+    border-bottom: 2px solid var(--border-color);
+}
+
+.payment-amount .amount {
+    color: var(--accent-primary);
+    font-size: var(--font-size-xxl);
+}
+
+.payment-methods {
+    margin: var(--space-xl) 0;
+}
+
+.payment-option {
+    display: flex;
+    align-items: center;
+    gap: var(--space-lg);
+    padding: var(--space-lg);
+    background: var(--bg-secondary);
+    border: 2px solid var(--border-color);
+    border-radius: var(--border-radius-lg);
+    margin-bottom: var(--space-md);
+    cursor: pointer;
+    transition: var(--transition-fast);
+}
+
+.payment-option.selected {
+    border-color: var(--accent-primary);
+    background: var(--bg-tertiary);
+}
+
+.payment-icon {
+    font-size: 2rem;
+}
+
+.payment-name {
+    font-weight: var(--font-weight-semibold);
+    margin-bottom: var(--space-xs);
+}
+
+.payment-desc {
+    color: var(--text-secondary);
+    font-size: var(--font-size-sm);
+}
+
+.payment-instructions {
+    background: var(--bg-secondary);
+    border-radius: var(--border-radius-lg);
+    padding: var(--space-lg);
+    margin: var(--space-xl) 0;
+}
+
+.payment-instructions h4 {
+    margin-bottom: var(--space-lg);
+    color: var(--text-primary);
+}
+
+.payment-instructions ol {
+    margin-left: var(--space-lg);
+    margin-bottom: var(--space-lg);
+}
+
+.payment-instructions li {
+    margin-bottom: var(--space-sm);
+    color: var(--text-secondary);
+}
+
+.bank-info {
+    background: var(--bg-primary);
+    padding: var(--space-lg);
+    border-radius: var(--border-radius);
+    border: 1px solid var(--border-color);
+}
+
+.bank-info div {
+    margin-bottom: var(--space-xs);
+}
+
+.payment-actions {
+    display: flex;
+    gap: var(--space-md);
+    margin: var(--space-xl) 0;
+}
+
+.btn-small {
+    padding: var(--space-sm) var(--space-md);
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    font-size: var(--font-size-sm);
+    cursor: pointer;
+}
+
+.payment-proof {
+    margin-top: var(--space-md);
+}
