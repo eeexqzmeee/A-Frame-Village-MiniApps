@@ -19,7 +19,7 @@ const app = {
         this.initCalendar();
         this.updateUserInfo();
         this.initTelegram();
-        this.renderLargeHouses(); // Добавляем рендер больших домов
+        this.renderLargeHouses();
     },
 
     initTelegram() {
@@ -27,7 +27,6 @@ const app = {
             Telegram.WebApp.ready();
             Telegram.WebApp.expand();
             
-            // Скрываем стандартные кнопки Telegram
             Telegram.WebApp.BackButton.hide();
             Telegram.WebApp.MainButton.hide();
             
@@ -74,28 +73,24 @@ const app = {
     },
     
     bindEvents() {
-        // Навигация по кнопкам "Назад"
         document.addEventListener('click', (e) => {
             if (e.target.closest('.header-btn.back')) {
                 this.goBack();
             }
         });
         
-        // Главная кнопка бронирования
         document.addEventListener('click', (e) => {
             if (e.target.closest('.book-btn.primary')) {
                 this.showScreen('calendar-screen');
             }
         });
 
-        // Кнопка "Мои брони"
         document.addEventListener('click', (e) => {
             if (e.target.closest('#my-bookings-btn')) {
                 this.showMyBookings();
             }
         });
         
-        // Выбор дома
         document.addEventListener('click', (e) => {
             const houseCard = e.target.closest('.house-card');
             if (houseCard && !houseCard.querySelector('.unavailable-overlay')) {
@@ -103,7 +98,6 @@ const app = {
             }
         });
         
-        // Продолжить к домам (из календаря)
         document.addEventListener('click', (e) => {
             if (e.target.closest('#continue-to-houses')) {
                 if (this.selectedDates.checkin && this.selectedDates.checkout) {
@@ -115,7 +109,6 @@ const app = {
             }
         });
 
-        // Переключение темы
         document.addEventListener('click', (e) => {
             if (e.target.closest('.theme-btn')) {
                 const theme = e.target.closest('.theme-btn').dataset.theme;
@@ -129,7 +122,6 @@ const app = {
         document.documentElement.setAttribute('data-theme', theme);
         localStorage.setItem('app-theme', theme);
         
-        // Обновляем активные кнопки
         document.querySelectorAll('.theme-btn').forEach(btn => {
             btn.classList.toggle('active', btn.dataset.theme === theme);
         });
@@ -162,7 +154,6 @@ const app = {
         const year = this.currentDate.getFullYear();
         const month = this.currentDate.getMonth();
 
-        // Обновляем заголовок
         const monthNames = ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'];
         document.getElementById('current-month').textContent = monthNames[month];
         document.getElementById('current-year').textContent = year;
@@ -173,14 +164,12 @@ const app = {
         const lastDay = new Date(year, month + 1, 0);
         const firstDayOfWeek = firstDay.getDay() === 0 ? 6 : firstDay.getDay() - 1;
 
-        // Дни предыдущего месяца
         const prevMonthLastDay = new Date(year, month, 0).getDate();
         for (let i = firstDayOfWeek - 1; i >= 0; i--) {
             const day = this.createDayElement(prevMonthLastDay - i, true);
             calendarGrid.appendChild(day);
         }
 
-        // Дни текущего месяца
         const today = new Date();
         today.setHours(0, 0, 0, 0);
 
@@ -193,7 +182,6 @@ const app = {
             calendarGrid.appendChild(day);
         }
 
-        // Дни следующего месяца
         const totalCells = 42;
         const daysInCalendar = firstDayOfWeek + lastDay.getDate();
         const nextMonthDays = totalCells - daysInCalendar;
@@ -222,14 +210,12 @@ const app = {
             day.title = 'Дата занята';
         }
 
-        // Проверяем выбор даты
         if (date) {
             const dateStr = date.toISOString().split('T')[0];
             if (this.selectedDates.checkin === dateStr || this.selectedDates.checkout === dateStr) {
                 day.classList.add('selected');
             }
 
-            // Проверяем, сегодня ли это
             const today = new Date();
             today.setHours(0, 0, 0, 0);
             if (date.getTime() === today.getTime()) {
@@ -246,8 +232,6 @@ const app = {
     },
 
     isDateBookedGlobally(date) {
-        // Проверяем занятость только для конкретного дома, а не всех
-        // Это исправляет проблему когда бронь одного дома блокирует даты для других
         return false;
     },
 
@@ -359,7 +343,6 @@ const app = {
     },
 
     updateUserInfo() {
-        // Можно добавить отображение баланса Acoin в будущем
     },
     
     showHouseDetails(house) {
@@ -739,7 +722,6 @@ const app = {
             return;
         }
         
-        // Проверяем доступность дома на выбранные даты
         if (!this.isHouseAvailableForDates(this.selectedHouse.id)) {
             this.showNotification('Дом занят на выбранные даты', 'error');
             return;
@@ -822,9 +804,7 @@ const app = {
 
         const confirmButton = document.getElementById('confirm-booking-btn');
         if (confirmButton) {
-            // ИСПРАВЛЕНИЕ: Убираем старые обработчики и добавляем новый
-            confirmButton.replaceWith(confirmButton.cloneNode(true));
-            document.getElementById('confirm-booking-btn').addEventListener('click', () => {
+            confirmButton.addEventListener('click', () => {
                 this.createBooking();
             });
         }
@@ -842,11 +822,22 @@ const app = {
             return;
         }
 
+        const phoneRegex = /^[\+]?[0-9\s\-\(\)]{10,}$/;
+        if (!phoneRegex.test(phone)) {
+            this.showNotification('Введите корректный номер телефона', 'warning');
+            return;
+        }
+
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            this.showNotification('Введите корректный email', 'warning');
+            return;
+        }
+
         const house = this.selectedHouse;
         const nights = this.calculateNights();
         const pricing = this.calculateTotalPrice(house, nights, this.selectedGuests, this.selectedServices);
 
-        // Создаем бронирование со статусом "ожидает оплаты"
         const booking = {
             id: Date.now().toString(),
             bookingNumber: 'A-' + Date.now().toString().slice(-6),
@@ -863,7 +854,7 @@ const app = {
         };
 
         this.currentBooking = database.saveBooking(booking);
-        this.showPaymentScreen(); // ИСПРАВЛЕНИЕ: Переходим к оплате, а не возвращаемся к датам
+        this.showPaymentScreen();
     },
 
     showPaymentScreen() {
@@ -965,12 +956,8 @@ const app = {
     },
 
     confirmPayment() {
-        // В реальном приложении здесь была бы загрузка чека
-        // Для демо просто подтверждаем оплату
+        const proofUrl = '';
         
-        const proofUrl = ''; // В реальном приложении URL загруженного чека
-        
-        // Сохраняем информацию об оплате
         const payment = {
             bookingId: this.currentBooking.id,
             amount: this.currentBooking.total,
@@ -982,17 +969,14 @@ const app = {
 
         database.savePayment(payment);
 
-        // Обновляем статус бронирования на "подтверждено"
         const updatedBooking = database.updateBooking(this.currentBooking.id, {
             status: 'confirmed',
             confirmedAt: new Date().toISOString()
         });
 
-        // Начисляем Acoin только после подтверждения оплаты
         const cashback = loyaltySystem.calculateCashback(this.currentBooking.total, this.currentUser.level);
         database.addAcoins(currentUserId, cashback, `Кэшбек за бронирование ${this.currentBooking.bookingNumber}`);
 
-        // Обновляем статистику пользователя
         const userBookings = database.getUserBookings(currentUserId);
         const confirmedBookings = userBookings.filter(b => b.status === 'confirmed' || b.status === 'completed');
         const bookingsCount = confirmedBookings.length;
@@ -1006,7 +990,6 @@ const app = {
 
         this.currentUser = database.getUser(currentUserId);
 
-        // Показываем уведомление вверху экрана
         this.showNotification(`Бронь подтверждена! Дом "${this.currentBooking.house.name}" забронирован. +${cashback} Acoin`, 'success');
 
         setTimeout(() => {
@@ -1031,7 +1014,7 @@ const app = {
         this.selectedServices = [];
         this.currentBooking = null;
         this.updateDatesPreview();
-        this.generateCalendar(); // Обновляем календарь чтобы показать новые занятые даты
+        this.generateCalendar();
     },
     
     updateDatesPreview() {
@@ -1070,7 +1053,6 @@ const app = {
     },
     
     showNotification(message, type = 'info') {
-        // Удаляем старые уведомления
         document.querySelectorAll('.notification').forEach(n => n.remove());
 
         const notification = document.createElement('div');
@@ -1084,7 +1066,6 @@ const app = {
 
         document.body.appendChild(notification);
 
-        // Автоматическое скрытие через 5 секунд
         setTimeout(() => {
             if (notification.parentNode) {
                 notification.remove();
@@ -1093,7 +1074,6 @@ const app = {
     }
 };
 
-// Инициализация при загрузке
 document.addEventListener('DOMContentLoaded', () => {
     app.init();
 });
