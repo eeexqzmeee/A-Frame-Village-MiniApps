@@ -1388,6 +1388,262 @@ textarea.form-input {
     text-align: center;
 }
 
+/* Добавьте эти стили в конец файла */
+
+/* Максимальный Liquid Glass эффект */
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: 
+        radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.2) 0%, transparent 50%),
+        radial-gradient(circle at 40% 40%, rgba(120, 219, 255, 0.15) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: -1;
+}
+
+/* Усиленный blur для всех элементов */
+#app {
+    backdrop-filter: blur(80px) saturate(200%);
+    -webkit-backdrop-filter: blur(80px) saturate(200%);
+    background: rgba(0, 0, 0, 0.25);
+}
+
+.screen {
+    backdrop-filter: blur(80px) saturate(200%);
+    -webkit-backdrop-filter: blur(80px) saturate(200%);
+    background: rgba(0, 0, 0, 0.2);
+}
+
+.header {
+    backdrop-filter: blur(100px) saturate(200%);
+    -webkit-backdrop-filter: blur(100px) saturate(200%);
+    background: rgba(0, 0, 0, 0.4);
+    border-bottom: 0.5px solid rgba(255, 255, 255, 0.2);
+}
+
+.booking-card {
+    backdrop-filter: blur(100px) saturate(200%);
+    -webkit-backdrop-filter: blur(100px) saturate(200%);
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 
+        0 25px 50px rgba(0, 0, 0, 0.25),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.calendar-container,
+.house-detail-card,
+.booking-summary-card,
+.guest-info-card,
+.payment-card {
+    backdrop-filter: blur(100px) saturate(200%);
+    -webkit-backdrop-filter: blur(100px) saturate(200%);
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 
+        0 20px 40px rgba(0, 0, 0, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.house-card {
+    backdrop-filter: blur(80px) saturate(200%);
+    -webkit-backdrop-filter: blur(80px) saturate(200%);
+    background: rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    box-shadow: 
+        0 15px 35px rgba(0, 0, 0, 0.15),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.selected-dates-preview {
+    backdrop-filter: blur(100px) saturate(200%);
+    -webkit-backdrop-filter: blur(100px) saturate(200%);
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Усиленные эффекты для кнопок */
+.book-btn.primary {
+    backdrop-filter: blur(40px);
+    -webkit-backdrop-filter: blur(40px);
+    background: rgba(0, 122, 255, 0.9);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 
+        0 10px 30px rgba(0, 122, 255, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+.btn-secondary {
+    backdrop-filter: blur(40px);
+    -webkit-backdrop-filter: blur(40px);
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 
+        0 8px 25px rgba(0, 0, 0, 0.15),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+/* Усиленный эффект для инпутов */
+.form-input {
+    backdrop-filter: blur(40px);
+    -webkit-backdrop-filter: blur(40px);
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 
+        inset 0 2px 10px rgba(0, 0, 0, 0.1),
+        0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+/* Усиленный эффект для карточек услуг */
+.service-item {
+    backdrop-filter: blur(60px);
+    -webkit-backdrop-filter: blur(60px);
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+/* Усиленный эффект для дней календаря */
+.calendar-day {
+    backdrop-filter: blur(30px);
+    -webkit-backdrop-filter: blur(30px);
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.calendar-day.selected {
+    backdrop-filter: blur(40px);
+    -webkit-backdrop-filter: blur(40px);
+    background: rgba(0, 122, 255, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+/* Анимации для Liquid Glass эффекта */
+@keyframes liquidShift {
+    0%, 100% { 
+        background-position: 0% 50%;
+        filter: hue-rotate(0deg);
+    }
+    50% { 
+        background-position: 100% 50%;
+        filter: hue-rotate(10deg);
+    }
+}
+
+.booking-card,
+.house-card,
+.calendar-container {
+    animation: liquidShift 20s ease-in-out infinite;
+}
+
+/* Эффект параллакса для фона */
+.main-background {
+    animation: parallaxShift 30s ease-in-out infinite;
+}
+
+@keyframes parallaxShift {
+    0%, 100% { 
+        transform: scale(1) rotate(0deg);
+        filter: hue-rotate(0deg) blur(0px);
+    }
+    33% { 
+        transform: scale(1.05) rotate(1deg);
+        filter: hue-rotate(5deg) blur(1px);
+    }
+    66% { 
+        transform: scale(1.02) rotate(-1deg);
+        filter: hue-rotate(-5deg) blur(0.5px);
+    }
+}
+
+/* Эффект мерцания для акцентных элементов */
+.logo {
+    position: relative;
+}
+
+.logo::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.1) 50%, transparent 70%);
+    animation: shimmer 3s ease-in-out infinite;
+    pointer-events: none;
+}
+
+@keyframes shimmer {
+    0%, 100% { transform: translateX(-100%); }
+    50% { transform: translateX(100%); }
+}
+
+/* Улучшенные тени с glow эффектом */
+.book-btn.primary {
+    position: relative;
+}
+
+.book-btn.primary::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.2) 50%, transparent 70%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    border-radius: inherit;
+}
+
+.book-btn.primary:hover::before {
+    opacity: 1;
+}
+
+/* Максимальный glass эффект для всех overlay элементов */
+.unavailable-overlay {
+    backdrop-filter: blur(50px) saturate(180%);
+    -webkit-backdrop-filter: blur(50px) saturate(180%);
+    background: rgba(0, 0, 0, 0.7);
+}
+
+.notification {
+    backdrop-filter: blur(100px) saturate(200%);
+    -webkit-backdrop-filter: blur(100px) saturate(200%);
+    background: rgba(0, 122, 255, 0.9);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Эффект глубины для контейнеров */
+.screen-content {
+    position: relative;
+}
+
+.screen-content::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: 
+        radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.05) 0%, transparent 50%),
+        radial-gradient(circle at 70% 70%, rgba(255, 255, 255, 0.03) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: -1;
+    animation: float 20s ease-in-out infinite;
+}
+
+@keyframes float {
+    0%, 100% { transform: translate(0, 0) rotate(0deg); }
+    33% { transform: translate(10px, -10px) rotate(1deg); }
+    66% { transform: translate(-5px, 5px) rotate(-1deg); }
+}
+
 .mb-0 { margin-bottom: 0; }
 .mb-1 { margin-bottom: var(--space-xs); }
 .mb-2 { margin-bottom: var(--space-sm); }
@@ -1401,3 +1657,4 @@ textarea.form-input {
 .mt-3 { margin-top: var(--space-md); }
 .mt-4 { margin-top: var(--space-lg); }
 .mt-5 { margin-top: var(--space-xl); }
+

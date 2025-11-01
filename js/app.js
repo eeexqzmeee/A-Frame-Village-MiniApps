@@ -78,7 +78,7 @@ const app = {
         });
         
         document.addEventListener('click', (e) => {
-            if (e.target.closest('.book-btn.primary')) {
+            if (e.target.closest('.book-btn.primary') && e.target.closest('#main-screen')) {
                 this.showScreen('calendar-screen');
             }
         });
@@ -446,11 +446,13 @@ const app = {
             </div>
         `;
 
+        // ИСПРАВЛЕНИЕ: Правильно привязываем обработчик
         const proceedButton = document.getElementById('proceed-to-booking-btn');
         if (proceedButton) {
-            proceedButton.addEventListener('click', () => {
+            // Удаляем старый обработчик и добавляем новый
+            proceedButton.onclick = () => {
                 this.showBookingScreen();
-            });
+            };
         }
 
         if (house.type === 'large') {
@@ -780,9 +782,9 @@ const app = {
 
         const confirmButton = document.getElementById('confirm-booking-btn');
         if (confirmButton) {
-            confirmButton.addEventListener('click', () => {
+            confirmButton.onclick = () => {
                 this.createBooking();
-            });
+            };
         }
 
         this.showScreen('booking-screen');
@@ -916,9 +918,9 @@ const app = {
 
         const confirmButton = document.getElementById('confirm-payment-btn');
         if (confirmButton) {
-            confirmButton.addEventListener('click', () => {
+            confirmButton.onclick = () => {
                 this.confirmPayment();
-            });
+            };
         }
 
         this.showScreen('payment-screen');
