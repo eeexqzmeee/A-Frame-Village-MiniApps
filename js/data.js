@@ -199,7 +199,7 @@ const housesData = {
         max_guests: 2,
         checkin_times: ["13:00"],
         checkout_time: "11:00",
-        description: "Уютный романтический домик для пар с камином",
+        description: "Уютный романтический дом для пар с камином",
         features: ["Романтическая атмосфера", "Камин"],
         image: "❤️",
         services: [
@@ -251,7 +251,7 @@ const housesData = {
     }
 };
 
-// Данные о занятости (в реальном приложении будут с API)
+// Данные о занятости
 const bookedDates = {
     1: ['2024-11-15', '2024-11-16'],
     2: ['2024-11-20', '2024-11-21'], 
@@ -259,6 +259,7 @@ const bookedDates = {
     7: ['2024-11-18', '2024-11-19'],
     8: ['2024-11-22', '2024-11-23']
 };
+
 // База данных в localStorage
 const database = {
     init() {
@@ -274,6 +275,9 @@ const database = {
         if (!localStorage.getItem('payments')) {
             localStorage.setItem('payments', JSON.stringify([]));
         }
+        
+        // Инициализируем сгорание коинов
+        this.burnExpiredCoins();
     },
 
     saveBooking(booking) {
@@ -306,13 +310,11 @@ const database = {
         );
     },
 
-    // ИСПРАВЛЕНИЕ: Проверяем занятость только для конкретного дома
     isDateBooked(houseId, date) {
         const activeBookings = this.getActiveBookings();
         const dateStr = new Date(date).toISOString().split('T')[0];
         
         return activeBookings.some(booking => {
-            // Проверяем только брони этого дома
             if (booking.house.id !== houseId) return false;
             
             const checkin = new Date(booking.dates.checkin);
@@ -337,12 +339,19 @@ const database = {
 
     getUser(userId) {
         const users = JSON.parse(localStorage.getItem('users') || '{}');
-        return users[userId] || { 
-            acoins: 1000, 
-            level: 'Bronze', 
-            bookingsCount: 0,
-            totalSpent: 0 
-        };
+        if (!users[userId]) {
+            users[userId] = { 
+                acoins: 1000, 
+                level: 'Bronze', 
+                bookingsCount: 0,
+                totalSpent: 0,
+                referrals: 0,
+                referralEarnings: 0,
+                createdAt: new Date().toISOString()
+            };
+            localStorage.setItem('users', JSON.stringify(users));
+        }
+        return users[userId];
     },
 
     addAcoins(userId, amount, reason) {
@@ -375,10 +384,65 @@ const database = {
     getPaymentByBookingId(bookingId) {
         const payments = JSON.parse(localStorage.getItem('payments') || '[]');
         return payments.find(p => p.bookingId === bookingId);
+    },
+
+    // Реферальная система
+    processReferralBooking(referrerUserId, booking) {
+        // Начисляем бонус пригласившему
+        const referralBonus = 500;
+        this.addAcoins(referrerUserId, referralBonus, `Реферальное бронирование ${booking.bookingNumber}`);
+        
+        // Обновляем статистику рефералов
+        const users = JSON.parse(localStorage.getItem('users') || '{}');
+        if (users[referrerUserId]) {
+            users[referrerUserId].referrals = (users[referrerUserId].referrals || 0) + 1;
+            users[referrerUserId].referralEarnings = (users[referrerUserId].referralEarnings || 0) + referralBonus;
+            localStorage.setItem('users', JSON.stringify(users));
+        }
+        
+        return referralBonus;
+    },
+
+    // Механизм сгорания коинов
+    burnExpiredCoins() {
+        const users = JSON.parse(localStorage.getItem('users') || '{}');
+        const currentDate = new Date();
+        const lastBurnDate = localStorage.getItem('lastCoinBurn');
+        const currentMonth = currentDate.getMonth();
+        const currentYear = currentDate.getFullYear();
+        
+        // Проверяем, не сжигали ли коины в этом месяце
+        if (lastBurnDate) {
+            const lastBurn = new Date(lastBurnDate);
+            if (lastBurn.getMonth() === currentMonth && lastBurn.getFullYear() === currentYear) {
+                return; // Уже сжигали в этом месяце
+            }
+        }
+        
+        // Сгорание в последний день месяца или в первый день нового месяца
+        const lastDayOfMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+        if (currentDate.getDate() === 1 || currentDate.getDate() === lastDayOfMonth) {
+            let totalBurned = 0;
+            
+            Object.keys(users).forEach(userId => {
+                if (users[userId].acoins > 0) {
+                    const burnedCoins = users[userId].acoins;
+                    totalBurned += burnedCoins;
+                    users[userId].acoins = 0;
+                    
+                    // Записываем в историю
+                    this.addAcoins(userId, -burnedCoins, 'Ежемесячное сгорание A-Coin');
+                }
+            });
+            
+            if (totalBurned > 0) {
+                localStorage.setItem('lastCoinBurn', currentDate.toISOString().split('T')[0]);
+                localStorage.setItem('users', JSON.stringify(users));
+                console.log(`Сгорело A-Coin: ${totalBurned}`);
+            }
+        }
     }
 };
-
-// Система уровней лояльности
 
 // Система уровней лояльности
 const loyaltySystem = {
@@ -402,7 +466,7 @@ const loyaltySystem = {
     }
 };
 
-// Генератор ID пользователя (в реальном приложении будет из Telegram)
+// Генератор ID пользователя
 function generateUserId() {
     let userId = localStorage.getItem('userId');
     if (!userId) {
@@ -414,6 +478,8 @@ function generateUserId() {
             level: 'Bronze',
             bookingsCount: 0,
             totalSpent: 0,
+            referrals: 0,
+            referralEarnings: 0,
             createdAt: new Date().toISOString()
         });
     }

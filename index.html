@@ -3,55 +3,246 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>A-FRAME | Бронирование домов</title>
+    <title>A-Frame Village | Бронирование домов</title>
     <link rel="stylesheet" href="css/variables.css">
     <link rel="stylesheet" href="css/style.css">
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
 </head>
 <body>
     <div id="app">
-        <!-- Главный экран -->
-        <div id="main-screen" class="screen active">
-            <div class="main-background"></div>
-            <div class="main-content">
-                <div class="logo-section">
-                    <h1 class="logo">A-FRAME</h1>
-                    <p class="tagline">Алексеевка | Озёрная 38 к1</p>
+        <!-- Swipe Navigation Container -->
+        <div id="swipe-container">
+            <!-- Главный экран -->
+            <div id="main-screen" class="swipe-screen active">
+                <div class="main-background"></div>
+                <div class="main-content">
+                    <div class="logo-section">
+                        <h1 class="logo">A-Frame Village</h1>
+                        <p class="tagline">Алексеевка | Озёрная 38 к1</p>
+                    </div>
+                    
+                    <!-- Hero Section -->
+                    <div class="hero-section">
+                        <div class="hero-card">
+                            <h2>Добро пожаловать в A-Frame Village</h2>
+                            <p>Уникальные дома в стиле A-Frame с панорамными окнами и современными удобствами для комфортного отдыха</p>
+                            
+                            <div class="video-placeholder">
+                                <div class="video-icon">🎥</div>
+                                <p>Видео-тур по комплексу</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quick Overview -->
+                    <div class="overview-section">
+                        <h3>Категории домов</h3>
+                        <div class="overview-grid">
+                            <div class="overview-item">
+                                <div class="overview-icon">🏠</div>
+                                <h4>Большие дома</h4>
+                                <p>6 просторных домов вместимостью до 12 гостей с собственной сауной</p>
+                            </div>
+                            <div class="overview-item">
+                                <div class="overview-icon">❤️</div>
+                                <h4>Для пар</h4>
+                                <p>Уютные дома для романтического отдыха</p>
+                            </div>
+                            <div class="overview-item">
+                                <div class="overview-icon">👨‍👩‍👧‍👦</div>
+                                <h4>Для семей</h4>
+                                <p>Комфортабельные дома для семейного отдыха</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Features Section -->
+                    <div class="features-section">
+                        <h3>Преимущества комплекса</h3>
+                        <div class="features-grid">
+                            <div class="feature-card">
+                                <div class="feature-icon">🌲</div>
+                                <h4>Природное расположение</h4>
+                                <p>Дома расположены в живописном лесном массиве</p>
+                            </div>
+                            <div class="feature-card">
+                                <div class="feature-icon">♨️</div>
+                                <h4>Сауны и бани</h4>
+                                <p>В каждом большом доме предусмотрена собственная сауна</p>
+                            </div>
+                            <div class="feature-card">
+                                <div class="feature-icon">🛁</div>
+                                <h4>Дополнительные услуги</h4>
+                                <p>Деревянные купели (чаны) и другие услуги для вашего комфорта</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- CTA Section -->
+                    <div class="cta-section">
+                        <button class="book-btn primary" id="view-houses-btn">
+                            Посмотреть дома
+                        </button>
+                        
+                        <div class="quick-stats">
+                            <div class="stat">
+                                <span class="stat-number">8</span>
+                                <span class="stat-label">домов</span>
+                            </div>
+                            <div class="stat">
+                                <span class="stat-number">12</span>
+                                <span class="stat-label">гостей макс</span>
+                            </div>
+                            <div class="stat">
+                                <span class="stat-number">24/7</span>
+                                <span class="stat-label">поддержка</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                
-                <div class="booking-card">
-                    <div class="card-header">
-                        <h2>Забронировать дом</h2>
-                        <p>Выберите даты и подходящий дом для отдыха</p>
-                    </div>
-                    
-                    <div class="quick-stats">
-                        <div class="stat">
-                            <span class="stat-number">8</span>
-                            <span class="stat-label">домов</span>
+            </div>
+
+            <!-- Экран профиля -->
+            <div id="profile-screen" class="swipe-screen">
+                <div class="screen-content">
+                    <div class="profile-header">
+                        <div class="user-avatar">
+                            <div class="avatar-placeholder">👤</div>
                         </div>
-                        <div class="stat">
-                            <span class="stat-number">12</span>
-                            <span class="stat-label">гостей макс</span>
-                        </div>
-                        <div class="stat">
-                            <span class="stat-number">24/7</span>
-                            <span class="stat-label">поддержка</span>
+                        <div class="user-info">
+                            <h2 class="user-name">Пользователь</h2>
+                            <p class="user-id">ID: loading...</p>
                         </div>
                     </div>
-                    
-                    <button class="book-btn primary">
-                        Начать бронирование
-                    </button>
-                    
-                    <button class="btn-secondary" id="my-bookings-btn">
-                        Мои брони
-                    </button>
+
+                    <div class="profile-stats">
+                        <div class="stat-card">
+                            <div class="stat-value">Bronze</div>
+                            <div class="stat-label">Уровень</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value">1000</div>
+                            <div class="stat-label">A-Coin</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value">0</div>
+                            <div class="stat-label">Рефералы</div>
+                        </div>
+                    </div>
+
+                    <div class="profile-section">
+                        <h3 class="section-title">Реферальная система</h3>
+                        <div class="referral-card">
+                            <div class="referral-info">
+                                <h4>Пригласите друзей</h4>
+                                <p>Получите 500 A-Coin за каждого друга, который совершит бронирование</p>
+                            </div>
+                            <div class="referral-stats">
+                                <div class="referral-stat">
+                                    <span>Приглашено:</span>
+                                    <strong>0 человек</strong>
+                                </div>
+                                <div class="referral-stat">
+                                    <span>Заработано:</span>
+                                    <strong>0 A-Coin</strong>
+                                </div>
+                            </div>
+                            <button class="btn-primary" id="copy-referral-btn">
+                                Скопировать реферальную ссылку
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="profile-section">
+                        <h3 class="section-title">Магазин A-Coin</h3>
+                        <div class="shop-card">
+                            <div class="shop-header">
+                                <h4>Доступные предложения</h4>
+                                <div class="coin-balance">Баланс: 1000 A-Coin</div>
+                            </div>
+                            
+                            <div class="offers-list">
+                                <div class="offer-item">
+                                    <div class="offer-info">
+                                        <h5>Скидка 10% на бронирование</h5>
+                                        <p>Действует на все дома до конца месяца</p>
+                                    </div>
+                                    <div class="offer-price">
+                                        <span class="coin-cost">500 A-Coin</span>
+                                        <button class="btn-small" data-offer="discount_10">
+                                            Обменять
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <div class="offer-item">
+                                    <div class="offer-info">
+                                        <h5>Бесплатная сауна</h5>
+                                        <p>3 часа сауны в подарок к бронированию</p>
+                                    </div>
+                                    <div class="offer-price">
+                                        <span class="coin-cost">300 A-Coin</span>
+                                        <button class="btn-small" data-offer="free_sauna">
+                                            Обменять
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <div class="offer-item">
+                                    <div class="offer-info">
+                                        <h5>Поздний выезд</h5>
+                                        <p>Выезд до 14:00 вместо 12:00</p>
+                                    </div>
+                                    <div class="offer-price">
+                                        <span class="coin-cost">200 A-Coin</span>
+                                        <button class="btn-small" data-offer="late_checkout">
+                                            Обменять
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="shop-note">
+                                ⚠️ A-Coin сгорают в конце каждого месяца. Используйте их до 31 декабря
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="profile-section">
+                        <h3 class="section-title">Обратная связь</h3>
+                        <div class="feedback-buttons">
+                            <button class="btn-secondary" id="suggestion-btn">
+                                💡 Написать предложение по улучшению
+                            </button>
+                            <button class="btn-secondary" id="feedback-btn">
+                                ⭐ Оставить отзыв
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="profile-section">
+                        <h3 class="section-title">История операций</h3>
+                        <div class="transactions-list" id="transactions-list">
+                            <div class="empty-state">Нет операций</div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <!-- Экран выбора даты -->
+        <!-- Нижняя навигация -->
+        <div class="bottom-nav">
+            <button class="nav-item active" data-screen="main-screen">
+                <span class="nav-icon">🏠</span>
+                <span class="nav-label">Главная</span>
+            </button>
+            <button class="nav-item" data-screen="profile-screen">
+                <span class="nav-icon">👤</span>
+                <span class="nav-label">Профиль</span>
+            </button>
+        </div>
+
+        <!-- Остальные экраны -->
         <div id="calendar-screen" class="screen">
             <header class="header">
                 <button class="header-btn back">
@@ -127,7 +318,6 @@
             </div>
         </div>
 
-        <!-- Экран выбора дома -->
         <div id="houses-screen" class="screen">
             <header class="header">
                 <button class="header-btn back">
@@ -154,7 +344,7 @@
 
                     <div class="houses-category">
                         <h3 class="category-title">Для двоих</h3>
-                        <p class="category-subtitle">Уютные домики для пар</p>
+                        <p class="category-subtitle">Уютные дома для пар</p>
                         
                         <div class="houses-grid">
                             <div class="house-card" data-house-id="7" data-type="couple">
@@ -205,28 +395,25 @@
             </div>
         </div>
 
-        <!-- Экран деталей дома -->
         <div id="house-detail-screen" class="screen">
             <!-- Контент будет сгенерирован динамически -->
         </div>
 
-        <!-- Экран бронирования -->
         <div id="booking-screen" class="screen">
             <!-- Контент будет сгенерирован динамически -->
         </div>
 
-        <!-- Экран оплаты -->
         <div id="payment-screen" class="screen">
             <!-- Контент будет сгенерирован динамически -->
         </div>
 
-        <!-- Экран моих бронирований -->
         <div id="my-bookings-screen" class="screen">
             <!-- Контент будет сгенерирован динамически -->
         </div>
     </div>
 
     <script src="js/data.js"></script>
+    <script src="js/profile.js"></script>
     <script src="js/app.js"></script>
 </body>
 </html>
