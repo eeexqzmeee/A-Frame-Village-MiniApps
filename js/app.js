@@ -19,6 +19,7 @@ const app = {
         this.initCalendar();
         this.updateUserInfo();
         this.initTelegram();
+        this.renderLargeHouses(); // Добавляем рендер больших домов
     },
 
     initTelegram() {
@@ -32,6 +33,44 @@ const app = {
             
             console.log('Telegram Web App initialized');
         }
+    },
+
+    renderLargeHouses() {
+        const container = document.getElementById('large-houses');
+        if (!container) return;
+
+        container.innerHTML = '';
+        
+        housesData.large.forEach(house => {
+            const houseCard = document.createElement('div');
+            houseCard.className = 'house-card';
+            houseCard.dataset.houseId = house.id;
+            houseCard.dataset.type = house.type;
+
+            houseCard.innerHTML = `
+                <div class="house-image">
+                    <div class="image-placeholder">${house.image}</div>
+                    <div class="house-badge">До ${house.max_guests} гостей</div>
+                </div>
+                <div class="house-info">
+                    <h4>${house.name}</h4>
+                    <div class="house-features">
+                        <span class="feature">👥 до ${house.max_guests} чел</span>
+                        <span class="feature">⏰ заезд ${house.checkin_times[0]}</span>
+                    </div>
+                    <div class="house-pricing">
+                        <span class="price">${house.price_weekday.toLocaleString()}₽ - ${house.price_weekend.toLocaleString()}₽</span>
+                        <span class="price-note">за ночь</span>
+                    </div>
+                </div>
+            `;
+
+            houseCard.addEventListener('click', () => {
+                this.handleHouseSelection(houseCard);
+            });
+
+            container.appendChild(houseCard);
+        });
     },
     
     bindEvents() {
@@ -783,7 +822,9 @@ const app = {
 
         const confirmButton = document.getElementById('confirm-booking-btn');
         if (confirmButton) {
-            confirmButton.addEventListener('click', () => {
+            // ИСПРАВЛЕНИЕ: Убираем старые обработчики и добавляем новый
+            confirmButton.replaceWith(confirmButton.cloneNode(true));
+            document.getElementById('confirm-booking-btn').addEventListener('click', () => {
                 this.createBooking();
             });
         }
@@ -816,13 +857,13 @@ const app = {
             services: [...this.selectedServices],
             total: pricing.total,
             guestInfo: { name, phone, email },
-            status: 'pending', // Ожидает оплаты
+            status: 'pending',
             createdAt: new Date().toISOString(),
-            cashbackAwarded: 0 // Пока не начисляем
+            cashbackAwarded: 0
         };
 
         this.currentBooking = database.saveBooking(booking);
-        this.showPaymentScreen();
+        this.showPaymentScreen(); // ИСПРАВЛЕНИЕ: Переходим к оплате, а не возвращаемся к датам
     },
 
     showPaymentScreen() {
