@@ -12,11 +12,12 @@ class ProfileManager {
     loadUserData() {
         this.userData = {
             id: '12345',
-            name: 'Пользователь',
+            name: 'Алексей Иванов',
             level: 'Bronze',
             coins: 1000,
-            referrals: 0,
-            earnedCoins: 0
+            referrals: 3,
+            earnedCoins: 1500,
+            progress: 45 // прогресс до следующего уровня в %
         };
         this.updateProfileDisplay();
     }
@@ -51,6 +52,7 @@ class ProfileManager {
         if (userId) userId.textContent = `ID: ${this.userData.id}`;
         if (coinBalance) coinBalance.textContent = `Баланс: ${this.userData.coins} A-Coin`;
 
+        // Обновляем статистику
         document.querySelectorAll('.stat-value').forEach(stat => {
             const parent = stat.closest('.stat-card');
             if (parent) {
@@ -61,6 +63,7 @@ class ProfileManager {
             }
         });
 
+        // Обновляем реферальную статистику
         const referralStats = document.querySelectorAll('.referral-stat');
         referralStats.forEach(stat => {
             const text = stat.querySelector('span').textContent;
@@ -71,6 +74,60 @@ class ProfileManager {
                 stat.querySelector('strong').textContent = `${this.userData.earnedCoins} A-Coin`;
             }
         });
+
+        // Обновляем уровни лояльности
+        this.renderLoyaltyLevels();
+    }
+
+    renderLoyaltyLevels() {
+        const loyaltyLevels = [
+            {
+                name: 'Bronze',
+                icon: '🥉',
+                description: 'Базовый уровень',
+                requirements: '0 A-Coin',
+                color: 'var(--bronze-color)'
+            },
+            {
+                name: 'Silver',
+                icon: '🥈',
+                description: 'Серебряный уровень',
+                requirements: '5,000 A-Coin',
+                color: 'var(--silver-color)'
+            },
+            {
+                name: 'Gold',
+                icon: '🥇',
+                description: 'Золотой уровень',
+                requirements: '15,000 A-Coin',
+                color: 'var(--gold-color)'
+            },
+            {
+                name: 'Brilliant',
+                icon: '💎',
+                description: 'Бриллиантовый уровень',
+                requirements: '30,000 A-Coin',
+                color: 'var(--brilliant-color)'
+            }
+        ];
+
+        const container = document.querySelector('.loyalty-levels');
+        if (!container) return;
+
+        container.innerHTML = loyaltyLevels.map(level => `
+            <div class="loyalty-level ${level.name.toLowerCase()} ${this.userData.level === level.name ? 'active' : ''}">
+                <div class="level-icon">${level.icon}</div>
+                <div class="level-info">
+                    <div class="level-name">${level.name}</div>
+                    <div class="level-description">${level.description} • ${level.requirements}</div>
+                    ${this.userData.level === level.name ? `
+                        <div class="level-progress">
+                            <div class="progress-bar" style="width: ${this.userData.progress}%"></div>
+                        </div>
+                    ` : ''}
+                </div>
+            </div>
+        `).join('');
     }
 
     copyReferralLink() {
@@ -80,7 +137,7 @@ class ProfileManager {
             const btn = document.getElementById('copy-referral-btn');
             const originalText = btn.textContent;
             btn.textContent = 'Ссылка скопирована!';
-            btn.style.background = 'var(--success-color)';
+            btn.style.background = 'var(--accent-success)';
             
             setTimeout(() => {
                 btn.textContent = originalText;

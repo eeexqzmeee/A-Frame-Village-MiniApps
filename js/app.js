@@ -37,8 +37,25 @@ class AFrameApp {
             });
         });
 
+        // Кнопка "Посмотреть дома" - сразу переходим к выбору домов
         document.getElementById('view-houses-btn')?.addEventListener('click', () => {
-            this.showScreen('calendar-screen');
+            this.showScreen('houses-screen');
+        });
+
+        // Кнопка "Мои брони"
+        document.getElementById('my-bookings-btn')?.addEventListener('click', () => {
+            alert('Функция "Мои брони" в разработке');
+        });
+
+        // Продолжение к выбору дат после выбора дома
+        document.addEventListener('click', (e) => {
+            if (e.target.closest('#continue-to-dates')) {
+                if (this.selectedHouse) {
+                    this.showScreen('calendar-screen');
+                } else {
+                    alert('Пожалуйста, выберите дом');
+                }
+            }
         });
     }
 
@@ -125,8 +142,8 @@ class AFrameApp {
     goBack() {
         const screenHistory = {
             'profile-screen': 'main-screen',
-            'calendar-screen': 'main-screen',
-            'houses-screen': 'calendar-screen',
+            'calendar-screen': 'houses-screen', // Изменено: из календаря возвращаемся к домам
+            'houses-screen': 'main-screen',
             'house-detail-screen': 'houses-screen',
             'payment-screen': 'house-detail-screen'
         };
