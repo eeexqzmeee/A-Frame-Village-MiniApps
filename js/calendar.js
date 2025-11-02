@@ -229,8 +229,17 @@ class Calendar {
             window.app.bookingData.checkout = this.selectedDates.checkout;
             window.app.bookingData.nights = this.calculateNights();
             window.app.bookingData.basePrice = window.app.bookingData.house.price * window.app.bookingData.nights;
+            
+            console.log('✅ Данные для оплаты:', window.app.bookingData);
         }
 
-        window.app.showPaymentScreen();
+        // Показываем экран оплаты
+        if (window.paymentManager) {
+            window.paymentManager.renderPaymentScreen(window.app.bookingData);
+            window.app.showScreen('payment-screen');
+        } else {
+            console.error('Payment manager not found');
+            alert('Ошибка загрузки платежной системы');
+        }
     }
 }

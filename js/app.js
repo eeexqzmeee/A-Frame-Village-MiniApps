@@ -46,20 +46,6 @@ class AFrameApp {
         document.getElementById('my-bookings-btn')?.addEventListener('click', () => {
             alert('Функция "Мои брони" в разработке');
         });
-
-        // Продолжение к выбору дат после выбора дома
-        document.addEventListener('click', (e) => {
-            if (e.target.closest('#continue-to-dates')) {
-                this.continueToDates();
-            }
-        });
-
-        // Продолжение к оплате после выбора дат
-        document.addEventListener('click', (e) => {
-            if (e.target.closest('#continue-to-payment')) {
-                this.continueToPayment();
-            }
-        });
     }
 
     bindHouseSelection() {
@@ -168,9 +154,21 @@ class AFrameApp {
             this.bookingData.checkout = window.calendar.selectedDates.checkout;
             this.bookingData.nights = window.calendar.calculateNights();
             this.bookingData.basePrice = this.bookingData.house.price * this.bookingData.nights;
+            
+            console.log('✅ Переход к оплате с данными:', this.bookingData);
         }
 
         this.showPaymentScreen();
+    }
+
+    showPaymentScreen() {
+        if (window.paymentManager && this.bookingData) {
+            window.paymentManager.renderPaymentScreen(this.bookingData);
+            this.showScreen('payment-screen');
+        } else {
+            console.error('Payment manager or booking data not found');
+            alert('Ошибка загрузки платежной системы');
+        }
     }
 
     goBack() {

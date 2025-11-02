@@ -19,7 +19,6 @@ class BookingManager {
     }
 
     initScrollReveal() {
-        // Инициализация анимаций при скролле
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
@@ -100,40 +99,42 @@ class BookingManager {
                             </div>
                         ` : ''}
                     </div>
+                </div>
 
-                    <!-- Sticky панель -->
-                    <div class="sticky-panel">
-                        <div class="price-summary">
-                            <div class="price-item">
-                                <span>Проживание (${nightsCount} ${this.getNightsText(nightsCount)})</span>
-                                <span>${basePrice.toLocaleString()}₽</span>
-                            </div>
-                            ${this.selectedServices.map(service => `
-                                <div class="price-item">
-                                    <span>${service.name}${service.selectedDuration ? ' - ' + service.selectedDuration.label : ' - ' + service.hours + ' ч'}</span>
-                                    <span>${service.totalPrice.toLocaleString()}₽</span>
-                                </div>
-                            `).join('')}
-                            <div class="price-total">
-                                <span>Итого</span>
-                                <span>${this.calculateTotal(basePrice).toLocaleString()}₽</span>
-                            </div>
+                <!-- FIXED Sticky панель в самом низу -->
+                <div class="sticky-panel">
+                    <div class="price-summary">
+                        <div class="price-item">
+                            <span>Проживание (${nightsCount} ${this.getNightsText(nightsCount)})</span>
+                            <span>${basePrice.toLocaleString()}₽</span>
                         </div>
-
-                        <button class="book-btn primary" id="continue-to-dates">
-                            Выбрать даты
-                        </button>
+                        ${this.selectedServices.map(service => `
+                            <div class="price-item">
+                                <span>${service.name}${service.selectedDuration ? ' - ' + service.selectedDuration.label : service.hours ? ' - ' + service.hours + ' ч' : ''}</span>
+                                <span>${service.totalPrice.toLocaleString()}₽</span>
+                            </div>
+                        `).join('')}
+                        <div class="price-total">
+                            <span>Итого</span>
+                            <span>${this.calculateTotal(basePrice).toLocaleString()}₽</span>
+                        </div>
                     </div>
+
+                    <button class="book-btn primary" id="continue-to-dates">
+                        Выбрать даты
+                    </button>
                 </div>
             </div>
         `;
 
         this.bindHouseDetailEvents(house);
         this.updateServiceSelections();
-        this.initScrollReveal(); // Переинициализируем для новых элементов
+        this.initScrollReveal();
     }
 
     renderService(service) {
+        const isChaanService = service.name.toLowerCase().includes('чан') || service.name.toLowerCase().includes('купель');
+        
         return `
             <div class="service-item scroll-reveal" data-service="${service.name}">
                 <div class="service-header">
@@ -142,35 +143,48 @@ class BookingManager {
                         <p>${service.description}</p>
                     </div>
                     <div class="service-price">
-                        ${service.price.toLocaleString()}₽/${service.unit}
+                        ${service.price > 0 ? `${service.price.toLocaleString()}₽/${service.unit}` : 'Бесплатно'}
                     </div>
                 </div>
                 <div class="service-controls">
-                    <div class="duration-selector">
-                        <label>Продолжительность:</label>
-                        <div class="duration-options">
-                            ${service.durations ? service.durations.map(duration => `
-                                <button class="duration-option ${duration.value === 2 ? 'active' : ''}" 
-                                        data-duration="${duration.value}" 
-                                        data-price="${duration.price}">
+                    ${isChaanService ? `
+                        <div class="service-option-buttons">
+                            <button class="service-option-btn active" data-option="not-needed">
+                                Не нужна услуга
+                            </button>
+                            ${service.durations ? service.durations.map((duration, index) => `
+                                <button class="service-option-btn" data-option="${duration.value}" data-price="${duration.price}">
                                     ${duration.label} - ${duration.price.toLocaleString()}₽
                                 </button>
-                            `).join('') : `
-                                <div class="duration-slider-container">
-                                    <input type="range" class="duration-slider" 
-                                           min="${service.min_hours || 1}" 
-                                           max="6" 
-                                           value="${service.min_hours || 2}" 
-                                           step="1">
-                                    <div class="slider-labels">
-                                        <span>${service.min_hours || 1} ч</span>
-                                        <span class="slider-value">${service.min_hours || 2} ч</span>
-                                        <span>6 ч</span>
-                                    </div>
-                                </div>
-                            `}
+                            `).join('') : ''}
                         </div>
-                    </div>
+                    ` : `
+                        <div class="duration-selector">
+                            <label>Продолжительность:</label>
+                            <div class="duration-options">
+                                ${service.durations ? service.durations.map(duration => `
+                                    <button class="duration-option ${duration.value === 2 ? 'active' : ''}" 
+                                            data-duration="${duration.value}" 
+                                            data-price="${duration.price}">
+                                        ${duration.label} - ${duration.price.toLocaleString()}₽
+                                    </button>
+                                `).join('') : `
+                                    <div class="duration-slider-container">
+                                        <input type="range" class="duration-slider" 
+                                               min="${service.min_hours || 1}" 
+                                               max="6" 
+                                               value="${service.min_hours || 2}" 
+                                               step="1">
+                                        <div class="slider-labels">
+                                            <span>${service.min_hours || 1} ч</span>
+                                            <span class="slider-value">${service.min_hours || 2} ч</span>
+                                            <span>6 ч</span>
+                                        </div>
+                                    </div>
+                                `}
+                            </div>
+                        </div>
+                    `}
                 </div>
             </div>
         `;
@@ -188,6 +202,7 @@ class BookingManager {
     }
 
     bindServiceEvents(house) {
+        // Обработчики для обычных опций продолжительности
         document.querySelectorAll('.duration-option').forEach(option => {
             option.addEventListener('click', (e) => {
                 const serviceItem = e.target.closest('.service-item');
@@ -204,6 +219,7 @@ class BookingManager {
             });
         });
 
+        // Обработчики для слайдеров
         document.querySelectorAll('.duration-slider').forEach(slider => {
             slider.addEventListener('input', (e) => {
                 const serviceItem = e.target.closest('.service-item');
@@ -220,11 +236,39 @@ class BookingManager {
                 this.updateServiceSelection(house, serviceName, hours, price);
             });
         });
+
+        // Обработчики для кнопок опций (чан)
+        document.querySelectorAll('.service-option-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const serviceItem = e.target.closest('.service-item');
+                const serviceName = serviceItem.dataset.service;
+                const option = e.target.dataset.option;
+                
+                // Убираем активный класс у всех кнопок в этой группе
+                serviceItem.querySelectorAll('.service-option-btn').forEach(b => {
+                    b.classList.remove('active');
+                });
+                e.target.classList.add('active');
+
+                if (option === 'not-needed') {
+                    // Удаляем услугу из выбранных
+                    this.selectedServices = this.selectedServices.filter(s => s.name !== serviceName);
+                } else {
+                    const duration = parseInt(option);
+                    const price = parseInt(e.target.dataset.price);
+                    const service = house.services.find(s => s.name === serviceName);
+                    const selectedDuration = service.durations.find(d => d.value === duration);
+
+                    this.updateServiceSelection(house, serviceName, duration, price, selectedDuration);
+                }
+
+                this.updatePriceDisplay();
+            });
+        });
     }
 
-    updateServiceSelection(house, serviceName, duration, totalPrice) {
+    updateServiceSelection(house, serviceName, duration, totalPrice, selectedDuration = null) {
         const service = house.services.find(s => s.name === serviceName);
-        const selectedDuration = service.durations ? service.durations.find(d => d.value === duration) : null;
 
         const existingIndex = this.selectedServices.findIndex(s => s.name === serviceName);
         
@@ -252,7 +296,17 @@ class BookingManager {
         this.selectedServices.forEach(service => {
             const serviceElement = document.querySelector(`[data-service="${service.name}"]`);
             if (serviceElement) {
-                if (service.selectedDuration) {
+                const isChaanService = service.name.toLowerCase().includes('чан') || service.name.toLowerCase().includes('купель');
+                
+                if (isChaanService) {
+                    const optionBtn = serviceElement.querySelector(`[data-option="${service.hours}"]`);
+                    if (optionBtn) {
+                        serviceElement.querySelectorAll('.service-option-btn').forEach(btn => {
+                            btn.classList.remove('active');
+                        });
+                        optionBtn.classList.add('active');
+                    }
+                } else if (service.selectedDuration) {
                     const option = serviceElement.querySelector(`[data-duration="${service.selectedDuration.value}"]`);
                     if (option) {
                         serviceElement.querySelectorAll('.duration-option').forEach(opt => {
@@ -293,7 +347,7 @@ class BookingManager {
                 const serviceElement = document.createElement('div');
                 serviceElement.className = 'price-item';
                 serviceElement.innerHTML = `
-                    <span>${service.name}${service.selectedDuration ? ' - ' + service.selectedDuration.label : ' - ' + service.hours + ' ч'}</span>
+                    <span>${service.name}${service.selectedDuration ? ' - ' + service.selectedDuration.label : service.hours ? ' - ' + service.hours + ' ч' : ''}</span>
                     <span>${service.totalPrice.toLocaleString()}₽</span>
                 `;
                 servicesContainer.insertBefore(serviceElement, servicesContainer.querySelector('.price-total'));
