@@ -149,11 +149,14 @@ class BookingManager {
                 <div class="service-controls">
                     ${isChaanService ? `
                         <div class="service-option-buttons">
-                            <button class="service-option-btn active" data-option="not-needed">
+                            <button class="service-option-btn ${!this.isServiceSelected(service.name) ? 'active' : ''}" 
+                                    data-option="not-needed">
                                 Не нужна услуга
                             </button>
                             ${service.durations ? service.durations.map((duration, index) => `
-                                <button class="service-option-btn" data-option="${duration.value}" data-price="${duration.price}">
+                                <button class="service-option-btn ${this.isServiceSelectedWithDuration(service.name, duration.value) ? 'active' : ''}" 
+                                        data-option="${duration.value}" 
+                                        data-price="${duration.price}">
                                     ${duration.label} - ${duration.price.toLocaleString()}₽
                                 </button>
                             `).join('') : ''}
@@ -163,7 +166,7 @@ class BookingManager {
                             <label>Продолжительность:</label>
                             <div class="duration-options">
                                 ${service.durations ? service.durations.map(duration => `
-                                    <button class="duration-option ${duration.value === 2 ? 'active' : ''}" 
+                                    <button class="duration-option ${this.isServiceSelectedWithDuration(service.name, duration.value) ? 'active' : ''}" 
                                             data-duration="${duration.value}" 
                                             data-price="${duration.price}">
                                         ${duration.label} - ${duration.price.toLocaleString()}₽
@@ -173,11 +176,11 @@ class BookingManager {
                                         <input type="range" class="duration-slider" 
                                                min="${service.min_hours || 1}" 
                                                max="6" 
-                                               value="${service.min_hours || 2}" 
+                                               value="${this.getServiceHours(service.name) || service.min_hours || 2}" 
                                                step="1">
                                         <div class="slider-labels">
                                             <span>${service.min_hours || 1} ч</span>
-                                            <span class="slider-value">${service.min_hours || 2} ч</span>
+                                            <span class="slider-value">${this.getServiceHours(service.name) || service.min_hours || 2} ч</span>
                                             <span>6 ч</span>
                                         </div>
                                     </div>
@@ -210,7 +213,7 @@ class BookingManager {
                 const duration = parseInt(e.target.dataset.duration);
                 const price = parseInt(e.target.dataset.price);
 
-                document.querySelectorAll('.duration-option').forEach(opt => {
+                serviceItem.querySelectorAll('.duration-option').forEach(opt => {
                     opt.classList.remove('active');
                 });
                 e.target.classList.add('active');
@@ -265,6 +268,19 @@ class BookingManager {
                 this.updatePriceDisplay();
             });
         });
+    }
+
+    isServiceSelected(serviceName) {
+        return this.selectedServices.some(s => s.name === serviceName);
+    }
+
+    isServiceSelectedWithDuration(serviceName, duration) {
+        return this.selectedServices.some(s => s.name === serviceName && s.hours === duration);
+    }
+
+    getServiceHours(serviceName) {
+        const service = this.selectedServices.find(s => s.name === serviceName);
+        return service ? service.hours : null;
     }
 
     updateServiceSelection(house, serviceName, duration, totalPrice, selectedDuration = null) {

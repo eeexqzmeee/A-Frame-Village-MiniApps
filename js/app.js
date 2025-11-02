@@ -125,6 +125,9 @@ class AFrameApp {
         if (window.paymentManager && this.bookingData) {
             window.paymentManager.renderPaymentScreen(this.bookingData);
             this.showScreen('payment-screen');
+        } else {
+            console.error('Payment manager or booking data not available');
+            alert('Ошибка: данные бронирования не найдены');
         }
     }
 
@@ -159,16 +162,6 @@ class AFrameApp {
         }
 
         this.showPaymentScreen();
-    }
-
-    showPaymentScreen() {
-        if (window.paymentManager && this.bookingData) {
-            window.paymentManager.renderPaymentScreen(this.bookingData);
-            this.showScreen('payment-screen');
-        } else {
-            console.error('Payment manager or booking data not found');
-            alert('Ошибка загрузки платежной системы');
-        }
     }
 
     goBack() {
