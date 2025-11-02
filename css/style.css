@@ -3540,3 +3540,85 @@ body {
     from { opacity: 0; transform: scale(0.9); }
     to { opacity: 1; transform: scale(1); }
 }
+/* ФИКС НАВИГАЦИОННОЙ ПАНЕЛИ */
+.bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    background: var(--bg-secondary);
+    backdrop-filter: blur(40px);
+    -webkit-backdrop-filter: blur(40px);
+    border-top: 1px solid var(--border-color);
+    display: flex;
+    padding: 8px 16px;
+    padding-bottom: calc(8px + env(safe-area-inset-bottom));
+    z-index: 1030;
+    transform: translateX(0) !important;
+}
+
+/* ФИКС SWIPE ЭКРАНОВ */
+#swipe-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+.swipe-screen {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow-x: hidden;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    background: var(--bg-primary);
+    padding-bottom: 80px;
+}
+
+.swipe-screen:not(.active) {
+    transform: translateX(100%);
+    opacity: 0;
+    pointer-events: none;
+}
+
+.swipe-screen.active {
+    transform: translateX(0);
+    opacity: 1;
+    pointer-events: all;
+}
+
+.swipe-screen.main-screen:not(.active) {
+    transform: translateX(-100%);
+}
+
+.swipe-screen.profile-screen:not(.active) {
+    transform: translateX(100%);
+}
+
+/* УПРОЩЕННЫЕ АНИМАЦИИ БЕЗ СКАЧКОВ */
+.swipe-screen {
+    transition: transform 0.3s ease-in-out;
+}
+
+/* ФИКС ДЛЯ ГЛАВНОГО ЭКРАНА */
+#main-screen.active {
+    transform: translateX(0);
+}
+
+#main-screen:not(.active) {
+    transform: translateX(-100%);
+}
+
+/* ФИКС ДЛЯ ПРОФИЛЯ */
+#profile-screen.active {
+    transform: translateX(0);
+}
+
+#profile-screen:not(.active) {
+    transform: translateX(100%);
+}

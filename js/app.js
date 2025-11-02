@@ -33,42 +33,44 @@ const app = {
             item.addEventListener('click', (e) => {
                 e.preventDefault();
                 const targetScreen = e.currentTarget.dataset.screen;
-                this.showSwipeScreen(targetScreen);
-                
+            
+            // Обновляем навигацию сразу
                 navItems.forEach(nav => nav.classList.remove('active'));
                 e.currentTarget.classList.add('active');
+            
+            // Переключаем экраны
+                this.showSwipeScreen(targetScreen);
             });
-        });
-
-        document.getElementById('view-houses-btn')?.addEventListener('click', () => {
-            this.showScreen('houses-screen');
         });
     },
 
     showSwipeScreen(screenId) {
         const currentScreen = document.querySelector('.swipe-screen.active');
         const targetScreen = document.getElementById(screenId);
-        if (currentScreen && targetScreen) {
-        // Определяем направление анимации
-        const screens = ['main-screen', 'profile-screen'];
-        const currentIndex = screens.indexOf(currentScreen.id);
-        const targetIndex = screens.indexOf(screenId);
-        
-        currentScreen.classList.remove('active');
-        if (targetIndex > currentIndex) {
-            targetScreen.classList.remove('slide-left');
-        } else {
-            targetScreen.classList.add('slide-left');
+    
+        if (!currentScreen || !targetScreen || currentScreen === targetScreen) {
+            return;
         }
-        
-        setTimeout(() => {
-            targetScreen.classList.add('active');
-        }, 10);
-        
+    
+        // Убираем активный класс с текущего экрана
+        currentScreen.classList.remove('active');
+    
+        // Добавляем активный класс целевому экрану
+        targetScreen.classList.add('active');
+    
+        // Обновляем навигацию
         this.updateBottomNav(screenId);
-    }
     },
-
+    updateBottomNav(screenId) {
+        const navItems = document.querySelectorAll('.nav-item');
+        navItems.forEach(item => {
+            if (item.dataset.screen === screenId) {
+            item.classList.add('active');
+            } else {
+                item.classList.remove('active');
+            }
+        });
+    },
     updateProfileData() {
         if (window.profileManager) {
             profileManager.renderProfileScreen();
