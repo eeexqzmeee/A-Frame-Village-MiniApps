@@ -24,11 +24,10 @@ class Calendar {
             this.renderCalendar();
         });
 
-        document.getElementById('continue-to-payment')?.addEventListener('click', () => {
-            if (this.selectedDates.checkin && this.selectedDates.checkout) {
-                if (window.app) {
-                    window.app.continueToPayment();
-                }
+        // Обработчик для кнопки продолжения
+        document.addEventListener('click', (e) => {
+            if (e.target.closest('#continue-to-payment')) {
+                this.continueToPayment();
             }
         });
     }
@@ -72,17 +71,24 @@ class Calendar {
             const dateString = this.formatDate(new Date(this.currentDate.getFullYear(), this.currentDate.getMonth(), day));
             
             if (this.isDateBooked(dateString)) {
-                dayElement.classList.add('booked');
+                dayElement.classList.add('disabled');
+                dayElement.title = 'Дата занята';
             } else {
                 dayElement.addEventListener('click', () => this.selectDate(dateString));
             }
 
             if (dateString === this.selectedDates.checkin) {
-                dayElement.classList.add('selected', 'checkin');
+                dayElement.classList.add('selected');
             } else if (dateString === this.selectedDates.checkout) {
-                dayElement.classList.add('selected', 'checkout');
+                dayElement.classList.add('selected');
             } else if (this.isDateInRange(dateString)) {
                 dayElement.classList.add('in-range');
+            }
+
+            // Проверяем сегодняшний день
+            const today = new Date();
+            if (dateString === this.formatDate(today)) {
+                dayElement.classList.add('today');
             }
 
             gridElement.appendChild(dayElement);
@@ -92,7 +98,10 @@ class Calendar {
     }
 
     formatDate(date) {
-        return date.toISOString().split('T')[0];
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
     }
 
     isDateBooked(dateString) {
@@ -112,7 +121,7 @@ class Calendar {
             const checkinDate = new Date(this.selectedDates.checkin);
             const selectedDate = new Date(dateString);
             
-            if (selectedDate < checkinDate) {
+            if (selectedDate <= checkinDate) {
                 this.selectedDates.checkin = dateString;
                 this.selectedDates.checkout = null;
             } else {
@@ -153,6 +162,9 @@ class Calendar {
         }
         if (continueBtn) {
             continueBtn.disabled = !(this.selectedDates.checkin && this.selectedDates.checkout);
+            continueBtn.textContent = this.selectedDates.checkin && this.selectedDates.checkout ? 
+                `Перейти к оплате • ${this.calculateTotalPrice().toLocaleString()}₽` : 
+                'Выберите даты';
         }
 
         // Превращаем превью в sticky панель если есть выбранные даты
@@ -184,9 +196,41 @@ class Calendar {
         return diffDays;
     }
 
+    calculateTotalPrice() {
+        if (!window.app || !window.app.bookingData) return 0;
+        
+        const nights = this.calculateNights();
+        const basePrice = window.app.bookingData.house.price * nights;
+        const servicesTotal = window.app.bookingData.services.reduce((sum, service) => sum + service.totalPrice, 0);
+        
+        return basePrice + servicesTotal;
+    }
+
     getNightsText(nights) {
         if (nights === 1) return 'ночь';
         if (nights >= 2 && nights <= 4) return 'ночи';
         return 'ночей';
+    }
+
+    continueToPayment() {
+        if (!this.selectedDates.checkin || !this.selectedDates.checkout) {
+            alert('Пожалуйста, выберите даты заезда и выезда');
+            return;
+        }
+
+        if (!window.app || !window.app.selectedHouse) {
+            alert('Пожалуйста, выберите дом');
+            return;
+        }
+
+        // Обновляем bookingData с выбранными датами
+        if (window.app.bookingData) {
+            window.app.bookingData.checkin = this.selectedDates.checkin;
+            window.app.bookingData.checkout = this.selectedDates.checkout;
+            window.app.bookingData.nights = this.calculateNights();
+            window.app.bookingData.basePrice = window.app.bookingData.house.price * window.app.bookingData.nights;
+        }
+
+        window.app.showPaymentScreen();
     }
 }

@@ -1,9 +1,20 @@
 /* Базовые стили с анимациями */
+
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
     -webkit-tap-highlight-color: transparent;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+input, textarea {
+    -webkit-user-select: text;
+    -moz-user-select: text;
+    -ms-user-select: text;
+    user-select: text;
 }
 
 html {
@@ -1643,3 +1654,278 @@ body {
     opacity: 1;
     transform: translateY(0);
 }
+
+.sticky-panel {
+    position: sticky;
+    bottom: var(--space-md);
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: var(--border-radius-xl);
+    padding: var(--space-lg);
+    margin-top: var(--space-lg);
+    z-index: 100;
+    transition: all var(--transition-normal);
+    animation: slideInUp 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 
+        0 8px 32px rgba(0, 0, 0, 0.3),
+        0 2px 8px rgba(0, 0, 0, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.sticky-panel:hover {
+    border-color: var(--accent-primary);
+    transform: translateY(-2px);
+    box-shadow: 
+        0 12px 40px rgba(0, 0, 0, 0.4),
+        0 4px 12px rgba(0, 0, 0, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.15);
+}
+
+.sticky-panel.compact {
+    padding: var(--space-md);
+}
+
+.sticky-panel .price-summary {
+    margin-bottom: var(--space-lg);
+}
+
+.sticky-panel .price-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--space-sm) 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all var(--transition-fast);
+}
+
+.sticky-panel .price-item:hover {
+    transform: translateX(4px);
+}
+
+.sticky-panel .price-item:last-child {
+    border-bottom: none;
+}
+
+.sticky-panel .price-total {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--space-md) 0;
+    border-top: 2px solid rgba(255, 255, 255, 0.2);
+    font-weight: var(--font-weight-bold);
+    font-size: var(--font-size-lg);
+    color: var(--text-primary);
+}
+
+/* Уровни лояльности */
+.loyalty-section {
+    margin-bottom: var(--space-xl);
+}
+
+.loyalty-levels {
+    display: grid;
+    gap: var(--space-md);
+    margin-bottom: var(--space-lg);
+}
+
+.loyalty-level {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-md);
+    padding: var(--space-lg);
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: var(--border-radius-lg);
+    border: 2px solid transparent;
+    transition: all var(--transition-normal);
+    position: relative;
+    overflow: hidden;
+}
+
+.loyalty-level::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--accent-primary), transparent);
+    opacity: 0;
+    transition: opacity var(--transition-normal);
+}
+
+.loyalty-level:hover::before {
+    opacity: 1;
+}
+
+.loyalty-level:hover {
+    background: rgba(255, 255, 255, 0.08);
+    transform: translateY(-2px);
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+.loyalty-level.active {
+    border-color: var(--accent-primary);
+    background: rgba(0, 122, 255, 0.1);
+    box-shadow: 0 4px 16px rgba(0, 122, 255, 0.2);
+}
+
+.loyalty-level.bronze.active {
+    border-color: var(--bronze-color);
+    background: rgba(205, 127, 50, 0.1);
+    box-shadow: 0 4px 16px rgba(205, 127, 50, 0.2);
+}
+
+.loyalty-level.silver.active {
+    border-color: var(--silver-color);
+    background: rgba(192, 192, 192, 0.1);
+    box-shadow: 0 4px 16px rgba(192, 192, 192, 0.2);
+}
+
+.loyalty-level.gold.active {
+    border-color: var(--gold-color);
+    background: rgba(255, 215, 0, 0.1);
+    box-shadow: 0 4px 16px rgba(255, 215, 0, 0.2);
+}
+
+.loyalty-level.brilliant.active {
+    border-color: var(--brilliant-color);
+    background: rgba(82, 224, 255, 0.1);
+    box-shadow: 0 4px 16px rgba(82, 224, 255, 0.2);
+}
+
+.level-icon {
+    font-size: 2rem;
+    width: 50px;
+    text-align: center;
+    flex-shrink: 0;
+}
+
+.level-info {
+    flex: 1;
+}
+
+.level-name {
+    font-weight: var(--font-weight-semibold);
+    margin-bottom: var(--space-xs);
+    line-height: 1.3;
+    font-size: var(--font-size-lg);
+}
+
+.level-description {
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+    line-height: 1.4;
+    margin-bottom: var(--space-xs);
+}
+
+.level-requirements {
+    font-size: var(--font-size-xs);
+    color: var(--text-tertiary);
+    margin-bottom: var(--space-sm);
+    font-weight: var(--font-weight-medium);
+}
+
+.level-benefits {
+    margin-top: var(--space-sm);
+}
+
+.benefit-item {
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+    margin-bottom: var(--space-xs);
+    display: flex;
+    align-items: center;
+    gap: var(--space-xs);
+    line-height: 1.4;
+}
+
+.benefit-item::before {
+    content: '✓';
+    color: var(--accent-success);
+    font-weight: bold;
+}
+
+.level-progress {
+    width: 100%;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 3px;
+    margin: var(--space-md) 0 var(--space-sm);
+    overflow: hidden;
+    position: relative;
+}
+
+.progress-bar {
+    height: 100%;
+    border-radius: 3px;
+    transition: width var(--transition-slow) cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.progress-bar::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+    animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+    0% { left: -100%; }
+    100% { left: 100%; }
+}
+
+.progress-text {
+    font-size: var(--font-size-xs);
+    color: var(--text-secondary);
+    text-align: center;
+    font-weight: var(--font-weight-medium);
+}
+
+/* Улучшаем анимации для sticky панелей */
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+@keyframes slideInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-30px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* Анимация появления при скролле */
+.scroll-reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all var(--transition-slow) cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.scroll-reveal.revealed {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Специфичные анимации для разных элементов */
+.scroll-reveal:nth-child(1) { transition-delay: 0.1s; }
+.scroll-reveal:nth-child(2) { transition-delay: 0.2s; }
+.scroll-reveal:nth-child(3) { transition-delay: 0.3s; }
+.scroll-reveal:nth-child(4) { transition-delay: 0.4s; }
+.scroll-reveal:nth-child(5) { transition-delay: 0.5s; }

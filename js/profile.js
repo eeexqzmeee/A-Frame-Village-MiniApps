@@ -20,7 +20,7 @@ class ProfileManager {
             earnedCoins: 1500,
             progress: 45, // прогресс до следующего уровня в %
             nextLevel: 'Silver',
-            nextLevelProgress: 65 // сколько нужно для следующего уровня
+            nextLevelProgress: 45 // текущий прогресс
         };
         this.updateProfileDisplay();
     }
@@ -86,64 +86,81 @@ class ProfileManager {
                 icon: '🥉',
                 description: 'Базовый уровень с стандартными привилегиями',
                 requirements: '0 A-Coin',
-                benefits: ['Базовые скидки', 'Поддержка 24/7'],
+                benefits: ['Базовые скидки', 'Поддержка 24/7', 'Доступ ко всем домам'],
                 color: 'var(--bronze-color)',
-                progress: 100
+                progress: 100,
+                isCurrent: this.userData.level === 'Bronze'
             },
             {
                 name: 'Silver',
                 icon: '🥈', 
                 description: 'Расширенные возможности и привилегии',
                 requirements: '5,000 A-Coin',
-                benefits: ['Скидка 5% на бронирования', 'Приоритетная поддержка', 'Ранний доступ к акциям'],
+                benefits: ['Скидка 5% на бронирования', 'Приоритетная поддержка', 'Ранний доступ к акциям', 'Бесплатные улучшения'],
                 color: 'var(--silver-color)',
-                progress: this.userData.level === 'Bronze' ? this.userData.progress : 100
+                progress: this.userData.level === 'Bronze' ? this.userData.progress : (this.userData.level === 'Silver' ? 100 : 0),
+                isCurrent: this.userData.level === 'Silver'
             },
             {
                 name: 'Gold',
                 icon: '🥇',
                 description: 'Премиальные привилегии для постоянных гостей',
                 requirements: '15,000 A-Coin', 
-                benefits: ['Скидка 10% на бронирования', 'Персональный менеджер', 'Бесплатные улучшения', 'Эксклюзивные предложения'],
+                benefits: ['Скидка 10% на бронирования', 'Персональный менеджер', 'Бесплатные дополнительные услуги', 'Эксклюзивные предложения', 'Приоритетное бронирование'],
                 color: 'var(--gold-color)',
-                progress: this.userData.level === 'Silver' ? this.userData.progress : (this.userData.level === 'Gold' ? 100 : 0)
+                progress: this.userData.level === 'Silver' ? this.userData.progress : (this.userData.level === 'Gold' ? 100 : 0),
+                isCurrent: this.userData.level === 'Gold'
             },
             {
                 name: 'Brilliant',
                 icon: '💎',
                 description: 'Максимальный уровень с эксклюзивными возможностями',
                 requirements: '30,000 A-Coin',
-                benefits: ['Скидка 15% на все бронирования', 'VIP обслуживание', 'Бесплатные дополнительные услуги', 'Доступ к закрытым мероприятиям'],
+                benefits: ['Скидка 15% на все бронирования', 'VIP обслуживание', 'Бесплатные дополнительные услуги', 'Доступ к закрытым мероприятиям', 'Персональные скидки', 'Эксклюзивный доступ'],
                 color: 'var(--brilliant-color)',
-                progress: this.userData.level === 'Gold' ? this.userData.progress : (this.userData.level === 'Brilliant' ? 100 : 0)
+                progress: this.userData.level === 'Gold' ? this.userData.progress : (this.userData.level === 'Brilliant' ? 100 : 0),
+                isCurrent: this.userData.level === 'Brilliant'
             }
         ];
 
         const container = document.querySelector('.loyalty-levels');
-        if (!container) return;
+        if (!container) {
+            // Создаем контейнер если его нет
+            const profileSection = document.querySelector('.profile-section');
+            if (profileSection) {
+                const loyaltySection = document.createElement('div');
+                loyaltySection.className = 'profile-section loyalty-section';
+                loyaltySection.innerHTML = `
+                    <h3 class="section-title">Уровни лояльности</h3>
+                    <div class="loyalty-levels"></div>
+                `;
+                profileSection.parentNode.insertBefore(loyaltySection, profileSection);
+            }
+            return;
+        }
 
         container.innerHTML = loyaltyLevels.map(level => `
-            <div class="loyalty-level ${level.name.toLowerCase()} ${this.userData.level === level.name ? 'active' : ''} scroll-reveal">
+            <div class="loyalty-level ${level.name.toLowerCase()} ${level.isCurrent ? 'active' : ''} scroll-reveal">
                 <div class="level-icon">${level.icon}</div>
                 <div class="level-info">
                     <div class="level-name">${level.name}</div>
                     <div class="level-description">${level.description}</div>
                     <div class="level-requirements">Требуется: ${level.requirements}</div>
                     
-                    ${level.benefits ? `
-                        <div class="level-benefits">
-                            ${level.benefits.map(benefit => `
-                                <div class="benefit-item">✓ ${benefit}</div>
-                            `).join('')}
-                        </div>
-                    ` : ''}
+                    <div class="level-benefits">
+                        ${level.benefits.map(benefit => `
+                            <div class="benefit-item">${benefit}</div>
+                        `).join('')}
+                    </div>
                     
-                    ${this.userData.level === level.name || (this.userData.nextLevel === level.name && this.userData.level !== 'Brilliant') ? `
+                    ${level.progress > 0 ? `
                         <div class="level-progress">
                             <div class="progress-bar" style="width: ${level.progress}%; background: ${level.color};"></div>
                         </div>
-                        ${this.userData.level === level.name ? `
-                            <div class="progress-text">Прогресс до ${this.userData.nextLevel}: ${level.progress}%</div>
+                        ${level.isCurrent && level.progress < 100 ? `
+                            <div class="progress-text">Прогресс до следующего уровня: ${level.progress}%</div>
+                        ` : level.isCurrent ? `
+                            <div class="progress-text">Максимальный уровень достигнут!</div>
                         ` : ''}
                     ` : ''}
                 </div>
