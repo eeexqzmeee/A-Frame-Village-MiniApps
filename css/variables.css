@@ -1,6 +1,7 @@
 :root {
     --bg-primary: #000000;
     --bg-secondary: #1a1a1a;
+    --bg-tertiary: #2a2a2a;
     
     --text-primary: #ffffff;
     --text-secondary: rgba(255, 255, 255, 0.7);
@@ -30,14 +31,21 @@
     --font-size-xl: 1.25rem;
     --font-size-xxl: 1.5rem;
     
+    --font-weight-light: 300;
     --font-weight-normal: 400;
     --font-weight-medium: 500;
     --font-weight-semibold: 600;
     --font-weight-bold: 700;
     
+    --transition-fast: 0.15s ease;
     --transition-normal: 0.3s ease;
+    --transition-slow: 0.5s ease;
     
+    --z-dropdown: 1000;
     --z-sticky: 1020;
+    --z-fixed: 1030;
+    --z-modal: 1040;
+    --z-popover: 1050;
     --z-tooltip: 1060;
     
     --header-height: 60px;
