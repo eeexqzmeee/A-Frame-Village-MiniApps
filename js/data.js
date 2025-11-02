@@ -27,20 +27,9 @@ const housesData = {
                     unit: "час",
                     min_hours: 2,
                     durations: [
-                        { label: "2 часа", value: 2, price: 2000 },
-                        { label: "4 часа", value: 4, price: 3500 },
-                        { label: "Вся ночь", value: 8, price: 5000 }
-                    ]
-                },
-                { 
-                    name: "Дополнительная сауна", 
-                    description: "Дополнительное время в сауне", 
-                    price: 1000, 
-                    unit: "час",
-                    durations: [
-                        { label: "1 час", value: 1, price: 1000 },
-                        { label: "2 часа", value: 2, price: 1800 },
-                        { label: "3 часа", value: 3, price: 2500 }
+                        { label: "2 часа", value: 2, price: 4000 },
+                        { label: "4 часа", value: 4, price: 7000 },
+                        { label: "6 часов", value: 6, price: 10000 }
                     ]
                 }
             ]
@@ -71,9 +60,9 @@ const housesData = {
                     unit: "час",
                     min_hours: 2,
                     durations: [
-                        { label: "2 часа", value: 2, price: 2000 },
-                        { label: "4 часа", value: 4, price: 3500 },
-                        { label: "Вся ночь", value: 8, price: 5000 }
+                        { label: "2 часа", value: 2, price: 4000 },
+                        { label: "4 часа", value: 4, price: 7000 },
+                        { label: "6 часов", value: 6, price: 10000 }
                     ]
                 }
             ]
@@ -104,9 +93,9 @@ const housesData = {
                     unit: "час",
                     min_hours: 2,
                     durations: [
-                        { label: "2 часа", value: 2, price: 2000 },
-                        { label: "4 часа", value: 4, price: 3500 },
-                        { label: "Вся ночь", value: 8, price: 5000 }
+                        { label: "2 часа", value: 2, price: 4000 },
+                        { label: "4 часа", value: 4, price: 7000 },
+                        { label: "6 часов", value: 6, price: 10000 }
                     ]
                 }
             ]
@@ -137,9 +126,9 @@ const housesData = {
                     unit: "час",
                     min_hours: 2,
                     durations: [
-                        { label: "2 часа", value: 2, price: 2000 },
-                        { label: "4 часа", value: 4, price: 3500 },
-                        { label: "Вся ночь", value: 8, price: 5000 }
+                        { label: "2 часа", value: 2, price: 4000 },
+                        { label: "4 часа", value: 4, price: 7000 },
+                        { label: "6 часов", value: 6, price: 10000 }
                     ]
                 }
             ]
@@ -170,9 +159,9 @@ const housesData = {
                     unit: "час",
                     min_hours: 2,
                     durations: [
-                        { label: "2 часа", value: 2, price: 2000 },
-                        { label: "4 часа", value: 4, price: 3500 },
-                        { label: "Вся ночь", value: 8, price: 5000 }
+                        { label: "2 часа", value: 2, price: 4000 },
+                        { label: "4 часа", value: 4, price: 7000 },
+                        { label: "6 часов", value: 6, price: 10000 }
                     ]
                 }
             ]
@@ -203,9 +192,9 @@ const housesData = {
                     unit: "час",
                     min_hours: 2,
                     durations: [
-                        { label: "2 часа", value: 2, price: 2000 },
-                        { label: "4 часа", value: 4, price: 3500 },
-                        { label: "Вся ночь", value: 8, price: 5000 }
+                        { label: "2 часа", value: 2, price: 4000 },
+                        { label: "4 часа", value: 4, price: 7000 },
+                        { label: "6 часов", value: 6, price: 10000 }
                     ]
                 }
             ]
@@ -229,14 +218,7 @@ const housesData = {
                 { icon: "🍳", label: "Кухня", value: "Мини-кухня" }
             ],
             images: ["❤️"],
-            services: [
-                { 
-                    name: "Романтический ужин", 
-                    description: "Свечи, цветы и специальное меню", 
-                    price: 3000,
-                    unit: "услуга"
-                }
-            ]
+            services: []
         }
     ],
     family: [
@@ -257,20 +239,7 @@ const housesData = {
                 { icon: "🍳", label: "Кухня", value: "Полностью оборудована" }
             ],
             images: ["👨‍👩‍👧‍👦"],
-            services: [
-                { 
-                    name: "Детская кроватка", 
-                    description: "Для маленьких гостей", 
-                    price: 0,
-                    unit: "услуга"
-                },
-                { 
-                    name: "Настольные игры", 
-                    description: "Набор для всей семьи", 
-                    price: 500,
-                    unit: "комплект"
-                }
-            ]
+            services: []
         }
     ]
 };

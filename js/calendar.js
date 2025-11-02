@@ -9,161 +9,124 @@ class Calendar {
     }
 
     init() {
-        this.generateCalendar();
+        this.renderCalendar();
         this.bindEvents();
     }
 
     bindEvents() {
-        const prevBtn = document.getElementById('prev-month');
-        const nextBtn = document.getElementById('next-month');
-        
-        if (prevBtn) {
-            prevBtn.addEventListener('click', () => this.prevMonth());
-        }
-        if (nextBtn) {
-            nextBtn.addEventListener('click', () => this.nextMonth());
-        }
+        document.getElementById('prev-month')?.addEventListener('click', () => {
+            this.currentDate.setMonth(this.currentDate.getMonth() - 1);
+            this.renderCalendar();
+        });
+
+        document.getElementById('next-month')?.addEventListener('click', () => {
+            this.currentDate.setMonth(this.currentDate.getMonth() + 1);
+            this.renderCalendar();
+        });
+
+        document.getElementById('continue-to-houses')?.addEventListener('click', () => {
+            if (this.selectedDates.checkin && this.selectedDates.checkout) {
+                window.app.showScreen('houses-screen');
+            }
+        });
     }
 
-    generateCalendar() {
-        const calendarGrid = document.getElementById('calendar-grid');
+    renderCalendar() {
         const monthElement = document.getElementById('current-month');
         const yearElement = document.getElementById('current-year');
+        const gridElement = document.getElementById('calendar-grid');
 
-        if (!calendarGrid || !monthElement || !yearElement) return;
-
-        const year = this.currentDate.getFullYear();
-        const month = this.currentDate.getMonth();
+        if (!monthElement || !yearElement || !gridElement) return;
 
         const monthNames = [
             'Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь',
             'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'
         ];
-        
-        monthElement.textContent = monthNames[month];
-        yearElement.textContent = year;
 
-        calendarGrid.innerHTML = '';
+        monthElement.textContent = monthNames[this.currentDate.getMonth()];
+        yearElement.textContent = this.currentDate.getFullYear();
 
-        const firstDay = new Date(year, month, 1);
-        const lastDay = new Date(year, month + 1, 0);
-        
-        let firstDayOfWeek = firstDay.getDay();
-        if (firstDayOfWeek === 0) firstDayOfWeek = 7;
-        
-        const prevMonthLastDay = new Date(year, month, 0).getDate();
-        for (let i = firstDayOfWeek - 2; i >= 0; i--) {
-            const day = this.createDayElement(prevMonthLastDay - i, true);
-            calendarGrid.appendChild(day);
+        const firstDay = new Date(this.currentDate.getFullYear(), this.currentDate.getMonth(), 1);
+        const lastDay = new Date(this.currentDate.getFullYear(), this.currentDate.getMonth() + 1, 0);
+        const startingDay = firstDay.getDay();
+        const adjustedStartingDay = startingDay === 0 ? 6 : startingDay - 1;
+
+        gridElement.innerHTML = '';
+
+        for (let i = 0; i < adjustedStartingDay; i++) {
+            const emptyDay = document.createElement('div');
+            emptyDay.className = 'calendar-day empty';
+            gridElement.appendChild(emptyDay);
         }
 
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
+        for (let day = 1; day <= lastDay.getDate(); day++) {
+            const dayElement = document.createElement('div');
+            dayElement.className = 'calendar-day';
+            dayElement.textContent = day;
 
-        for (let i = 1; i <= lastDay.getDate(); i++) {
-            const date = new Date(year, month, i);
-            const isPast = date < today;
-            const isBooked = this.isDateBooked(date);
-            const isSelected = this.isDateSelected(date);
+            const dateString = this.formatDate(new Date(this.currentDate.getFullYear(), this.currentDate.getMonth(), day));
             
-            const day = this.createDayElement(i, false, isPast, isBooked, isSelected, date);
-            calendarGrid.appendChild(day);
-        }
+            if (this.isDateBooked(dateString)) {
+                dayElement.classList.add('booked');
+            } else {
+                dayElement.addEventListener('click', () => this.selectDate(dateString));
+            }
 
-        const totalCells = 42;
-        const daysInCalendar = firstDayOfWeek - 1 + lastDay.getDate();
-        const nextMonthDays = totalCells - daysInCalendar;
-        
-        for (let i = 1; i <= nextMonthDays; i++) {
-            const day = this.createDayElement(i, true);
-            calendarGrid.appendChild(day);
+            if (dateString === this.selectedDates.checkin) {
+                dayElement.classList.add('selected', 'checkin');
+            } else if (dateString === this.selectedDates.checkout) {
+                dayElement.classList.add('selected', 'checkout');
+            } else if (this.isDateInRange(dateString)) {
+                dayElement.classList.add('in-range');
+            }
+
+            gridElement.appendChild(dayElement);
         }
 
         this.updateDatesPreview();
     }
 
-    createDayElement(dayNumber, isOtherMonth, isPast = false, isBooked = false, isSelected = false, date = null) {
-        const day = document.createElement('div');
-        day.className = 'calendar-day';
-        day.textContent = dayNumber;
-
-        if (isOtherMonth) {
-            day.classList.add('disabled');
-        }
-
-        if (isPast) {
-            day.classList.add('disabled');
-        }
-
-        if (isBooked) {
-            day.classList.add('disabled');
-            day.title = 'Дата занята';
-        }
-
-        if (isSelected) {
-            day.classList.add('selected');
-        }
-
-        if (date) {
-            const today = new Date();
-            today.setHours(0, 0, 0, 0);
-            if (date.getTime() === today.getTime()) {
-                day.classList.add('today');
-            }
-        }
-
-        if (!isOtherMonth && !isPast && !isBooked && date) {
-            day.dataset.date = date.toISOString().split('T')[0];
-            day.addEventListener('click', () => this.selectDate(date));
-        }
-
-        return day;
+    formatDate(date) {
+        return date.toISOString().split('T')[0];
     }
 
-    isDateBooked(date) {
-        if (!bookedDates) return false;
-        
-        const dateStr = date.toISOString().split('T')[0];
-        
+    isDateBooked(dateString) {
         for (const houseId in bookedDates) {
-            if (bookedDates[houseId].includes(dateStr)) {
+            if (bookedDates[houseId].includes(dateString)) {
                 return true;
             }
         }
         return false;
     }
 
-    isDateSelected(date) {
-        if (!this.selectedDates.checkin) return false;
-        
-        const dateStr = date.toISOString().split('T')[0];
-        return this.selectedDates.checkin === dateStr || 
-               (this.selectedDates.checkout && this.selectedDates.checkout === dateStr);
+    selectDate(dateString) {
+        if (!this.selectedDates.checkin || (this.selectedDates.checkin && this.selectedDates.checkout)) {
+            this.selectedDates.checkin = dateString;
+            this.selectedDates.checkout = null;
+        } else {
+            const checkinDate = new Date(this.selectedDates.checkin);
+            const selectedDate = new Date(dateString);
+            
+            if (selectedDate < checkinDate) {
+                this.selectedDates.checkin = dateString;
+                this.selectedDates.checkout = null;
+            } else {
+                this.selectedDates.checkout = dateString;
+            }
+        }
+
+        this.renderCalendar();
+        this.updateDatesPreview();
     }
 
-    selectDate(date) {
-        const dateStr = date.toISOString().split('T')[0];
-
-        if (!this.selectedDates.checkin) {
-            this.selectedDates.checkin = dateStr;
-            this.selectedDates.checkout = null;
-        } else if (!this.selectedDates.checkout && dateStr > this.selectedDates.checkin) {
-            this.selectedDates.checkout = dateStr;
-        } else {
-            this.selectedDates.checkin = dateStr;
-            this.selectedDates.checkout = null;
-        }
-
-        this.generateCalendar();
-        this.updateDatesPreview();
+    isDateInRange(dateString) {
+        if (!this.selectedDates.checkin || !this.selectedDates.checkout) return false;
         
-        if (window.app) {
-            window.app.selectedDates = {...this.selectedDates};
-        }
-
-        if (window.housesManager) {
-            window.housesManager.updateAvailability();
-        }
+        const currentDate = new Date(dateString);
+        const checkinDate = new Date(this.selectedDates.checkin);
+        const checkoutDate = new Date(this.selectedDates.checkout);
+        
+        return currentDate > checkinDate && currentDate < checkoutDate;
     }
 
     updateDatesPreview() {
@@ -172,66 +135,35 @@ class Calendar {
         const nightsCount = document.getElementById('nights-count');
         const continueBtn = document.getElementById('continue-to-houses');
 
-        if (!checkinPreview || !checkoutPreview || !nightsCount || !continueBtn) return;
-
-        if (this.selectedDates.checkin) {
-            const checkinDate = new Date(this.selectedDates.checkin);
-            checkinPreview.textContent = this.formatDate(checkinDate);
-            
-            if (this.selectedDates.checkout) {
-                const checkoutDate = new Date(this.selectedDates.checkout);
-                checkoutPreview.textContent = this.formatDate(checkoutDate);
-                
-                const nights = this.calculateNights(this.selectedDates.checkin, this.selectedDates.checkout);
-                nightsCount.textContent = `${nights} ${this.getNightText(nights)}`;
-                
-                continueBtn.disabled = false;
-            } else {
-                checkoutPreview.textContent = '--';
-                nightsCount.textcontent = '0 ночей';
-                continueBtn.disabled = true;
-            }
-        } else {
-            checkinPreview.textContent = '--';
-            checkoutPreview.textContent = '--';
-            nightsCount.textContent = '0 ночей';
-            continueBtn.disabled = true;
+        if (checkinPreview) {
+            checkinPreview.textContent = this.selectedDates.checkin || '--';
+        }
+        if (checkoutPreview) {
+            checkoutPreview.textContent = this.selectedDates.checkout || '--';
+        }
+        if (nightsCount) {
+            const nights = this.calculateNights();
+            nightsCount.textContent = `${nights} ${this.getNightsText(nights)}`;
+        }
+        if (continueBtn) {
+            continueBtn.disabled = !(this.selectedDates.checkin && this.selectedDates.checkout);
         }
     }
 
-    formatDate(date) {
-        return date.toLocaleDateString('ru-RU', {
-            day: 'numeric',
-            month: 'short'
-        });
+    calculateNights() {
+        if (!this.selectedDates.checkin || !this.selectedDates.checkout) return 0;
+        
+        const checkinDate = new Date(this.selectedDates.checkin);
+        const checkoutDate = new Date(this.selectedDates.checkout);
+        const diffTime = checkoutDate - checkinDate;
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        
+        return diffDays;
     }
 
-    calculateNights(checkin, checkout) {
-        const checkinDate = new Date(checkin);
-        const checkoutDate = new Date(checkout);
-        const timeDiff = checkoutDate.getTime() - checkinDate.getTime();
-        return Math.ceil(timeDiff / (1000 * 3600 * 24));
-    }
-
-    getNightText(nights) {
+    getNightsText(nights) {
         if (nights === 1) return 'ночь';
         if (nights >= 2 && nights <= 4) return 'ночи';
         return 'ночей';
     }
-
-    prevMonth() {
-        this.currentDate.setMonth(this.currentDate.getMonth() - 1);
-        this.generateCalendar();
-    }
-
-    nextMonth() {
-        this.currentDate.setMonth(this.currentDate.getMonth() + 1);
-        this.generateCalendar();
-    }
 }
-
-let calendar;
-
-document.addEventListener('DOMContentLoaded', () => {
-    calendar = new Calendar();
-});

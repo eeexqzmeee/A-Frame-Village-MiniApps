@@ -114,17 +114,16 @@ class HousesManager {
                         checkout_time: '11:00',
                         image: '🏠',
                         services: [
-                            { name: 'Сауна', description: '3 часа включено', price: 0, unit: 'сеанс' },
                             { 
-                                name: 'Деревянная купель', 
-                                description: 'Дополнительные часы', 
+                                name: 'Деревянная купель (чан)', 
+                                description: 'Деревянная купель с подогревом воды на улице', 
                                 price: 2000, 
-                                unit: 'час', 
+                                unit: 'час',
                                 min_hours: 2,
                                 durations: [
-                                    { label: "2 часа", value: 2, price: 2000 },
-                                    { label: "4 часа", value: 4, price: 3500 },
-                                    { label: "Вся ночь", value: 8, price: 5000 }
+                                    { label: "2 часа", value: 2, price: 4000 },
+                                    { label: "4 часа", value: 4, price: 7000 },
+                                    { label: "6 часов", value: 6, price: 10000 }
                                 ]
                             }
                         ]
