@@ -11,12 +11,23 @@ class HousesManager {
 
     renderLargeHouses() {
         const container = document.getElementById('large-houses');
+        if (!container) return;
+        
         container.innerHTML = '';
 
-        housesData.large.forEach(house => {
-            const houseCard = this.createHouseCard(house);
+        for (let i = 1; i <= 6; i++) {
+            const houseCard = this.createHouseCard({
+                id: i,
+                type: 'large',
+                name: `Большой дом ${i}`,
+                max_guests: 12,
+                checkin_times: ['13:00', '15:00'],
+                price_weekday: 15000,
+                price_weekend: 25000,
+                image: '🏠'
+            });
             container.appendChild(houseCard);
-        });
+        }
     }
 
     createHouseCard(house) {
@@ -26,10 +37,9 @@ class HousesManager {
         div.dataset.type = house.type;
 
         const isAvailable = this.isHouseAvailable(house.id);
-        const availabilityClass = isAvailable ? '' : 'unavailable';
 
         div.innerHTML = `
-            <div class="house-image ${availabilityClass}">
+            <div class="house-image ${!isAvailable ? 'unavailable' : ''}">
                 <div class="image-placeholder">${house.image}</div>
                 <div class="house-badge">До ${house.max_guests} гостей</div>
                 ${!isAvailable ? '<div class="unavailable-overlay">Занят</div>' : ''}
@@ -44,11 +54,6 @@ class HousesManager {
                     <span class="price">${house.price_weekday.toLocaleString()}₽ - ${house.price_weekend.toLocaleString()}₽</span>
                     <span class="price-note">за ночь</span>
                 </div>
-                ${house.checkin_times.length > 1 ? `
-                    <div class="checkin-options">
-                        Варианты заезда: ${house.checkin_times.join(', ')}
-                    </div>
-                ` : ''}
             </div>
         `;
 
@@ -60,31 +65,29 @@ class HousesManager {
     }
 
     isHouseAvailable(houseId) {
-        if (!calendar || !calendar.selectedDates.checkin) return true;
+        if (!window.calendar || !window.calendar.selectedDates.checkin) return true;
 
-        const checkin = new Date(calendar.selectedDates.checkin);
-        const checkout = calendar.selectedDates.checkout ? new Date(calendar.selectedDates.checkout) : null;
+        const checkin = new Date(window.calendar.selectedDates.checkin);
+        const checkout = window.calendar.selectedDates.checkout ? 
+            new Date(window.calendar.selectedDates.checkout) : null;
 
-        // Проверяем занятость на выбранные даты
+        if (!checkout) return true;
+
         const houseBookedDates = bookedDates[houseId] || [];
         
         let currentDate = new Date(checkin);
-        while (currentDate < checkout || (!checkout && currentDate.getTime() === checkin.getTime())) {
+        while (currentDate < checkout) {
             const dateStr = currentDate.toISOString().split('T')[0];
             if (houseBookedDates.includes(dateStr)) {
                 return false;
             }
-            
-            if (!checkout) break; // Если выбрана только дата заезда
             currentDate.setDate(currentDate.getDate() + 1);
-            if (currentDate >= checkout) break;
         }
 
         return true;
     }
 
     bindHouseEvents() {
-        // Обработчики для готовых карточек домов
         document.addEventListener('click', (e) => {
             const houseCard = e.target.closest('.house-card');
             if (houseCard && !houseCard.querySelector('.unavailable-overlay')) {
@@ -93,7 +96,24 @@ class HousesManager {
                 
                 let house;
                 if (houseType === 'large') {
-                    house = housesData.large.find(h => h.id === houseId);
+                    house = {
+                        id: houseId,
+                        type: 'large',
+                        name: `Большой дом ${houseId}`,
+                        description: 'Просторный дом с сауной для больших компаний',
+                        max_guests: 12,
+                        base_guests: 6,
+                        extra_guest_price: 1000,
+                        price_weekday: 15000,
+                        price_weekend: 25000,
+                        checkin_times: ['13:00', '15:00', '17:00'],
+                        checkout_time: '11:00',
+                        image: '🏠',
+                        services: [
+                            { name: 'Сауна', description: '3 часа включено', price: 0, unit: 'сеанс' },
+                            { name: 'Деревянная купель', description: 'Дополнительные часы', price: 2000, unit: 'час', min_hours: 2 }
+                        ]
+                    };
                 } else if (houseType === 'couple') {
                     house = housesData.couple;
                 } else if (houseType === 'family') {
@@ -110,31 +130,20 @@ class HousesManager {
     selectHouse(house) {
         this.selectedHouse = house;
         
-        // Показываем экран деталей дома
         if (window.app) {
-            window.app.showHouseDetails(house);
+            window.app.selectedHouse = house;
+            if (window.bookingManager) {
+                window.bookingManager.renderHouseDetail(house);
+            }
+            window.app.showModalScreen('house-detail-screen');
         }
     }
 
-    updateHeaderDates() {
-        const headerDates = document.getElementById('header-dates');
-        if (calendar && calendar.selectedDates.checkin) {
-            const checkin = new Date(calendar.selectedDates.checkin);
-            const checkout = calendar.selectedDates.checkout ? new Date(calendar.selectedDates.checkout) : null;
-            
-            let dateText = checkin.toLocaleDateString('ru-RU', { day: 'numeric', month: 'short' });
-            if (checkout) {
-                dateText += ' - ' + checkout.toLocaleDateString('ru-RU', { day: 'numeric', month: 'short' });
-            }
-            
-            headerDates.textContent = dateText;
-        } else {
-            headerDates.textContent = 'Даты не выбраны';
-        }
+    updateAvailability() {
+        this.renderLargeHouses();
     }
 }
 
-// Инициализация менеджера домов
 let housesManager;
 
 document.addEventListener('DOMContentLoaded', () => {

@@ -11,7 +11,7 @@ class PaymentManager {
 
         screen.innerHTML = `
             <header class="header">
-                <button class="header-btn back" onclick="app.showScreen('booking-screen')">
+                <button class="header-btn back">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
                         <path d="M19 12H5M5 12L12 19M5 12L12 5" stroke="currentColor" stroke-width="2"/>
                     </svg>
@@ -21,36 +21,39 @@ class PaymentManager {
             </header>
 
             <div class="screen-content">
-                <div class="payment-card">
-                    <div class="payment-success-icon">
-                        <svg width="64" height="64" viewBox="0 0 24 24" fill="none">
-                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" stroke="currentColor" stroke-width="2"/>
-                            <path d="M22 4L12 14.01l-3-3" stroke="currentColor" stroke-width="2"/>
-                        </svg>
-                    </div>
-                    
+                <div class="payment-success">
+                    <div class="success-icon">✅</div>
                     <h2>Бронь подтверждена!</h2>
-                    <p class="payment-subtitle">Номер брони: <strong>${bookingData.bookingNumber}</strong></p>
+                    <p class="booking-number">Номер брони: <strong>${this.generateBookingNumber()}</strong></p>
                     
-                    <div class="payment-summary">
-                        <div class="summary-item">
+                    <div class="payment-details">
+                        <div class="detail-item">
                             <span>${bookingData.house.name}</span>
                             <span>${bookingData.total.toLocaleString()}₽</span>
                         </div>
-                        <div class="summary-dates">
+                        <div class="detail-dates">
                             ${new Date(bookingData.dates.checkin).toLocaleDateString('ru-RU')} - ${new Date(bookingData.dates.checkout).toLocaleDateString('ru-RU')}
                         </div>
                     </div>
 
                     <div class="payment-instructions">
                         <h4>Инструкция по оплате:</h4>
-                        <ol>
-                            <li>Переведите <strong>${bookingData.total.toLocaleString()}₽</strong> по реквизитам СБП</li>
-                            <li>Сохраните скриншот чека об оплате</li>
-                            <li>Отправьте чек в чат для подтверждения брони</li>
-                        </ol>
+                        <div class="instructions-list">
+                            <div class="instruction-item">
+                                <span class="step">1</span>
+                                <span>Переведите <strong>${bookingData.total.toLocaleString()}₽</strong> по реквизитам СБП</span>
+                            </div>
+                            <div class="instruction-item">
+                                <span class="step">2</span>
+                                <span>Сохраните скриншот чека об оплате</span>
+                            </div>
+                            <div class="instruction-item">
+                                <span class="step">3</span>
+                                <span>Отправьте чек в чат для подтверждения брони</span>
+                            </div>
+                        </div>
                         
-                        <div class="payment-details">
+                        <div class="bank-details">
                             <div class="bank-info">
                                 <strong>Реквизиты для перевода:</strong>
                                 <div>Банк: Тинькофф</div>
@@ -61,10 +64,10 @@ class PaymentManager {
                     </div>
 
                     <div class="payment-actions">
-                        <button class="btn-secondary" onclick="this.copyToClipboard('+79991234567')">
+                        <button class="btn-secondary" id="copy-number-btn">
                             Скопировать номер
                         </button>
-                        <button class="btn-primary" onclick="paymentManager.completePayment()">
+                        <button class="btn-primary" id="confirm-payment-btn">
                             Я оплатил
                         </button>
                     </div>
@@ -76,7 +79,32 @@ class PaymentManager {
             </div>
         `;
 
-        window.app.showScreen('payment-screen');
+        this.attachPaymentEvents();
+    }
+
+    attachPaymentEvents() {
+        const backBtn = document.querySelector('#payment-screen .header-btn.back');
+        if (backBtn) {
+            backBtn.addEventListener('click', () => {
+                if (window.app) {
+                    window.app.goBack();
+                }
+            });
+        }
+
+        const copyBtn = document.getElementById('copy-number-btn');
+        if (copyBtn) {
+            copyBtn.addEventListener('click', () => {
+                this.copyToClipboard('+79991234567');
+            });
+        }
+
+        const confirmBtn = document.getElementById('confirm-payment-btn');
+        if (confirmBtn) {
+            confirmBtn.addEventListener('click', () => {
+                this.completePayment();
+            });
+        }
     }
 
     copyToClipboard(text) {
@@ -86,7 +114,6 @@ class PaymentManager {
     }
 
     showToast(message) {
-        // Простая реализация toast-уведомления
         const toast = document.createElement('div');
         toast.style.cssText = `
             position: fixed;
@@ -109,56 +136,93 @@ class PaymentManager {
     }
 
     completePayment() {
-        // В реальном приложении здесь была бы интеграция с платежной системой
-        // и подтверждение оплаты
-        
         this.showConfirmationScreen();
     }
 
     showConfirmationScreen() {
-        const screen = document.createElement('div');
-        screen.id = 'confirmation-screen';
-        screen.className = 'screen active';
-        screen.innerHTML = `
-            <div class="confirmation-content">
-                <div class="confirmation-icon">✅</div>
-                <h2>Оплата принята!</h2>
-                <p>Ожидайте подтверждения брони в течение 15 минут</p>
-                
-                <div class="confirmation-details">
-                    <div class="detail-item">
-                        <span>Номер брони:</span>
-                        <strong>${this.paymentData.bookingNumber}</strong>
-                    </div>
-                    <div class="detail-item">
-                        <span>Дом:</span>
-                        <span>${this.paymentData.house.name}</span>
-                    </div>
-                    <div class="detail-item">
-                        <span>Даты:</span>
-                        <span>${new Date(this.paymentData.dates.checkin).toLocaleDateString('ru-RU')} - ${new Date(this.paymentData.dates.checkout).toLocaleDateString('ru-RU')}</span>
-                    </div>
-                    <div class="detail-item">
-                        <span>Сумма:</span>
-                        <strong>${this.paymentData.total.toLocaleString()}₽</strong>
-                    </div>
-                </div>
+        const screen = document.getElementById('payment-screen');
+        if (!screen) return;
 
-                <div class="confirmation-actions">
-                    <button class="btn-primary" onclick="app.returnToMain()">
+        screen.innerHTML = `
+            <header class="header">
+                <button class="header-btn back">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                        <path d="M19 12H5M5 12L12 19M5 12L12 5" stroke="currentColor" stroke-width="2"/>
+                    </svg>
+                </button>
+                <div class="header-title">Подтверждение</div>
+                <div class="header-actions"></div>
+            </header>
+
+            <div class="screen-content">
+                <div class="confirmation-content">
+                    <div class="confirmation-icon">🎉</div>
+                    <h2>Оплата принята!</h2>
+                    <p>Ожидайте подтверждения брони в течение 15 минут</p>
+                    
+                    <div class="confirmation-details">
+                        <div class="detail-item">
+                            <span>Номер брони:</span>
+                            <strong>${this.generateBookingNumber()}</strong>
+                        </div>
+                        <div class="detail-item">
+                            <span>Дом:</span>
+                            <span>${this.paymentData.house.name}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span>Даты:</span>
+                            <span>${new Date(this.paymentData.dates.checkin).toLocaleDateString('ru-RU')} - ${new Date(this.paymentData.dates.checkout).toLocaleDateString('ru-RU')}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span>Сумма:</span>
+                            <strong>${this.paymentData.total.toLocaleString()}₽</strong>
+                        </div>
+                    </div>
+
+                    <button class="btn-primary" id="return-home-btn">
                         Вернуться на главную
                     </button>
-                </div>
 
-                <div class="confirmation-note">
-                    По всем вопросам обращайтесь в поддержку
+                    <div class="confirmation-note">
+                        По всем вопросам обращайтесь в поддержку
+                    </div>
                 </div>
             </div>
         `;
 
-        document.getElementById('app').appendChild(screen);
+        this.attachConfirmationEvents();
+    }
+
+    attachConfirmationEvents() {
+        const backBtn = document.querySelector('#payment-screen .header-btn.back');
+        const returnBtn = document.getElementById('return-home-btn');
+
+        if (backBtn) {
+            backBtn.addEventListener('click', () => {
+                this.returnToMain();
+            });
+        }
+
+        if (returnBtn) {
+            returnBtn.addEventListener('click', () => {
+                this.returnToMain();
+            });
+        }
+    }
+
+    returnToMain() {
+        if (window.app) {
+            window.app.showScreen('main-screen');
+            
+            if (window.bookingManager) {
+                window.bookingManager.resetBooking();
+            }
+        }
+    }
+
+    generateBookingNumber() {
+        return 'A-' + Date.now().toString().slice(-6);
     }
 }
 
-// Инициализация менеджера платежей
 const paymentManager = new PaymentManager();

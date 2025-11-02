@@ -10,31 +10,40 @@
 </head>
 <body>
     <div id="app">
-        <!-- Swipe Navigation Container -->
         <div id="swipe-container">
-            <!-- Главный экран -->
             <div id="main-screen" class="swipe-screen active">
-                <div class="main-background"></div>
                 <div class="main-content">
                     <div class="logo-section">
                         <h1 class="logo">A-Frame Village</h1>
                         <p class="tagline">Алексеевка | Озёрная 38 к1</p>
                     </div>
                     
-                    <!-- Hero Section -->
                     <div class="hero-section">
-                        <div class="hero-card">
+                        <div class="booking-card">
                             <h2>Добро пожаловать в A-Frame Village</h2>
-                            <p>Уникальные дома в стиле A-Frame с панорамными окнами и современными удобствами для комфортного отдыха</p>
+                            <p>Уникальные дома в стиле A-Frame с панорамными окнами и современными удобствами</p>
                             
-                            <div class="video-placeholder">
-                                <div class="video-icon">🎥</div>
-                                <p>Видео-тур по комплексу</p>
+                            <div class="quick-stats">
+                                <div class="stat">
+                                    <span class="stat-number">8</span>
+                                    <span class="stat-label">домов</span>
+                                </div>
+                                <div class="stat">
+                                    <span class="stat-number">12</span>
+                                    <span class="stat-label">гостей макс</span>
+                                </div>
+                                <div class="stat">
+                                    <span class="stat-number">24/7</span>
+                                    <span class="stat-label">поддержка</span>
+                                </div>
                             </div>
+
+                            <button class="book-btn primary" id="view-houses-btn">
+                                Посмотреть дома
+                            </button>
                         </div>
                     </div>
 
-                    <!-- Quick Overview -->
                     <div class="overview-section">
                         <h3>Категории домов</h3>
                         <div class="overview-grid">
@@ -55,54 +64,9 @@
                             </div>
                         </div>
                     </div>
-
-                    <!-- Features Section -->
-                    <div class="features-section">
-                        <h3>Преимущества комплекса</h3>
-                        <div class="features-grid">
-                            <div class="feature-card">
-                                <div class="feature-icon">🌲</div>
-                                <h4>Природное расположение</h4>
-                                <p>Дома расположены в живописном лесном массиве</p>
-                            </div>
-                            <div class="feature-card">
-                                <div class="feature-icon">♨️</div>
-                                <h4>Сауны и бани</h4>
-                                <p>В каждом большом доме предусмотрена собственная сауна</p>
-                            </div>
-                            <div class="feature-card">
-                                <div class="feature-icon">🛁</div>
-                                <h4>Дополнительные услуги</h4>
-                                <p>Деревянные купели (чаны) и другие услуги для вашего комфорта</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- CTA Section -->
-                    <div class="cta-section">
-                        <button class="book-btn primary" id="view-houses-btn">
-                            Посмотреть дома
-                        </button>
-                        
-                        <div class="quick-stats">
-                            <div class="stat">
-                                <span class="stat-number">8</span>
-                                <span class="stat-label">домов</span>
-                            </div>
-                            <div class="stat">
-                                <span class="stat-number">12</span>
-                                <span class="stat-label">гостей макс</span>
-                            </div>
-                            <div class="stat">
-                                <span class="stat-number">24/7</span>
-                                <span class="stat-label">поддержка</span>
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </div>
 
-            <!-- Экран профиля -->
             <div id="profile-screen" class="swipe-screen">
                 <div class="screen-content">
                     <div class="profile-header">
@@ -187,23 +151,6 @@
                                         </button>
                                     </div>
                                 </div>
-                                
-                                <div class="offer-item">
-                                    <div class="offer-info">
-                                        <h5>Поздний выезд</h5>
-                                        <p>Выезд до 14:00 вместо 12:00</p>
-                                    </div>
-                                    <div class="offer-price">
-                                        <span class="coin-cost">200 A-Coin</span>
-                                        <button class="btn-small" data-offer="late_checkout">
-                                            Обменять
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <div class="shop-note">
-                                ⚠️ A-Coin сгорают в конце каждого месяца. Используйте их до 31 декабря
                             </div>
                         </div>
                     </div>
@@ -212,25 +159,17 @@
                         <h3 class="section-title">Обратная связь</h3>
                         <div class="feedback-buttons">
                             <button class="btn-secondary" id="suggestion-btn">
-                                💡 Написать предложение по улучшению
+                                💡 Написать предложение
                             </button>
                             <button class="btn-secondary" id="feedback-btn">
                                 ⭐ Оставить отзыв
                             </button>
                         </div>
                     </div>
-
-                    <div class="profile-section">
-                        <h3 class="section-title">История операций</h3>
-                        <div class="transactions-list" id="transactions-list">
-                            <div class="empty-state">Нет операций</div>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>
 
-        <!-- Нижняя навигация -->
         <div class="bottom-nav">
             <button class="nav-item active" data-screen="main-screen">
                 <span class="nav-icon">🏠</span>
@@ -242,7 +181,6 @@
             </button>
         </div>
 
-        <!-- Остальные экраны -->
         <div id="calendar-screen" class="screen">
             <header class="header">
                 <button class="header-btn back">
@@ -286,7 +224,6 @@
                     </div>
 
                     <div class="calendar-grid" id="calendar-grid">
-                        <!-- Динамически генерируется -->
                     </div>
                 </div>
 
@@ -308,11 +245,8 @@
                         </div>
                     </div>
                     
-                    <button class="continue-btn" id="continue-to-houses">
+                    <button class="continue-btn" id="continue-to-houses" disabled>
                         Выбрать дом
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-                            <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" stroke-width="2"/>
-                        </svg>
                     </button>
                 </div>
             </div>
@@ -327,7 +261,7 @@
                 </button>
                 <div class="header-title">Выберите дом</div>
                 <div class="header-actions">
-                    <div class="dates-badge" id="header-dates"></div>
+                    <div class="dates-badge" id="header-dates">Выберите даты</div>
                 </div>
             </header>
 
@@ -338,7 +272,6 @@
                         <p class="category-subtitle">До 12 гостей, с сауной</p>
                         
                         <div class="houses-grid" id="large-houses">
-                            <!-- Большие дома -->
                         </div>
                     </div>
 
@@ -349,7 +282,7 @@
                         <div class="houses-grid">
                             <div class="house-card" data-house-id="7" data-type="couple">
                                 <div class="house-image">
-                                    <div class="image-placeholder">🏠</div>
+                                    <div class="image-placeholder">❤️</div>
                                     <div class="house-badge">Для двоих</div>
                                 </div>
                                 <div class="house-info">
@@ -374,7 +307,7 @@
                         <div class="houses-grid">
                             <div class="house-card" data-house-id="8" data-type="family">
                                 <div class="house-image">
-                                    <div class="image-placeholder">🏠</div>
+                                    <div class="image-placeholder">👨‍👩‍👧‍👦</div>
                                     <div class="house-badge">Для семьи</div>
                                 </div>
                                 <div class="house-info">
@@ -396,24 +329,21 @@
         </div>
 
         <div id="house-detail-screen" class="screen">
-            <!-- Контент будет сгенерирован динамически -->
         </div>
 
         <div id="booking-screen" class="screen">
-            <!-- Контент будет сгенерирован динамически -->
         </div>
 
         <div id="payment-screen" class="screen">
-            <!-- Контент будет сгенерирован динамически -->
-        </div>
-
-        <div id="my-bookings-screen" class="screen">
-            <!-- Контент будет сгенерирован динамически -->
         </div>
     </div>
 
     <script src="js/data.js"></script>
     <script src="js/profile.js"></script>
+    <script src="js/calendar.js"></script>
+    <script src="js/houses.js"></script>
+    <script src="js/booking.js"></script>
+    <script src="js/payment.js"></script>
     <script src="js/app.js"></script>
 </body>
 </html>

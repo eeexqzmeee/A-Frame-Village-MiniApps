@@ -14,8 +14,11 @@ class Calendar {
     }
 
     bindEvents() {
-        document.getElementById('prev-month').addEventListener('click', () => this.prevMonth());
-        document.getElementById('next-month').addEventListener('click', () => this.nextMonth());
+        const prevBtn = document.getElementById('prev-month');
+        const nextBtn = document.getElementById('next-month');
+        
+        if (prevBtn) prevBtn.addEventListener('click', () => this.prevMonth());
+        if (nextBtn) nextBtn.addEventListener('click', () => this.nextMonth());
     }
 
     generateCalendar() {
@@ -23,10 +26,11 @@ class Calendar {
         const monthElement = document.getElementById('current-month');
         const yearElement = document.getElementById('current-year');
 
+        if (!calendarGrid || !monthElement || !yearElement) return;
+
         const year = this.currentDate.getFullYear();
         const month = this.currentDate.getMonth();
 
-        // Обновляем заголовок
         const monthNames = [
             'Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь',
             'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'
@@ -35,25 +39,20 @@ class Calendar {
         monthElement.textContent = monthNames[month];
         yearElement.textContent = year;
 
-        // Очищаем календарь
         calendarGrid.innerHTML = '';
 
-        // Получаем первый и последний день месяца
         const firstDay = new Date(year, month, 1);
         const lastDay = new Date(year, month + 1, 0);
         
-        // День недели первого дня (0 - воскресенье, 1 - понедельник)
         let firstDayOfWeek = firstDay.getDay();
-        if (firstDayOfWeek === 0) firstDayOfWeek = 7; // Воскресенье становится 7
+        if (firstDayOfWeek === 0) firstDayOfWeek = 7;
         
-        // Дни предыдущего месяца
         const prevMonthLastDay = new Date(year, month, 0).getDate();
         for (let i = firstDayOfWeek - 2; i >= 0; i--) {
             const day = this.createDayElement(prevMonthLastDay - i, true);
             calendarGrid.appendChild(day);
         }
 
-        // Дни текущего месяца
         const today = new Date();
         today.setHours(0, 0, 0, 0);
 
@@ -67,8 +66,7 @@ class Calendar {
             calendarGrid.appendChild(day);
         }
 
-        // Дни следующего месяца
-        const totalCells = 42; // 6 недель * 7 дней
+        const totalCells = 42;
         const daysInCalendar = firstDayOfWeek - 1 + lastDay.getDate();
         const nextMonthDays = totalCells - daysInCalendar;
         
@@ -95,14 +93,12 @@ class Calendar {
 
         if (isBooked) {
             day.classList.add('disabled');
-            day.title = 'Дата занята';
         }
 
         if (isSelected) {
             day.classList.add('selected');
         }
 
-        // Проверяем, сегодня ли это
         if (date) {
             const today = new Date();
             today.setHours(0, 0, 0, 0);
@@ -122,7 +118,6 @@ class Calendar {
     isDateBooked(date) {
         const dateStr = date.toISOString().split('T')[0];
         
-        // Проверяем занятость для всех домов
         for (const houseId in bookedDates) {
             if (bookedDates[houseId].includes(dateStr)) {
                 return true;
@@ -132,22 +127,22 @@ class Calendar {
     }
 
     isDateSelected(date) {
+        if (!this.selectedDates.checkin) return false;
+        
         const dateStr = date.toISOString().split('T')[0];
-        return this.selectedDates.checkin === dateStr || this.selectedDates.checkout === dateStr;
+        return this.selectedDates.checkin === dateStr || 
+               (this.selectedDates.checkout && this.selectedDates.checkout === dateStr);
     }
 
     selectDate(date) {
         const dateStr = date.toISOString().split('T')[0];
 
         if (!this.selectedDates.checkin) {
-            // Выбор даты заезда
             this.selectedDates.checkin = dateStr;
             this.selectedDates.checkout = null;
         } else if (!this.selectedDates.checkout && dateStr > this.selectedDates.checkin) {
-            // Выбор даты выезда
             this.selectedDates.checkout = dateStr;
         } else {
-            // Сброс выбора
             this.selectedDates.checkin = dateStr;
             this.selectedDates.checkout = null;
         }
@@ -155,9 +150,12 @@ class Calendar {
         this.generateCalendar();
         this.updateDatesPreview();
         
-        // Сохраняем в глобальное состояние
         if (window.app) {
             window.app.selectedDates = {...this.selectedDates};
+        }
+
+        if (window.housesManager) {
+            window.housesManager.updateAvailability();
         }
     }
 
@@ -166,6 +164,8 @@ class Calendar {
         const checkoutPreview = document.getElementById('checkout-preview');
         const nightsCount = document.getElementById('nights-count');
         const continueBtn = document.getElementById('continue-to-houses');
+
+        if (!checkinPreview || !checkoutPreview || !nightsCount || !continueBtn) return;
 
         if (this.selectedDates.checkin) {
             const checkinDate = new Date(this.selectedDates.checkin);
@@ -223,7 +223,6 @@ class Calendar {
     }
 }
 
-// Инициализация календаря
 let calendar;
 
 document.addEventListener('DOMContentLoaded', () => {
