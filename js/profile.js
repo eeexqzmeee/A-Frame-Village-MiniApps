@@ -6,12 +6,12 @@ class ProfileManager {
 
     init() {
         this.currentUser = database.getUser(currentUserId);
-        this.applyLevelTheme(); // Добавьте эту строку
         this.bindProfileEvents();
         this.renderProfileScreen();
     }
 
     bindProfileEvents() {
+        // Обработчики будут добавлены после рендера
         document.addEventListener('click', (e) => {
             if (e.target.id === 'copy-referral-btn' || e.target.closest('#copy-referral-btn')) {
                 this.copyReferralLink();
@@ -23,43 +23,13 @@ class ProfileManager {
             }
             
             if (e.target.id === 'suggestion-btn' || e.target.closest('#suggestion-btn')) {
-                this.showDevelopmentModal('Предложение по улучшению');
+                this.openSuggestion();
             }
             
             if (e.target.id === 'feedback-btn' || e.target.closest('#feedback-btn')) {
-                this.showDevelopmentModal('Оставить отзыв');
+                this.openFeedback();
             }
         });
-    }
-
-    showDevelopmentModal(title) {
-        const modal = document.createElement('div');
-        modal.className = 'development-modal';
-        modal.innerHTML = `
-            <div class="modal-backdrop"></div>
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h3>${title}</h3>
-                    <button class="modal-close">&times;</button>
-                </div>
-                <div class="modal-body">
-                    <div class="development-icon">🚧</div>
-                    <h4>Функция в разработке</h4>
-                    <p>Данный раздел находится в стадии разработки и будет доступен в ближайшее время.</p>
-                </div>
-                <div class="modal-footer">
-                    <button class="btn-primary modal-ok">Понятно</button>
-                </div>
-            </div>
-        `;
-
-        const closeModal = () => modal.remove();
-        
-        modal.querySelector('.modal-close').onclick = closeModal;
-        modal.querySelector('.modal-ok').onclick = closeModal;
-        modal.querySelector('.modal-backdrop').onclick = closeModal;
-
-        document.body.appendChild(modal);
     }
 
     renderProfileScreen() {
@@ -70,24 +40,26 @@ class ProfileManager {
         const levelInfo = this.getLevelInfo(this.currentUser.level);
         
         screen.innerHTML = `
-            <div class="profile-header">
-                <div class="user-avatar">
-                    <div class="avatar-placeholder">👤</div>
+            <div class="profile-header" style="border-color: ${levelInfo.color}40; background: ${levelInfo.color}10;">
+                <div class="user-avatar" style="background: ${levelInfo.color}20; color: ${levelInfo.color};">
+                    <div class="avatar-placeholder">${levelInfo.icon}</div>
                 </div>
                 <div class="user-info">
                     <h2 class="user-name">${this.currentUser.name || 'Пользователь'}</h2>
                     <p class="user-id">ID: ${currentUserId.slice(0, 8)}</p>
-                    <div class="user-level-badge">${this.currentUser.level}</div>
+                    <div class="user-level-badge" style="background: ${levelInfo.color};">
+                        ${this.currentUser.level}
+                    </div>
                 </div>
             </div>
 
             <div class="profile-stats">
-                <div class="stat-card level-card">
-                    <div class="stat-value">${this.currentUser.level}</div>
+                <div class="stat-card level-card" style="border-color: ${levelInfo.color}40;">
+                    <div class="stat-value" style="color: ${levelInfo.color};">${this.currentUser.level}</div>
                     <div class="stat-label">Уровень</div>
                     <div class="level-progress">
                         <div class="progress-bar">
-                            <div class="progress-fill" style="width: ${levelInfo.progress}%"></div>
+                            <div class="progress-fill" style="width: ${levelInfo.progress}%; background: ${levelInfo.color};"></div>
                         </div>
                         <div class="level-stats">
                             <span>${this.currentUser.bookingsCount || 0} из ${levelInfo.nextLevelBookings} бронирований</span>
@@ -208,26 +180,37 @@ class ProfileManager {
                 </div>
             </div>
         `;
+
+        // Применяем цвет темы уровня
+        this.applyLevelTheme(levelInfo.color);
     }
 
     getLevelInfo(level) {
         const levels = {
             'Bronze': {
+                color: '#CD7F32',
+                icon: '🥉',
                 nextLevel: 'Silver',
                 nextLevelBookings: 3,
                 progress: 0
             },
             'Silver': {
+                color: '#C0C0C0', 
+                icon: '🥈',
                 nextLevel: 'Gold',
                 nextLevelBookings: 6,
                 progress: 33
             },
             'Gold': {
+                color: '#FFD700',
+                icon: '🥇',
                 nextLevel: 'Diamond',
                 nextLevelBookings: 10,
                 progress: 66
             },
             'Diamond': {
+                color: '#B9F2FF',
+                icon: '💎',
                 nextLevel: null,
                 nextLevelBookings: null,
                 progress: 100
@@ -236,6 +219,7 @@ class ProfileManager {
 
         const levelInfo = levels[level] || levels['Bronze'];
         
+        // Рассчитываем прогресс для текущего уровня
         if (level !== 'Diamond') {
             const currentBookings = this.currentUser.bookingsCount || 0;
             const prevLevelBookings = level === 'Silver' ? 3 : level === 'Gold' ? 6 : 0;
@@ -249,17 +233,17 @@ class ProfileManager {
 
     renderLevelsProgress() {
         const levels = [
-            { name: 'Bronze', bookings: 0, icon: '🥉' },
-            { name: 'Silver', bookings: 3, icon: '🥈' },
-            { name: 'Gold', bookings: 6, icon: '🥇' },
-            { name: 'Diamond', bookings: 10, icon: '💎' }
+            { name: 'Bronze', bookings: 0, color: '#CD7F32', icon: '🥉' },
+            { name: 'Silver', bookings: 3, color: '#C0C0C0', icon: '🥈' },
+            { name: 'Gold', bookings: 6, color: '#FFD700', icon: '🥇' },
+            { name: 'Diamond', bookings: 10, color: '#B9F2FF', icon: '💎' }
         ];
 
         const currentBookings = this.currentUser.bookingsCount || 0;
 
         return levels.map(level => `
             <div class="level-item ${this.currentUser.level === level.name ? 'current' : ''} ${currentBookings >= level.bookings ? 'unlocked' : 'locked'}">
-                <div class="level-icon">
+                <div class="level-icon" style="background: ${level.color}20; color: ${level.color};">
                     ${level.icon}
                 </div>
                 <div class="level-info">
@@ -278,6 +262,20 @@ class ProfileManager {
                 </div>
             </div>
         `).join('');
+    }
+
+    applyLevelTheme(color) {
+        // Применяем цвет уровня к различным элементам
+        const style = document.createElement('style');
+        style.textContent = `
+            .profile-section .section-title {
+                border-left: 3px solid ${color};
+            }
+            .level-item.current {
+                border-color: ${color};
+            }
+        `;
+        document.head.appendChild(style);
     }
 
     getUserStats() {
@@ -325,6 +323,7 @@ class ProfileManager {
         navigator.clipboard.writeText(referralLink).then(() => {
             this.showNotification('Реферальная ссылка скопирована');
         }).catch(() => {
+            // Fallback для старых браузеров
             const textArea = document.createElement('textarea');
             textArea.value = referralLink;
             document.body.appendChild(textArea);
@@ -354,21 +353,45 @@ class ProfileManager {
             return;
         }
 
+        // Списание коинов
         database.addAcoins(currentUserId, -offer.cost, `Покупка: ${offer.name}`);
         this.currentUser = database.getUser(currentUserId);
         
         this.showNotification(`Успешно приобретено: ${offer.name}`);
         this.renderProfileScreen();
         
+        // Обновляем данные в основном приложении
         if (window.app) {
             window.app.currentUser = this.currentUser;
+        }
+    }
+
+    openSuggestion() {
+        const message = "Предложение по улучшению сервиса A-Frame Village:\n\n";
+        this.openTelegramChat(message);
+    }
+
+    openFeedback() {
+        const message = "Отзыв о сервисе A-Frame Village:\n\n";
+        this.openTelegramChat(message);
+    }
+
+    openTelegramChat(message) {
+        if (window.Telegram && Telegram.WebApp) {
+            const url = `https://t.me/your_support_bot?start=${encodeURIComponent(message)}`;
+            Telegram.WebApp.openTelegramLink(url);
+        } else {
+            // Fallback для браузера
+            const emailSubject = encodeURIComponent("Обратная связь - A-Frame Village");
+            const emailBody = encodeURIComponent(message);
+            window.open(`mailto:support@aframe-village.ru?subject=${emailSubject}&body=${emailBody}`, '_blank');
         }
     }
 
     getNextMonth() {
         const date = new Date();
         date.setMonth(date.getMonth() + 1);
-        date.setDate(0);
+        date.setDate(0); // Последний день текущего месяца
         return date.toLocaleDateString('ru-RU', { day: 'numeric', month: 'long' });
     }
 
@@ -376,6 +399,7 @@ class ProfileManager {
         if (window.app && window.app.showNotification) {
             window.app.showNotification(message, type);
         } else {
+            // Fallback уведомление
             const notification = document.createElement('div');
             notification.style.cssText = `
                 position: fixed;
@@ -397,23 +421,7 @@ class ProfileManager {
             }, 3000);
         }
     }
-    applyLevelTheme() {
-        const level = this.currentUser.level.toLowerCase();
-    
-    // Убираем все классы уровней
-        document.body.classList.remove('level-bronze', 'level-silver', 'level-gold', 'level-diamond');
-    
-    // Добавляем текущий класс уровня
-        document.body.classList.add(`level-${level}`);
-    
-    // Обновляем градиент главного экрана
-        const mainBackground = document.querySelector('.main-background');
-        if (mainBackground) {
-            mainBackground.style.background = `var(--gradient-hero, linear-gradient(135deg, #000000 0%, #1a1b2e 100%))`;
-        }
-    
-        console.log(`Applied ${level} theme`);
-}
 }
 
+// Инициализация менеджера профиля
 const profileManager = new ProfileManager();
