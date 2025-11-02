@@ -1,20 +1,12 @@
+// payment.js - КРАСИВАЯ ПАНЕЛЬ ОПЛАТЫ
 class PaymentManager {
     constructor(app) {
         this.app = app;
-        this.selectedServices = [];
         this.init();
     }
 
     init() {
         this.bindEvents();
-    }
-
-    bindEvents() {
-        document.addEventListener('click', (e) => {
-            if (e.target.closest('#confirm-payment')) {
-                this.processPayment();
-            }
-        });
     }
 
     renderPaymentScreen(bookingData) {
@@ -37,7 +29,7 @@ class PaymentManager {
 
             <div class="screen-content">
                 <div class="payment-container">
-                    <div class="booking-summary">
+                    <div class="booking-summary scroll-reveal">
                         <h3>Детали бронирования</h3>
                         
                         <div class="summary-item">
@@ -69,7 +61,7 @@ class PaymentManager {
                         ` : ''}
                     </div>
 
-                    <div class="price-breakdown">
+                    <div class="price-breakdown scroll-reveal">
                         <h3>Стоимость</h3>
                         
                         <div class="price-item">
@@ -83,14 +75,9 @@ class PaymentManager {
                                 <div class="price-value">${service.totalPrice.toLocaleString()}₽</div>
                             </div>
                         `).join('')}
-                        
-                        <div class="price-total">
-                            <div class="total-label">Итого</div>
-                            <div class="total-value">${totalAmount.toLocaleString()}₽</div>
-                        </div>
                     </div>
 
-                    <div class="payment-methods">
+                    <div class="payment-methods scroll-reveal">
                         <h3>Способ оплаты</h3>
                         
                         <div class="method-option">
@@ -109,32 +96,46 @@ class PaymentManager {
                             </label>
                         </div>
                     </div>
+                </div>
 
-                    <div class="payment-actions">
-                        <button class="pay-btn primary" id="confirm-payment">
-                            Оплатить ${totalAmount.toLocaleString()}₽
-                        </button>
-                        
-                        <p class="payment-note">
-                            Нажимая кнопку "Оплатить", вы соглашаетесь с правилами бронирования и политикой конфиденциальности
-                        </p>
+                <!-- СУПЕР КРАСИВАЯ ПАНЕЛЬ ОПЛАТЫ -->
+                <div class="payment-panel">
+                    <div class="payment-total">
+                        <div class="total-amount">${totalAmount.toLocaleString()}₽</div>
+                        <div class="total-label">Итого к оплате</div>
                     </div>
+                    <button class="pay-button" id="confirm-payment">
+                        💳 Оплатить бронирование
+                    </button>
                 </div>
             </div>
         `;
 
         this.bindPaymentEvents();
+        this.initScrollReveal();
+    }
+
+    initScrollReveal() {
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('revealed');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.scroll-reveal').forEach(el => {
+            observer.observe(el);
+        });
     }
 
     calculateTotal(bookingData) {
         let total = bookingData.basePrice || 0;
-        
         if (bookingData.services && bookingData.services.length > 0) {
             bookingData.services.forEach(service => {
                 total += service.totalPrice || 0;
             });
         }
-        
         return total;
     }
 
@@ -148,7 +149,14 @@ class PaymentManager {
         const backBtn = document.querySelector('#payment-screen .header-btn.back');
         if (backBtn) {
             backBtn.onclick = () => {
-                this.app.showScreen('house-detail-screen');
+                this.app.showScreen('calendar-screen');
+            };
+        }
+
+        const confirmBtn = document.getElementById('confirm-payment');
+        if (confirmBtn) {
+            confirmBtn.onclick = () => {
+                this.processPayment();
             };
         }
     }
@@ -167,10 +175,21 @@ class PaymentManager {
 
         console.log('Processing payment:', paymentData);
 
+        // Эффект загрузки
+        const payBtn = document.getElementById('confirm-payment');
+        const originalText = payBtn.textContent;
+        payBtn.textContent = 'Обрабатываем оплату...';
+        payBtn.disabled = true;
+
         setTimeout(() => {
-            alert('Бронирование успешно оплачено! С вами свяжется менеджер для подтверждения.');
-            this.app.showScreen('main-screen');
-            this.app.clearBookingData();
+            payBtn.textContent = '✅ Оплата прошла успешно!';
+            payBtn.style.background = 'var(--accent-success)';
+            
+            setTimeout(() => {
+                alert('Бронирование успешно оплачено! С вами свяжется менеджер для подтверждения.');
+                this.app.showScreen('main-screen');
+                this.app.clearBookingData();
+            }, 1000);
         }, 2000);
     }
 }

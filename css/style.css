@@ -1929,3 +1929,348 @@ body {
 .scroll-reveal:nth-child(3) { transition-delay: 0.3s; }
 .scroll-reveal:nth-child(4) { transition-delay: 0.4s; }
 .scroll-reveal:nth-child(5) { transition-delay: 0.5s; }
+
+/* Убираем outline при нажатии везде кроме главного экрана и профиля */
+#calendar-screen *:focus,
+#houses-screen *:focus,
+#house-detail-screen *:focus,
+#payment-screen *:focus {
+    outline: none !important;
+}
+
+/* Убираем border при активном состоянии */
+#calendar-screen *:active,
+#houses-screen *:active,
+#house-detail-screen *:active,
+#payment-screen *:active {
+    border-color: transparent !important;
+}
+
+/* Sticky панель - фиксированная внизу */
+.sticky-panel {
+    position: fixed;
+    bottom: 90px;
+    left: var(--space-md);
+    right: var(--space-md);
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(40px) saturate(200%);
+    -webkit-backdrop-filter: blur(40px) saturate(200%);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: var(--border-radius-xl);
+    padding: var(--space-lg);
+    z-index: 1000;
+    box-shadow: 
+        0 20px 60px rgba(0, 0, 0, 0.5),
+        0 8px 32px rgba(0, 0, 0, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2),
+        0 0 0 1px rgba(255, 255, 255, 0.1);
+    animation: slideInUp 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.sticky-panel.compact {
+    padding: var(--space-md);
+}
+
+.sticky-panel .price-summary {
+    margin-bottom: var(--space-lg);
+}
+
+.sticky-panel .price-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--space-sm) 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+    font-size: var(--font-size-sm);
+}
+
+.sticky-panel .price-item:last-child {
+    border-bottom: none;
+}
+
+.sticky-panel .price-total {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--space-md) 0;
+    border-top: 2px solid rgba(255, 255, 255, 0.3);
+    font-weight: var(--font-weight-bold);
+    font-size: var(--font-size-lg);
+    color: var(--text-primary);
+}
+
+/* Панель оплаты - супер стильная */
+.payment-panel {
+    position: fixed;
+    bottom: 90px;
+    left: var(--space-md);
+    right: var(--space-md);
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(40px) saturate(200%);
+    -webkit-backdrop-filter: blur(40px) saturate(200%);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: var(--border-radius-xl);
+    padding: var(--space-lg);
+    z-index: 1000;
+    box-shadow: 
+        0 20px 60px rgba(0, 0, 0, 0.5),
+        0 8px 32px rgba(0, 0, 0, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2),
+        0 0 0 1px rgba(255, 255, 255, 0.1);
+    animation: slideInUp 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.payment-total {
+    text-align: center;
+    margin-bottom: var(--space-lg);
+}
+
+.total-amount {
+    font-size: var(--font-size-xxxl);
+    font-weight: var(--font-weight-bold);
+    background: linear-gradient(135deg, var(--accent-primary), #00D4FF);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: var(--space-xs);
+}
+
+.total-label {
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.pay-button {
+    width: 100%;
+    padding: var(--space-lg);
+    background: linear-gradient(135deg, var(--accent-primary), #0056CC);
+    color: white;
+    border: none;
+    border-radius: var(--border-radius-lg);
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-bold);
+    cursor: pointer;
+    transition: all var(--transition-normal);
+    box-shadow: 0 8px 32px rgba(0, 122, 255, 0.4);
+    position: relative;
+    overflow: hidden;
+}
+
+.pay-button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.6s;
+}
+
+.pay-button:hover::before {
+    left: 100%;
+}
+
+.pay-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 40px rgba(0, 122, 255, 0.6);
+}
+
+.pay-button:active {
+    transform: translateY(0);
+}
+
+/* Уровни лояльности - СУПЕР ВИДИМЫЕ */
+.loyalty-section {
+    margin-bottom: var(--space-xl);
+}
+
+.loyalty-levels {
+    display: grid;
+    gap: var(--space-md);
+}
+
+.loyalty-level {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: var(--border-radius-xl);
+    padding: var(--space-lg);
+    transition: all var(--transition-normal);
+    position: relative;
+    overflow: hidden;
+}
+
+.loyalty-level::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--accent-primary), #00D4FF);
+    opacity: 0;
+    transition: opacity var(--transition-normal);
+}
+
+.loyalty-level:hover::before {
+    opacity: 1;
+}
+
+.loyalty-level:hover {
+    transform: translateY(-4px);
+    border-color: var(--accent-primary);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+}
+
+.loyalty-level.active {
+    border-color: var(--accent-primary);
+    background: rgba(0, 122, 255, 0.15);
+    box-shadow: 0 8px 32px rgba(0, 122, 255, 0.3);
+}
+
+.loyalty-level.active::before {
+    opacity: 1;
+}
+
+.level-header {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+    margin-bottom: var(--space-md);
+}
+
+.level-icon {
+    font-size: 2.5rem;
+    width: 60px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: var(--border-radius-lg);
+    backdrop-filter: blur(10px);
+}
+
+.level-info {
+    flex: 1;
+}
+
+.level-name {
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-bold);
+    margin-bottom: var(--space-xs);
+    background: linear-gradient(135deg, var(--text-primary), var(--accent-primary));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.level-description {
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+    line-height: 1.4;
+}
+
+.level-requirements {
+    font-size: var(--font-size-xs);
+    color: var(--accent-primary);
+    font-weight: var(--font-weight-semibold);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.level-benefits {
+    display: grid;
+    gap: var(--space-xs);
+    margin: var(--space-md) 0;
+}
+
+.benefit-item {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+}
+
+.benefit-item::before {
+    content: '✓';
+    color: var(--accent-success);
+    font-weight: bold;
+    font-size: var(--font-size-sm);
+}
+
+.level-progress {
+    width: 100%;
+    height: 8px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    margin: var(--space-md) 0 var(--space-sm);
+    overflow: hidden;
+    position: relative;
+}
+
+.progress-bar {
+    height: 100%;
+    border-radius: 4px;
+    background: linear-gradient(90deg, var(--accent-primary), #00D4FF);
+    transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.progress-bar::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+    animation: shimmer 2s infinite;
+}
+
+.progress-text {
+    font-size: var(--font-size-xs);
+    color: var(--text-secondary);
+    text-align: center;
+    font-weight: var(--font-weight-medium);
+}
+
+/* Анимации */
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(50px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+@keyframes shimmer {
+    0% { left: -100%; }
+    100% { left: 100%; }
+}
+
+/* Анимация появления при скролле */
+.scroll-reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.scroll-reveal.revealed {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Специфичные анимации для разных элементов */
+.scroll-reveal:nth-child(1) { transition-delay: 0.1s; }
+.scroll-reveal:nth-child(2) { transition-delay: 0.2s; }
+.scroll-reveal:nth-child(3) { transition-delay: 0.3s; }
+.scroll-reveal:nth-child(4) { transition-delay: 0.4s; }
