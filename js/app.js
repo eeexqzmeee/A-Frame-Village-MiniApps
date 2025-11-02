@@ -44,10 +44,10 @@ class App {
         // Кнопка "Посмотреть дома"
         document.addEventListener('click', (e) => {
             if (e.target.id === 'view-houses-btn' || e.target.closest('#view-houses-btn')) {
-                this.showScreen('calendar-screen');
+                this.showHousesFirst();
             }
             if (e.target.id === 'view-houses-btn-2' || e.target.closest('#view-houses-btn-2')) {
-                this.showScreen('calendar-screen');
+                this.showHousesFirst();
             }
         });
 
@@ -392,8 +392,17 @@ class App {
 
         if (house) {
             this.selectedHouse = house;
-            this.showHouseDetails(house);
+            if (window.servicesManager) {
+                window.servicesManager.showServicesScreen(house);
+            } else {
+                this.showHouseDetails(house); // fallback
+            }
         }
+    }
+
+    showHousesFirst() {
+        console.log('🏠 Showing houses first');
+        this.showScreen('houses-screen');
     }
 
     showHouseDetails(house) {

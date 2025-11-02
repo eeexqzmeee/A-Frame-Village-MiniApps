@@ -13,6 +13,7 @@ const housesData = {
             checkin_times: ['13:00', '15:00', '17:00'],
             checkout_time: '11:00',
             image: '🏠',
+            photos: ['photo1.jpg', 'photo2.jpg', 'photo3.jpg'],
             services: [
                 { name: 'Сауна', description: '3 часа включено', price: 0, unit: 'сеанс' },
                 { name: 'Деревянная купель', description: 'Дополнительные часы', price: 2000, unit: 'час', min_hours: 2 },
@@ -32,9 +33,11 @@ const housesData = {
             checkin_times: ['13:00', '15:00', '17:00'],
             checkout_time: '11:00',
             image: '🏠',
+            photos: ['photo1.jpg', 'photo2.jpg', 'photo3.jpg'],
             services: [
                 { name: 'Сауна', description: '3 часа включено', price: 0, unit: 'сеанс' },
-                { name: 'Деревянная купель', description: 'Дополнительные часы', price: 2000, unit: 'час', min_hours: 2 }
+                { name: 'Деревянная купель', description: 'Дополнительные часы', price: 2000, unit: 'час', min_hours: 2 },
+                { name: 'Завтрак', description: 'Континентальный завтрак', price: 500, unit: 'человек' }
             ]
         },
         {
@@ -50,9 +53,11 @@ const housesData = {
             checkin_times: ['13:00', '15:00', '17:00'],
             checkout_time: '11:00',
             image: '🏠',
+            photos: ['photo1.jpg', 'photo2.jpg', 'photo3.jpg'],
             services: [
                 { name: 'Сауна', description: '3 часа включено', price: 0, unit: 'сеанс' },
-                { name: 'Деревянная купель', description: 'Дополнительные часы', price: 2000, unit: 'час', min_hours: 2 }
+                { name: 'Деревянная купель', description: 'Дополнительные часы', price: 2000, unit: 'час', min_hours: 2 },
+                { name: 'Завтрак', description: 'Континентальный завтрак', price: 500, unit: 'человек' }
             ]
         },
         {
@@ -68,9 +73,11 @@ const housesData = {
             checkin_times: ['13:00', '15:00', '17:00'],
             checkout_time: '11:00',
             image: '🏠',
+            photos: ['photo1.jpg', 'photo2.jpg', 'photo3.jpg'],
             services: [
                 { name: 'Сауна', description: '3 часа включено', price: 0, unit: 'сеанс' },
-                { name: 'Деревянная купель', description: 'Дополнительные часы', price: 2000, unit: 'час', min_hours: 2 }
+                { name: 'Деревянная купель', description: 'Дополнительные часы', price: 2000, unit: 'час', min_hours: 2 },
+                { name: 'Завтрак', description: 'Континентальный завтрак', price: 500, unit: 'человек' }
             ]
         },
         {
@@ -86,9 +93,11 @@ const housesData = {
             checkin_times: ['13:00', '15:00', '17:00'],
             checkout_time: '11:00',
             image: '🏠',
+            photos: ['photo1.jpg', 'photo2.jpg', 'photo3.jpg'],
             services: [
                 { name: 'Сауна', description: '3 часа включено', price: 0, unit: 'сеанс' },
-                { name: 'Деревянная купель', description: 'Дополнительные часы', price: 2000, unit: 'час', min_hours: 2 }
+                { name: 'Деревянная купель', description: 'Дополнительные часы', price: 2000, unit: 'час', min_hours: 2 },
+                { name: 'Завтрак', description: 'Континентальный завтрак', price: 500, unit: 'человек' }
             ]
         },
         {
@@ -104,11 +113,13 @@ const housesData = {
             checkin_times: ['13:00', '15:00', '17:00'],
             checkout_time: '11:00',
             image: '🏠',
+            photos: ['photo1.jpg', 'photo2.jpg', 'photo3.jpg'],
             services: [
                 { name: 'Сауна', description: '3 часа включено', price: 0, unit: 'сеанс' },
-                { name: 'Деревянная купель', description: 'Дополнительные часы', price: 2000, unit: 'час', min_hours: 2 }
+                { name: 'Деревянная купель', description: 'Дополнительные часы', price: 2000, unit: 'час', min_hours: 2 },
+                { name: 'Завтрак', description: 'Континентальный завтрак', price: 500, unit: 'человек' }
             ]
-        }
+        },
     ],
     couple: {
         id: 7,
