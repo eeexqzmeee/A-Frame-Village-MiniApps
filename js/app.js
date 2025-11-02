@@ -50,11 +50,14 @@ class AFrameApp {
         // Продолжение к выбору дат после выбора дома
         document.addEventListener('click', (e) => {
             if (e.target.closest('#continue-to-dates')) {
-                if (this.selectedHouse) {
-                    this.showScreen('calendar-screen');
-                } else {
-                    alert('Пожалуйста, выберите дом');
-                }
+                this.continueToDates();
+            }
+        });
+
+        // Продолжение к оплате после выбора дат
+        document.addEventListener('click', (e) => {
+            if (e.target.closest('#continue-to-payment')) {
+                this.continueToPayment();
             }
         });
     }
@@ -139,13 +142,44 @@ class AFrameApp {
         }
     }
 
+    continueToDates() {
+        if (!this.selectedHouse) {
+            alert('Пожалуйста, выберите дом');
+            return;
+        }
+
+        this.showScreen('calendar-screen');
+    }
+
+    continueToPayment() {
+        if (!window.calendar || !window.calendar.selectedDates.checkin || !window.calendar.selectedDates.checkout) {
+            alert('Пожалуйста, выберите даты заезда и выезда');
+            return;
+        }
+
+        if (!this.selectedHouse) {
+            alert('Пожалуйста, выберите дом');
+            return;
+        }
+
+        // Обновляем bookingData с выбранными датами
+        if (this.bookingData) {
+            this.bookingData.checkin = window.calendar.selectedDates.checkin;
+            this.bookingData.checkout = window.calendar.selectedDates.checkout;
+            this.bookingData.nights = window.calendar.calculateNights();
+            this.bookingData.basePrice = this.bookingData.house.price * this.bookingData.nights;
+        }
+
+        this.showPaymentScreen();
+    }
+
     goBack() {
         const screenHistory = {
             'profile-screen': 'main-screen',
-            'calendar-screen': 'houses-screen', // Изменено: из календаря возвращаемся к домам
+            'calendar-screen': 'house-detail-screen',
             'houses-screen': 'main-screen',
             'house-detail-screen': 'houses-screen',
-            'payment-screen': 'house-detail-screen'
+            'payment-screen': 'calendar-screen'
         };
 
         const previousScreen = screenHistory[this.currentScreen];

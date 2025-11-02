@@ -24,9 +24,11 @@ class Calendar {
             this.renderCalendar();
         });
 
-        document.getElementById('continue-to-houses')?.addEventListener('click', () => {
+        document.getElementById('continue-to-payment')?.addEventListener('click', () => {
             if (this.selectedDates.checkin && this.selectedDates.checkout) {
-                window.app.showScreen('houses-screen');
+                if (window.app) {
+                    window.app.continueToPayment();
+                }
             }
         });
     }
@@ -35,8 +37,9 @@ class Calendar {
         const monthElement = document.getElementById('current-month');
         const yearElement = document.getElementById('current-year');
         const gridElement = document.getElementById('calendar-grid');
+        const previewElement = document.getElementById('dates-preview');
 
-        if (!monthElement || !yearElement || !gridElement) return;
+        if (!monthElement || !yearElement || !gridElement || !previewElement) return;
 
         const monthNames = [
             'Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь',
@@ -53,12 +56,14 @@ class Calendar {
 
         gridElement.innerHTML = '';
 
+        // Пустые дни предыдущего месяца
         for (let i = 0; i < adjustedStartingDay; i++) {
             const emptyDay = document.createElement('div');
             emptyDay.className = 'calendar-day empty';
             gridElement.appendChild(emptyDay);
         }
 
+        // Дни текущего месяца
         for (let day = 1; day <= lastDay.getDate(); day++) {
             const dayElement = document.createElement('div');
             dayElement.className = 'calendar-day';
@@ -133,13 +138,14 @@ class Calendar {
         const checkinPreview = document.getElementById('checkin-preview');
         const checkoutPreview = document.getElementById('checkout-preview');
         const nightsCount = document.getElementById('nights-count');
-        const continueBtn = document.getElementById('continue-to-houses');
+        const continueBtn = document.getElementById('continue-to-payment');
+        const previewElement = document.getElementById('dates-preview');
 
         if (checkinPreview) {
-            checkinPreview.textContent = this.selectedDates.checkin || '--';
+            checkinPreview.textContent = this.selectedDates.checkin ? this.formatDisplayDate(this.selectedDates.checkin) : '--';
         }
         if (checkoutPreview) {
-            checkoutPreview.textContent = this.selectedDates.checkout || '--';
+            checkoutPreview.textContent = this.selectedDates.checkout ? this.formatDisplayDate(this.selectedDates.checkout) : '--';
         }
         if (nightsCount) {
             const nights = this.calculateNights();
@@ -148,6 +154,23 @@ class Calendar {
         if (continueBtn) {
             continueBtn.disabled = !(this.selectedDates.checkin && this.selectedDates.checkout);
         }
+
+        // Превращаем превью в sticky панель если есть выбранные даты
+        if (previewElement) {
+            if (this.selectedDates.checkin && this.selectedDates.checkout) {
+                previewElement.classList.add('sticky-panel', 'compact');
+            } else {
+                previewElement.classList.remove('sticky-panel', 'compact');
+            }
+        }
+    }
+
+    formatDisplayDate(dateString) {
+        const date = new Date(dateString);
+        return date.toLocaleDateString('ru-RU', {
+            day: 'numeric',
+            month: 'short'
+        });
     }
 
     calculateNights() {

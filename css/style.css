@@ -1549,3 +1549,97 @@ body {
         grid-template-columns: repeat(3, 1fr);
     }
 }
+/* Добавляем в конец файла */
+
+/* Sticky панели */
+.sticky-panel {
+    position: sticky;
+    bottom: var(--space-md);
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: var(--backdrop-blur);
+    -webkit-backdrop-filter: var(--backdrop-blur);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: var(--border-radius-xl);
+    padding: var(--space-lg);
+    margin-top: var(--space-lg);
+    z-index: 100;
+    transition: all var(--transition-normal);
+    animation: slideInUp 0.5s var(--transition-normal);
+}
+
+.sticky-panel:hover {
+    border-color: var(--accent-primary);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+}
+
+.sticky-panel.compact {
+    padding: var(--space-md);
+}
+
+.sticky-panel .price-summary {
+    margin-bottom: var(--space-lg);
+}
+
+.sticky-panel .price-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--space-sm) 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all var(--transition-fast);
+}
+
+.sticky-panel .price-item:hover {
+    transform: translateX(4px);
+}
+
+.sticky-panel .price-item:last-child {
+    border-bottom: none;
+}
+
+.sticky-panel .price-total {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--space-md) 0;
+    border-top: 2px solid rgba(255, 255, 255, 0.2);
+    font-weight: var(--font-weight-bold);
+    font-size: var(--font-size-lg);
+    color: var(--text-primary);
+}
+
+/* Улучшаем анимации для sticky панелей */
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Анимация появления при скролле */
+.scroll-reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all var(--transition-slow);
+}
+
+.scroll-reveal.revealed {
+    opacity: 1;
+    transform: translateY(0);
+}

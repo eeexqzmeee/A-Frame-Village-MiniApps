@@ -7,13 +7,29 @@ class BookingManager {
 
     init() {
         this.bindEvents();
+        this.initScrollReveal();
     }
 
     bindEvents() {
         document.addEventListener('click', (e) => {
-            if (e.target.closest('#continue-to-booking')) {
-                this.continueToBooking();
+            if (e.target.closest('#continue-to-dates')) {
+                this.continueToDates();
             }
+        });
+    }
+
+    initScrollReveal() {
+        // Инициализация анимаций при скролле
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('revealed');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.scroll-reveal').forEach(el => {
+            observer.observe(el);
         });
     }
 
@@ -48,19 +64,19 @@ class BookingManager {
 
             <div class="screen-content">
                 <div class="house-detail-container">
-                    <div class="house-gallery">
+                    <div class="house-gallery scroll-reveal">
                         <div class="main-image">
                             <div class="image-placeholder large">${house.images && house.images.length > 0 ? house.images[0] : '🏠'}</div>
                         </div>
                     </div>
 
                     <div class="house-details">
-                        <div class="detail-section">
+                        <div class="detail-section scroll-reveal">
                             <h3>Описание</h3>
                             <p>${house.description}</p>
                         </div>
 
-                        <div class="detail-section">
+                        <div class="detail-section scroll-reveal">
                             <h3>Особенности</h3>
                             <div class="features-grid">
                                 ${house.features ? house.features.map(feature => `
@@ -75,57 +91,38 @@ class BookingManager {
                             </div>
                         </div>
 
-                        ${selectedDates.checkin && selectedDates.checkout ? `
-                            <div class="detail-section">
-                                <h3>Выбранные даты</h3>
-                                <div class="dates-summary">
-                                    <div class="date-item">
-                                        <span class="date-label">Заезд:</span>
-                                        <span class="date-value">${selectedDates.checkin}</span>
-                                    </div>
-                                    <div class="date-item">
-                                        <span class="date-label">Выезд:</span>
-                                        <span class="date-value">${selectedDates.checkout}</span>
-                                    </div>
-                                    <div class="date-item">
-                                        <span class="date-label">Ночей:</span>
-                                        <span class="date-value">${nightsCount}</span>
-                                    </div>
-                                </div>
-                            </div>
-                        ` : ''}
-
                         ${house.services && house.services.length > 0 ? `
-                            <div class="detail-section">
+                            <div class="detail-section scroll-reveal">
                                 <h3>Дополнительные услуги</h3>
                                 <div class="services-list">
                                     ${house.services.map(service => this.renderService(service)).join('')}
                                 </div>
                             </div>
                         ` : ''}
+                    </div>
 
-                        <div class="booking-summary">
-                            <div class="price-summary">
-                                <div class="price-item">
-                                    <span>Проживание (${nightsCount} ${this.getNightsText(nightsCount)})</span>
-                                    <span>${basePrice.toLocaleString()}₽</span>
-                                </div>
-                                ${this.selectedServices.map(service => `
-                                    <div class="price-item">
-                                        <span>${service.name}${service.selectedDuration ? ' - ' + service.selectedDuration.label : ' - ' + service.hours + ' ч'}</span>
-                                        <span>${service.totalPrice.toLocaleString()}₽</span>
-                                    </div>
-                                `).join('')}
-                                <div class="price-total">
-                                    <span>Итого</span>
-                                    <span>${this.calculateTotal(basePrice).toLocaleString()}₽</span>
-                                </div>
+                    <!-- Sticky панель -->
+                    <div class="sticky-panel">
+                        <div class="price-summary">
+                            <div class="price-item">
+                                <span>Проживание (${nightsCount} ${this.getNightsText(nightsCount)})</span>
+                                <span>${basePrice.toLocaleString()}₽</span>
                             </div>
-
-                            <button class="book-btn primary" id="continue-to-booking">
-                                Перейти к оплате
-                            </button>
+                            ${this.selectedServices.map(service => `
+                                <div class="price-item">
+                                    <span>${service.name}${service.selectedDuration ? ' - ' + service.selectedDuration.label : ' - ' + service.hours + ' ч'}</span>
+                                    <span>${service.totalPrice.toLocaleString()}₽</span>
+                                </div>
+                            `).join('')}
+                            <div class="price-total">
+                                <span>Итого</span>
+                                <span>${this.calculateTotal(basePrice).toLocaleString()}₽</span>
+                            </div>
                         </div>
+
+                        <button class="book-btn primary" id="continue-to-dates">
+                            Выбрать даты
+                        </button>
                     </div>
                 </div>
             </div>
@@ -133,11 +130,12 @@ class BookingManager {
 
         this.bindHouseDetailEvents(house);
         this.updateServiceSelections();
+        this.initScrollReveal(); // Переинициализируем для новых элементов
     }
 
     renderService(service) {
         return `
-            <div class="service-item" data-service="${service.name}">
+            <div class="service-item scroll-reveal" data-service="${service.name}">
                 <div class="service-header">
                     <div class="service-info">
                         <h4>${service.name}</h4>
@@ -281,12 +279,12 @@ class BookingManager {
         const basePrice = this.app.bookingData.basePrice;
         const total = this.calculateTotal(basePrice);
         
-        const totalElement = document.querySelector('.price-total span:last-child');
+        const totalElement = document.querySelector('.sticky-panel .price-total span:last-child');
         if (totalElement) {
             totalElement.textContent = `${total.toLocaleString()}₽`;
         }
 
-        const servicesContainer = document.querySelector('.price-summary');
+        const servicesContainer = document.querySelector('.sticky-panel .price-summary');
         if (servicesContainer) {
             const existingServiceItems = servicesContainer.querySelectorAll('.price-item:not(:first-child):not(.price-total)');
             existingServiceItems.forEach(item => item.remove());
@@ -333,12 +331,12 @@ class BookingManager {
         return 'ночей';
     }
 
-    continueToBooking() {
-        if (!this.app.bookingData.checkin || !this.app.bookingData.checkout) {
-            alert('Пожалуйста, выберите даты заезда и выезда');
+    continueToDates() {
+        if (!this.app.selectedHouse) {
+            alert('Пожалуйста, выберите дом');
             return;
         }
 
-        this.app.showPaymentScreen();
+        this.app.showScreen('calendar-screen');
     }
 }

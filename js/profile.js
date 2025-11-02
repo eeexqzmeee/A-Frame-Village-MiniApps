@@ -7,6 +7,7 @@ class ProfileManager {
     init() {
         this.loadUserData();
         this.bindEvents();
+        this.renderLoyaltyLevels();
     }
 
     loadUserData() {
@@ -17,7 +18,9 @@ class ProfileManager {
             coins: 1000,
             referrals: 3,
             earnedCoins: 1500,
-            progress: 45 // прогресс до следующего уровня в %
+            progress: 45, // прогресс до следующего уровня в %
+            nextLevel: 'Silver',
+            nextLevelProgress: 65 // сколько нужно для следующего уровня
         };
         this.updateProfileDisplay();
     }
@@ -74,9 +77,6 @@ class ProfileManager {
                 stat.querySelector('strong').textContent = `${this.userData.earnedCoins} A-Coin`;
             }
         });
-
-        // Обновляем уровни лояльности
-        this.renderLoyaltyLevels();
     }
 
     renderLoyaltyLevels() {
@@ -84,30 +84,38 @@ class ProfileManager {
             {
                 name: 'Bronze',
                 icon: '🥉',
-                description: 'Базовый уровень',
+                description: 'Базовый уровень с стандартными привилегиями',
                 requirements: '0 A-Coin',
-                color: 'var(--bronze-color)'
+                benefits: ['Базовые скидки', 'Поддержка 24/7'],
+                color: 'var(--bronze-color)',
+                progress: 100
             },
             {
                 name: 'Silver',
-                icon: '🥈',
-                description: 'Серебряный уровень',
+                icon: '🥈', 
+                description: 'Расширенные возможности и привилегии',
                 requirements: '5,000 A-Coin',
-                color: 'var(--silver-color)'
+                benefits: ['Скидка 5% на бронирования', 'Приоритетная поддержка', 'Ранний доступ к акциям'],
+                color: 'var(--silver-color)',
+                progress: this.userData.level === 'Bronze' ? this.userData.progress : 100
             },
             {
                 name: 'Gold',
                 icon: '🥇',
-                description: 'Золотой уровень',
-                requirements: '15,000 A-Coin',
-                color: 'var(--gold-color)'
+                description: 'Премиальные привилегии для постоянных гостей',
+                requirements: '15,000 A-Coin', 
+                benefits: ['Скидка 10% на бронирования', 'Персональный менеджер', 'Бесплатные улучшения', 'Эксклюзивные предложения'],
+                color: 'var(--gold-color)',
+                progress: this.userData.level === 'Silver' ? this.userData.progress : (this.userData.level === 'Gold' ? 100 : 0)
             },
             {
                 name: 'Brilliant',
                 icon: '💎',
-                description: 'Бриллиантовый уровень',
+                description: 'Максимальный уровень с эксклюзивными возможностями',
                 requirements: '30,000 A-Coin',
-                color: 'var(--brilliant-color)'
+                benefits: ['Скидка 15% на все бронирования', 'VIP обслуживание', 'Бесплатные дополнительные услуги', 'Доступ к закрытым мероприятиям'],
+                color: 'var(--brilliant-color)',
+                progress: this.userData.level === 'Gold' ? this.userData.progress : (this.userData.level === 'Brilliant' ? 100 : 0)
             }
         ];
 
@@ -115,19 +123,49 @@ class ProfileManager {
         if (!container) return;
 
         container.innerHTML = loyaltyLevels.map(level => `
-            <div class="loyalty-level ${level.name.toLowerCase()} ${this.userData.level === level.name ? 'active' : ''}">
+            <div class="loyalty-level ${level.name.toLowerCase()} ${this.userData.level === level.name ? 'active' : ''} scroll-reveal">
                 <div class="level-icon">${level.icon}</div>
                 <div class="level-info">
                     <div class="level-name">${level.name}</div>
-                    <div class="level-description">${level.description} • ${level.requirements}</div>
-                    ${this.userData.level === level.name ? `
-                        <div class="level-progress">
-                            <div class="progress-bar" style="width: ${this.userData.progress}%"></div>
+                    <div class="level-description">${level.description}</div>
+                    <div class="level-requirements">Требуется: ${level.requirements}</div>
+                    
+                    ${level.benefits ? `
+                        <div class="level-benefits">
+                            ${level.benefits.map(benefit => `
+                                <div class="benefit-item">✓ ${benefit}</div>
+                            `).join('')}
                         </div>
+                    ` : ''}
+                    
+                    ${this.userData.level === level.name || (this.userData.nextLevel === level.name && this.userData.level !== 'Brilliant') ? `
+                        <div class="level-progress">
+                            <div class="progress-bar" style="width: ${level.progress}%; background: ${level.color};"></div>
+                        </div>
+                        ${this.userData.level === level.name ? `
+                            <div class="progress-text">Прогресс до ${this.userData.nextLevel}: ${level.progress}%</div>
+                        ` : ''}
                     ` : ''}
                 </div>
             </div>
         `).join('');
+
+        // Инициализируем анимации для новых элементов
+        this.initScrollReveal();
+    }
+
+    initScrollReveal() {
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('revealed');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.scroll-reveal').forEach(el => {
+            observer.observe(el);
+        });
     }
 
     copyReferralLink() {
