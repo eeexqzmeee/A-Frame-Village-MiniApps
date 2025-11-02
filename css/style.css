@@ -505,13 +505,14 @@ body {
 
 .house-card {
     background: rgba(255, 255, 255, 0.1);
-    border-radius: var(--border-radius-lg);
+    border-radius: var(--border-radius-xl);
     overflow: hidden;
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     border: 1px solid rgba(255, 255, 255, 0.2);
-    transition: all 0.2s ease;
+    transition: all 0.3s ease;
     cursor: pointer;
+    position: relative;
 }
 
 .house-card:active {
@@ -521,8 +522,8 @@ body {
 
 .house-image {
     position: relative;
-    height: 160px;
-    background: linear-gradient(135deg, #2d1b69 0%, #1a1b2e 100%);
+    height: 200px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -530,8 +531,8 @@ body {
 }
 
 .image-placeholder {
-    font-size: 3rem;
-    opacity: 0.7;
+    font-size: 4rem;
+    opacity: 0.8;
 }
 
 .house-badge {
@@ -547,19 +548,21 @@ body {
 }
 
 .house-info {
-    padding: var(--space-lg);
+    padding: var(--space-xl);
 }
 
 .house-info h4 {
-    font-size: var(--font-size-base);
+    font-size: var(--font-size-xl);
     font-weight: var(--font-weight-semibold);
-    margin-bottom: var(--space-sm);
+    margin-bottom: var(--space-md);
+    color: var(--text-primary);
 }
 
 .house-features {
     display: flex;
     gap: var(--space-md);
-    margin-bottom: var(--space-md);
+    margin-bottom: var(--space-lg);
+    flex-wrap: wrap;
 }
 
 .feature {
@@ -568,17 +571,21 @@ body {
     display: flex;
     align-items: center;
     gap: var(--space-xs);
+    background: rgba(255, 255, 255, 0.1);
+    padding: var(--space-xs) var(--space-sm);
+    border-radius: var(--border-radius);
 }
 
 .house-pricing {
     display: flex;
     align-items: baseline;
     gap: var(--space-xs);
+    margin-top: var(--space-md);
 }
 
 .price {
-    font-size: var(--font-size-lg);
-    font-weight: var(--font-weight-semibold);
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-bold);
     color: var(--accent-primary);
 }
 
@@ -733,10 +740,8 @@ body {
 }
 
 .offers-list {
-    display: flex;
-    flex-direction: column;
+    display: grid;
     gap: var(--space-md);
-    margin-bottom: var(--space-lg);
 }
 
 .offer-item {
@@ -788,42 +793,12 @@ body {
 
 .btn-small:active {
     background: var(--accent-secondary);
-    transform: scale(0.9);
-}
-
-.shop-note {
-    font-size: var(--font-size-xs);
-    color: var(--text-secondary);
-    text-align: center;
-    padding: var(--space-md);
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: var(--border-radius);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    transform: scale(0.95);
 }
 
 .feedback-buttons {
-    display: flex;
-    flex-direction: column;
+    display: grid;
     gap: var(--space-md);
-}
-
-.transactions-list {
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: var(--border-radius-lg);
-    padding: var(--space-lg);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    min-height: 200px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.empty-state {
-    color: var(--text-secondary);
-    font-size: var(--font-size-sm);
-    text-align: center;
 }
 
 /* НАВИГАЦИОННАЯ ПАНЕЛЬ */
@@ -890,7 +865,7 @@ body {
     }
     
     .house-image {
-        height: 140px;
+        height: 160px;
     }
 }
 
@@ -910,7 +885,7 @@ body {
     }
     
     .house-image {
-        height: 120px;
+        height: 140px;
     }
     
     .profile-stats {
@@ -928,6 +903,7 @@ body {
         min-height: 44px;
     }
 }
+
 /* Services Screen Styles */
 .services-container {
     margin-bottom: var(--space-xl);
@@ -1179,6 +1155,7 @@ body {
     color: var(--text-secondary);
     font-size: var(--font-size-sm);
 }
+
 /* Improved Services Screen Styles */
 .house-summary-with-photos {
     background: rgba(255, 255, 255, 0.05);
@@ -1562,4 +1539,53 @@ body {
     border-radius: var(--border-radius);
     font-size: var(--font-size-sm);
     font-weight: var(--font-weight-semibold);
+}
+
+/* Черный экран загрузки */
+.black-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #000000;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    color: white;
+}
+
+.black-screen-content {
+    text-align: center;
+    animation: fadeIn 0.5s ease;
+}
+
+.black-screen-icon {
+    font-size: 4rem;
+    margin-bottom: var(--space-xl);
+    opacity: 0.8;
+}
+
+.black-screen-title {
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-semibold);
+    margin-bottom: var(--space-md);
+}
+
+.black-screen-message {
+    font-size: var(--font-size-base);
+    color: var(--text-secondary);
+    line-height: 1.5;
+}
+
+/* Анимации */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.fade-in {
+    animation: fadeIn 0.3s ease;
 }

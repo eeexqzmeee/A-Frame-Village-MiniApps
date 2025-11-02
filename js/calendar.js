@@ -188,7 +188,7 @@ class Calendar {
                 continueBtn.disabled = false;
             } else {
                 checkoutPreview.textContent = '--';
-                nightsCount.textContent = '0 ночей';
+                nightsCount.textcontent = '0 ночей';
                 continueBtn.disabled = true;
             }
         } else {

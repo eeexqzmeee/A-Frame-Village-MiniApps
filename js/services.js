@@ -1,4 +1,3 @@
-// services.js - исправленная версия
 class ServicesManager {
     constructor() {
         this.selectedServices = [];
@@ -7,7 +6,7 @@ class ServicesManager {
 
     showServicesScreen(house) {
         this.selectedHouse = house;
-        this.selectedServices = []; // Сбрасываем при каждом открытии
+        this.selectedServices = [];
         
         const screen = document.getElementById('services-screen');
         if (!screen) return;
@@ -50,7 +49,7 @@ class ServicesManager {
                 <div class="services-container">
                     ${this.renderServicesList(house)}
                     
-                    ${this.hasChaanService(house) ? this.renderChaanSlider() : ''}
+                    ${this.hasChaanService(house) ? this.renderChaanSlider(house) : ''}
                 </div>
 
                 <div class="selected-services-summary">
@@ -78,8 +77,7 @@ class ServicesManager {
     hasChaanService(house) {
         return house.services && house.services.some(s => 
             s.name.toLowerCase().includes('чан') || 
-            s.name.toLowerCase().includes('купель') ||
-            s.name.toLowerCase().includes('чан')
+            s.name.toLowerCase().includes('купель')
         );
     }
 
@@ -88,7 +86,6 @@ class ServicesManager {
             return '<div class="no-services">Нет дополнительных услуг</div>';
         }
 
-        // Фильтруем чан из основного списка, т.к. он будет в слайдере
         const filteredServices = house.services.filter(service => 
             !service.name.toLowerCase().includes('чан') && 
             !service.name.toLowerCase().includes('купель')
@@ -128,8 +125,8 @@ class ServicesManager {
         `;
     }
 
-    renderChaanSlider() {
-        const chaanService = this.selectedHouse.services.find(s => 
+    renderChaanSlider(house) {
+        const chaanService = house.services.find(s => 
             s.name.toLowerCase().includes('чан') || 
             s.name.toLowerCase().includes('купель')
         );
@@ -208,7 +205,6 @@ class ServicesManager {
     }
 
     attachServicesEvents() {
-        // Кнопка назад
         const backBtn = document.querySelector('#services-screen .header-btn.back');
         if (backBtn) {
             backBtn.addEventListener('click', () => {
@@ -218,7 +214,6 @@ class ServicesManager {
             });
         }
 
-        // Переключение обычных услуг
         document.querySelectorAll('.service-toggle').forEach(btn => {
             btn.addEventListener('click', (e) => {
                 const serviceName = e.target.getAttribute('data-service');
@@ -226,7 +221,6 @@ class ServicesManager {
             });
         });
 
-        // Слайдер для чана
         const slider = document.getElementById('chan-hours-slider');
         if (slider) {
             slider.addEventListener('input', (e) => {
@@ -234,7 +228,6 @@ class ServicesManager {
             });
         }
 
-        // Клик по меткам слайдера
         document.querySelectorAll('.slider-label').forEach(label => {
             label.addEventListener('click', (e) => {
                 const hours = parseInt(e.currentTarget.getAttribute('data-hours'));
@@ -244,7 +237,6 @@ class ServicesManager {
             });
         });
 
-        // Кнопка переключения чана
         const chanToggle = document.getElementById('chan-toggle');
         if (chanToggle) {
             chanToggle.addEventListener('click', () => {
@@ -252,7 +244,6 @@ class ServicesManager {
             });
         }
 
-        // Кнопка продолжения
         const continueBtn = document.getElementById('continue-to-dates');
         if (continueBtn) {
             continueBtn.addEventListener('click', () => {
@@ -335,13 +326,11 @@ class ServicesManager {
     }
 
     updateChaanSliderUI(hours) {
-        // Обновляем активные метки
         document.querySelectorAll('.slider-label').forEach(label => {
             const labelHours = parseInt(label.getAttribute('data-hours'));
             label.classList.toggle('active', labelHours === hours);
         });
 
-        // Обновляем прогресс слайдера
         const progress = document.querySelector('.slider-progress');
         const thumb = document.querySelector('.slider-thumb');
         
@@ -351,7 +340,6 @@ class ServicesManager {
             thumb.style.left = `${progressWidth}%`;
         }
 
-        // Обновляем отображаемое значение
         const valueDisplay = document.querySelector('.slider-value strong');
         const priceDisplay = document.querySelector('.slider-price');
         const chaanService = this.selectedHouse.services.find(s => 
@@ -402,7 +390,6 @@ class ServicesManager {
     }
 
     updateServicesUI() {
-        // Обновляем кнопки переключения
         document.querySelectorAll('.service-toggle').forEach(btn => {
             const serviceName = btn.getAttribute('data-service');
             const isSelected = this.isServiceSelected(serviceName);
@@ -410,7 +397,6 @@ class ServicesManager {
             btn.textContent = isSelected ? '✓' : '+';
         });
 
-        // Обновляем кнопку чана
         const chanToggle = document.getElementById('chan-toggle');
         if (chanToggle) {
             const isSelected = this.isChaanSelected();
@@ -418,13 +404,11 @@ class ServicesManager {
             chanToggle.textContent = isSelected ? '✓ Услуга выбрана' : 'Выбрать услугу';
         }
 
-        // Обновляем список выбранных услуг
         const selectedList = document.getElementById('selected-services-list');
         if (selectedList) {
             selectedList.innerHTML = this.renderSelectedServices();
         }
 
-        // Обновляем общую стоимость
         this.updateServicesTotal();
     }
 
@@ -440,15 +424,11 @@ class ServicesManager {
 
     continueToDates() {
         if (window.app) {
-            // Сохраняем выбранные услуги
             window.app.selectedServices = this.selectedServices;
             window.app.selectedHouse = this.selectedHouse;
             
-            // Переходим в календарь
             window.app.showScreen('calendar-screen');
             console.log('✅ Переход в календарь с услугами:', this.selectedServices);
-        } else {
-            console.error('❌ App not found');
         }
     }
 
@@ -458,5 +438,4 @@ class ServicesManager {
     }
 }
 
-// Создаем глобальный экземпляр
 const servicesManager = new ServicesManager();

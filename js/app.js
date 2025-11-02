@@ -9,6 +9,8 @@ class App {
         this.currentYear = new Date().getFullYear();
         this.selectedHouse = null;
         this.userData = null;
+        this.selectedServices = [];
+        this.navigationStack = [];
         
         this.init();
     }
@@ -19,6 +21,7 @@ class App {
         this.initCalendar();
         this.initHouses();
         this.initProfile();
+        this.initServices();
         this.loadUserData();
         
         // Показываем главный экран
@@ -38,16 +41,17 @@ class App {
                 const targetScreen = item.getAttribute('data-screen');
                 console.log('📱 Navigation clicked:', targetScreen);
                 this.showScreen(targetScreen);
+                
+                // Обновляем активное состояние навигации
+                navItems.forEach(nav => nav.classList.remove('active'));
+                item.classList.add('active');
             });
         });
 
         // Кнопка "Посмотреть дома"
         document.addEventListener('click', (e) => {
             if (e.target.id === 'view-houses-btn' || e.target.closest('#view-houses-btn')) {
-                this.showHousesFirst();
-            }
-            if (e.target.id === 'view-houses-btn-2' || e.target.closest('#view-houses-btn-2')) {
-                this.showHousesFirst();
+                this.showScreen('calendar-screen');
             }
         });
 
@@ -73,7 +77,7 @@ class App {
         console.log('✅ Navigation initialized');
     }
 
-    showScreen(screenId) {
+    showScreen(screenId, addToStack = true) {
         console.log('🔄 Showing screen:', screenId);
         
         // Скрываем все экраны
@@ -87,15 +91,12 @@ class App {
             targetScreen.classList.add('active');
             this.currentScreen = screenId;
             
-            // Обновляем активное состояние навигации
-            document.querySelectorAll('.nav-item').forEach(nav => {
-                nav.classList.remove('active');
-                if (nav.getAttribute('data-screen') === screenId) {
-                    nav.classList.add('active');
-                }
-            });
-            
             console.log('✅ Screen shown:', screenId);
+            
+            // Добавляем в стек навигации (кроме главного и профиля)
+            if (addToStack && screenId !== 'main-screen' && screenId !== 'profile-screen') {
+                this.navigationStack.push(this.currentScreen);
+            }
         } else {
             console.error('❌ Screen not found:', screenId);
         }
@@ -104,47 +105,45 @@ class App {
     goBack() {
         console.log('↩️ Going back from:', this.currentScreen);
         
-        const screenHistory = {
-            'calendar-screen': 'main-screen',
-            'houses-screen': 'calendar-screen',
-            'house-detail-screen': 'houses-screen',
-            'booking-screen': 'house-detail-screen',
-            'payment-screen': 'booking-screen'
-        };
-
-        const previousScreen = screenHistory[this.currentScreen];
-        if (previousScreen) {
-            this.showScreen(previousScreen);
+        if (this.navigationStack.length > 0) {
+            const previousScreen = this.navigationStack.pop();
+            this.showScreen(previousScreen, false);
         } else {
-            // Если экран не в истории, возвращаемся на главную
-            this.showScreen('main-screen');
+            // Если стек пуст, возвращаемся на главную
+            this.showScreen('main-screen', false);
         }
     }
 
     initCalendar() {
         console.log('📅 Initializing calendar...');
-        this.renderCalendar();
         
-        // Навигация по месяцам
-        document.addEventListener('click', (e) => {
-            if (e.target.closest('#prev-month')) {
-                this.currentMonth--;
-                if (this.currentMonth < 0) {
-                    this.currentMonth = 11;
-                    this.currentYear--;
-                }
-                this.renderCalendar();
-            }
+        // Инициализация календаря через отдельный модуль
+        if (typeof Calendar !== 'undefined') {
+            this.calendar = new Calendar();
+        } else {
+            this.renderCalendar();
             
-            if (e.target.closest('#next-month')) {
-                this.currentMonth++;
-                if (this.currentMonth > 11) {
-                    this.currentMonth = 0;
-                    this.currentYear++;
+            // Навигация по месяцам
+            document.addEventListener('click', (e) => {
+                if (e.target.closest('#prev-month')) {
+                    this.currentMonth--;
+                    if (this.currentMonth < 0) {
+                        this.currentMonth = 11;
+                        this.currentYear--;
+                    }
+                    this.renderCalendar();
                 }
-                this.renderCalendar();
-            }
-        });
+                
+                if (e.target.closest('#next-month')) {
+                    this.currentMonth++;
+                    if (this.currentMonth > 11) {
+                        this.currentMonth = 0;
+                        this.currentYear++;
+                    }
+                    this.renderCalendar();
+                }
+            });
+        }
     }
 
     renderCalendar() {
@@ -392,17 +391,8 @@ class App {
 
         if (house) {
             this.selectedHouse = house;
-            if (window.servicesManager) {
-                window.servicesManager.showServicesScreen(house);
-            } else {
-                this.showHouseDetails(house); // fallback
-            }
+            this.showHouseDetails(house);
         }
-    }
-
-    showHousesFirst() {
-        console.log('🏠 Showing houses first');
-        this.showScreen('houses-screen');
     }
 
     showHouseDetails(house) {
@@ -414,7 +404,7 @@ class App {
         const dates = this.selectedDates;
         const nights = dates.checkin && dates.checkout ? 
             Math.ceil((dates.checkout - dates.checkin) / (1000 * 60 * 60 * 24)) : 1;
-        const totalPrice = nights * house.price_weekday; // Простой расчет
+        const totalPrice = nights * house.price_weekday;
 
         screen.innerHTML = `
             <header class="header">
@@ -509,11 +499,49 @@ class App {
         const bookBtn = screen.querySelector('#book-now-btn');
         if (bookBtn) {
             bookBtn.addEventListener('click', () => {
-                this.showScreen('booking-screen');
+                this.showBlackScreen();
+                setTimeout(() => {
+                    if (window.servicesManager) {
+                        window.servicesManager.showServicesScreen(house);
+                    } else {
+                        this.showScreen('services-screen');
+                    }
+                }, 1500);
             });
         }
 
         this.showScreen('house-detail-screen');
+    }
+
+    showBlackScreen(message = "Обрабатываем запрос...") {
+        const blackScreen = document.createElement('div');
+        blackScreen.className = 'black-screen';
+        blackScreen.innerHTML = `
+            <div class="black-screen-content">
+                <div class="black-screen-icon">⏳</div>
+                <h2 class="black-screen-title">${message}</h2>
+                <p class="black-screen-message">Пожалуйста, подождите</p>
+            </div>
+        `;
+        document.body.appendChild(blackScreen);
+        
+        // Автоматически скрываем через 2 секунды
+        setTimeout(() => {
+            if (blackScreen.parentNode) {
+                blackScreen.parentNode.removeChild(blackScreen);
+            }
+        }, 2000);
+        
+        return blackScreen;
+    }
+
+    initServices() {
+        console.log('🛎️ Initializing services...');
+        
+        // Инициализация менеджера услуг
+        if (typeof ServicesManager !== 'undefined') {
+            window.servicesManager = new ServicesManager();
+        }
     }
 
     initProfile() {
@@ -617,6 +645,14 @@ class App {
         const referralStats = document.querySelectorAll('.referral-stat strong');
         if (referralStats[0]) referralStats[0].textContent = `${this.userData.referrals} человек`;
         if (referralStats[1]) referralStats[1].textContent = `${this.userData.earnedCoins} A-Coin`;
+    }
+
+    returnToMain() {
+        this.showScreen('main-screen');
+        this.navigationStack = [];
+        this.selectedDates = { checkin: null, checkout: null };
+        this.selectedHouse = null;
+        this.selectedServices = [];
     }
 }
 

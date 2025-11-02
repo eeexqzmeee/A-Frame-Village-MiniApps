@@ -100,7 +100,7 @@ class HousesManager {
                 
                 let house;
                 if (houseType === 'large') {
-                    house = {
+                    house = housesData.large.find(h => h.id === houseId) || {
                         id: houseId,
                         type: 'large',
                         name: `Большой дом ${houseId}`,
@@ -115,13 +115,24 @@ class HousesManager {
                         image: '🏠',
                         services: [
                             { name: 'Сауна', description: '3 часа включено', price: 0, unit: 'сеанс' },
-                            { name: 'Деревянная купель', description: 'Дополнительные часы', price: 2000, unit: 'час', min_hours: 2 }
+                            { 
+                                name: 'Деревянная купель', 
+                                description: 'Дополнительные часы', 
+                                price: 2000, 
+                                unit: 'час', 
+                                min_hours: 2,
+                                durations: [
+                                    { label: "2 часа", value: 2, price: 2000 },
+                                    { label: "4 часа", value: 4, price: 3500 },
+                                    { label: "Вся ночь", value: 8, price: 5000 }
+                                ]
+                            }
                         ]
                     };
                 } else if (houseType === 'couple') {
-                    house = housesData.couple;
+                    house = housesData.couple[0];
                 } else if (houseType === 'family') {
-                    house = housesData.family;
+                    house = housesData.family[0];
                 }
 
                 if (house) {
@@ -135,6 +146,7 @@ class HousesManager {
         this.selectedHouse = house;
         
         if (window.app) {
+            window.app.selectedHouse = house;
             window.app.showHouseDetails(house);
         }
     }
