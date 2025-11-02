@@ -1,294 +1,248 @@
-/* Добавляем в конец файла */
-
-/* FIXED Sticky панель - всегда в самом низу */
-.sticky-panel {
-    position: fixed !important;
-    bottom: 90px !important;
-    left: var(--space-md) !important;
-    right: var(--space-md) !important;
-    background: rgba(255, 255, 255, 0.15) !important;
-    backdrop-filter: blur(40px) saturate(200%) !important;
-    -webkit-backdrop-filter: blur(40px) saturate(200%) !important;
-    border: 1px solid rgba(255, 255, 255, 0.3) !important;
-    border-radius: var(--border-radius-xl) !important;
-    padding: var(--space-lg) !important;
-    z-index: 1000 !important;
-    box-shadow: 
-        0 20px 60px rgba(0, 0, 0, 0.5),
-        0 8px 32px rgba(0, 0, 0, 0.3),
-        inset 0 1px 0 rgba(255, 255, 255, 0.2),
-        0 0 0 1px rgba(255, 255, 255, 0.1) !important;
-    animation: slideInUp 0.6s cubic-bezier(0.4, 0, 0.2, 1) !important;
-}
-
-/* Стили для кнопок опций услуг */
-.service-option-buttons {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: var(--space-sm);
-    margin-top: var(--space-md);
-}
-
-.service-option-btn {
-    padding: var(--space-md) var(--space-lg);
-    background: rgba(255, 255, 255, 0.1);
-    border: 2px solid rgba(255, 255, 255, 0.2);
-    border-radius: var(--border-radius-lg);
-    color: var(--text-primary);
-    font-size: var(--font-size-sm);
-    font-weight: var(--font-weight-medium);
-    cursor: pointer;
-    transition: all var(--transition-normal);
-    text-align: center;
-    backdrop-filter: blur(10px);
-}
-
-.service-option-btn:hover {
-    border-color: var(--accent-primary);
-    transform: translateY(-2px);
-}
-
-.service-option-btn.active {
-    background: var(--accent-primary);
-    color: var(--bg-primary);
-    border-color: var(--accent-primary);
-    transform: scale(1.05);
-    box-shadow: 0 4px 16px rgba(0, 122, 255, 0.3);
-}
-
-/* Улучшенные карточки уровней лояльности */
-.loyalty-section {
-    margin-bottom: var(--space-xl);
-}
-
-.loyalty-levels {
-    display: grid;
-    gap: var(--space-md);
-}
-
-.loyalty-level {
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: var(--border-radius-xl);
-    padding: var(--space-lg);
-    transition: all var(--transition-normal);
-    position: relative;
-    overflow: hidden;
-    margin-bottom: var(--space-md);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-}
-
-.loyalty-level::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 3px;
-    background: linear-gradient(90deg, var(--accent-primary), #00D4FF);
-    opacity: 0;
-    transition: opacity var(--transition-normal);
-}
-
-.loyalty-level:hover::before {
-    opacity: 1;
-}
-
-.loyalty-level:hover {
-    transform: translateY(-4px);
-    border-color: var(--accent-primary);
-    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
-}
-
-.loyalty-level.active {
-    border-color: var(--accent-primary);
-    background: rgba(0, 122, 255, 0.15);
-    box-shadow: 0 8px 32px rgba(0, 122, 255, 0.3);
-}
-
-.loyalty-level.active::before {
-    opacity: 1;
-}
-
-.level-header {
-    display: flex;
-    align-items: center;
-    gap: var(--space-md);
-    margin-bottom: var(--space-md);
-}
-
-.level-icon {
-    font-size: 2.5rem;
-    width: 60px;
-    height: 60px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: var(--border-radius-lg);
-    backdrop-filter: blur(10px);
-}
-
-.level-info {
-    flex: 1;
-}
-
-.level-name {
-    font-size: var(--font-size-xl);
-    font-weight: var(--font-weight-bold);
-    margin-bottom: var(--space-xs);
-    background: linear-gradient(135deg, var(--text-primary), var(--accent-primary));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-}
-
-.level-description {
-    font-size: var(--font-size-sm);
-    color: var(--text-secondary);
-    line-height: 1.4;
-}
-
-.level-requirements {
-    font-size: var(--font-size-xs);
-    color: var(--accent-primary);
-    font-weight: var(--font-weight-semibold);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-
-.level-benefits {
-    display: grid;
-    gap: var(--space-xs);
-    margin: var(--space-md) 0;
-}
-
-.benefit-item {
-    display: flex;
-    align-items: center;
-    gap: var(--space-sm);
-    font-size: var(--font-size-sm);
-    color: var(--text-secondary);
-}
-
-.benefit-item::before {
-    content: '✓';
-    color: var(--accent-success);
-    font-weight: bold;
-    font-size: var(--font-size-sm);
-}
-
-.level-progress {
-    width: 100%;
-    height: 8px;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 4px;
-    margin: var(--space-md) 0 var(--space-sm);
-    overflow: hidden;
-    position: relative;
-}
-
-.progress-bar {
-    height: 100%;
-    border-radius: 4px;
-    background: linear-gradient(90deg, var(--accent-primary), #00D4FF);
-    transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
-    position: relative;
-    overflow: hidden;
-}
-
-.progress-bar::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
-    animation: shimmer 2s infinite;
-}
-
-.progress-text {
-    font-size: var(--font-size-xs);
-    color: var(--text-secondary);
-    text-align: center;
-    font-weight: var(--font-weight-medium);
-}
-
-/* Эффекты как на примере карточки */
-.house-card, .feature-card, .overview-item, .loyalty-level {
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    position: relative;
-    overflow: hidden;
-}
-
-.house-card::before, .feature-card::before, .overview-item::before, .loyalty-level::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
-    transition: left 0.5s;
-}
-
-.house-card:hover::before, .feature-card:hover::before, .overview-item:hover::before, .loyalty-level:hover::before {
-    left: 100%;
-}
-
-/* Анимации */
-@keyframes slideInUp {
-    from {
-        opacity: 0;
-        transform: translateY(50px) scale(0.95);
+class Calendar {
+    constructor() {
+        this.currentDate = new Date();
+        this.selectedDates = {
+            checkin: null,
+            checkout: null
+        };
+        this.init();
     }
-    to {
-        opacity: 1;
-        transform: translateY(0) scale(1);
+
+    init() {
+        this.renderCalendar();
+        this.bindEvents();
     }
-}
 
-@keyframes shimmer {
-    0% { left: -100%; }
-    100% { left: 100%; }
-}
+    bindEvents() {
+        document.getElementById('prev-month')?.addEventListener('click', () => {
+            this.currentDate.setMonth(this.currentDate.getMonth() - 1);
+            this.renderCalendar();
+        });
 
-/* Анимация появления при скролле */
-.scroll-reveal {
-    opacity: 0;
-    transform: translateY(30px);
-    transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-}
+        document.getElementById('next-month')?.addEventListener('click', () => {
+            this.currentDate.setMonth(this.currentDate.getMonth() + 1);
+            this.renderCalendar();
+        });
 
-.scroll-reveal.revealed {
-    opacity: 1;
-    transform: translateY(0);
-}
-
-/* Специфичные анимации для разных элементов */
-.scroll-reveal:nth-child(1) { transition-delay: 0.1s; }
-.scroll-reveal:nth-child(2) { transition-delay: 0.2s; }
-.scroll-reveal:nth-child(3) { transition-delay: 0.3s; }
-.scroll-reveal:nth-child(4) { transition-delay: 0.4s; }
-
-/* Улучшаем кнопку продолжить в календаре */
-#continue-to-payment:not(:disabled) {
-    background: linear-gradient(135deg, var(--accent-primary), #0056CC);
-    color: white;
-    font-weight: var(--font-weight-bold);
-    box-shadow: 0 8px 32px rgba(0, 122, 255, 0.4);
-    animation: pulse 2s infinite;
-}
-
-@keyframes pulse {
-    0%, 100% { 
-        transform: scale(1);
-        box-shadow: 0 8px 32px rgba(0, 122, 255, 0.4);
+        // Обработчик для кнопки продолжения
+        document.addEventListener('click', (e) => {
+            if (e.target.closest('#continue-to-payment')) {
+                this.continueToPayment();
+            }
+        });
     }
-    50% { 
-        transform: scale(1.02);
-        box-shadow: 0 12px 40px rgba(0, 122, 255, 0.6);
+
+    renderCalendar() {
+        const monthElement = document.getElementById('current-month');
+        const yearElement = document.getElementById('current-year');
+        const gridElement = document.getElementById('calendar-grid');
+        const previewElement = document.getElementById('dates-preview');
+
+        if (!monthElement || !yearElement || !gridElement || !previewElement) return;
+
+        const monthNames = [
+            'Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь',
+            'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'
+        ];
+
+        monthElement.textContent = monthNames[this.currentDate.getMonth()];
+        yearElement.textContent = this.currentDate.getFullYear();
+
+        const firstDay = new Date(this.currentDate.getFullYear(), this.currentDate.getMonth(), 1);
+        const lastDay = new Date(this.currentDate.getFullYear(), this.currentDate.getMonth() + 1, 0);
+        const startingDay = firstDay.getDay();
+        const adjustedStartingDay = startingDay === 0 ? 6 : startingDay - 1;
+
+        gridElement.innerHTML = '';
+
+        // Пустые дни предыдущего месяца
+        for (let i = 0; i < adjustedStartingDay; i++) {
+            const emptyDay = document.createElement('div');
+            emptyDay.className = 'calendar-day empty';
+            gridElement.appendChild(emptyDay);
+        }
+
+        // Дни текущего месяца
+        for (let day = 1; day <= lastDay.getDate(); day++) {
+            const dayElement = document.createElement('div');
+            dayElement.className = 'calendar-day';
+            dayElement.textContent = day;
+
+            const dateString = this.formatDate(new Date(this.currentDate.getFullYear(), this.currentDate.getMonth(), day));
+            
+            if (this.isDateBooked(dateString)) {
+                dayElement.classList.add('disabled');
+                dayElement.title = 'Дата занята';
+            } else {
+                dayElement.addEventListener('click', () => this.selectDate(dateString));
+            }
+
+            if (dateString === this.selectedDates.checkin) {
+                dayElement.classList.add('selected');
+            } else if (dateString === this.selectedDates.checkout) {
+                dayElement.classList.add('selected');
+            } else if (this.isDateInRange(dateString)) {
+                dayElement.classList.add('in-range');
+            }
+
+            // Проверяем сегодняшний день
+            const today = new Date();
+            if (dateString === this.formatDate(today)) {
+                dayElement.classList.add('today');
+            }
+
+            gridElement.appendChild(dayElement);
+        }
+
+        this.updateDatesPreview();
+    }
+
+    formatDate(date) {
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    }
+
+    isDateBooked(dateString) {
+        for (const houseId in bookedDates) {
+            if (bookedDates[houseId].includes(dateString)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    selectDate(dateString) {
+        if (!this.selectedDates.checkin || (this.selectedDates.checkin && this.selectedDates.checkout)) {
+            this.selectedDates.checkin = dateString;
+            this.selectedDates.checkout = null;
+        } else {
+            const checkinDate = new Date(this.selectedDates.checkin);
+            const selectedDate = new Date(dateString);
+            
+            if (selectedDate <= checkinDate) {
+                this.selectedDates.checkin = dateString;
+                this.selectedDates.checkout = null;
+            } else {
+                this.selectedDates.checkout = dateString;
+            }
+        }
+
+        this.renderCalendar();
+        this.updateDatesPreview();
+    }
+
+    isDateInRange(dateString) {
+        if (!this.selectedDates.checkin || !this.selectedDates.checkout) return false;
+        
+        const currentDate = new Date(dateString);
+        const checkinDate = new Date(this.selectedDates.checkin);
+        const checkoutDate = new Date(this.selectedDates.checkout);
+        
+        return currentDate > checkinDate && currentDate < checkoutDate;
+    }
+
+    updateDatesPreview() {
+        const checkinPreview = document.getElementById('checkin-preview');
+        const checkoutPreview = document.getElementById('checkout-preview');
+        const nightsCount = document.getElementById('nights-count');
+        const continueBtn = document.getElementById('continue-to-payment');
+        const previewElement = document.getElementById('dates-preview');
+
+        if (checkinPreview) {
+            checkinPreview.textContent = this.selectedDates.checkin ? this.formatDisplayDate(this.selectedDates.checkin) : '--';
+        }
+        if (checkoutPreview) {
+            checkoutPreview.textContent = this.selectedDates.checkout ? this.formatDisplayDate(this.selectedDates.checkout) : '--';
+        }
+        if (nightsCount) {
+            const nights = this.calculateNights();
+            nightsCount.textContent = `${nights} ${this.getNightsText(nights)}`;
+        }
+        if (continueBtn) {
+            continueBtn.disabled = !(this.selectedDates.checkin && this.selectedDates.checkout);
+            continueBtn.textContent = this.selectedDates.checkin && this.selectedDates.checkout ? 
+                `Перейти к оплате • ${this.calculateTotalPrice().toLocaleString()}₽` : 
+                'Выберите даты';
+        }
+
+        // Превращаем превью в sticky панель если есть выбранные даты
+        if (previewElement) {
+            if (this.selectedDates.checkin && this.selectedDates.checkout) {
+                previewElement.classList.add('sticky-panel', 'compact');
+            } else {
+                previewElement.classList.remove('sticky-panel', 'compact');
+            }
+        }
+    }
+
+    formatDisplayDate(dateString) {
+        const date = new Date(dateString);
+        return date.toLocaleDateString('ru-RU', {
+            day: 'numeric',
+            month: 'short'
+        });
+    }
+
+    calculateNights() {
+        if (!this.selectedDates.checkin || !this.selectedDates.checkout) return 0;
+        
+        const checkinDate = new Date(this.selectedDates.checkin);
+        const checkoutDate = new Date(this.selectedDates.checkout);
+        const diffTime = checkoutDate - checkinDate;
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        
+        return diffDays;
+    }
+
+    calculateTotalPrice() {
+        if (!window.app || !window.app.bookingData) return 0;
+        
+        const nights = this.calculateNights();
+        const basePrice = window.app.bookingData.house.price * nights;
+        const servicesTotal = window.app.bookingData.services.reduce((sum, service) => sum + service.totalPrice, 0);
+        
+        return basePrice + servicesTotal;
+    }
+
+    getNightsText(nights) {
+        if (nights === 1) return 'ночь';
+        if (nights >= 2 && nights <= 4) return 'ночи';
+        return 'ночей';
+    }
+
+    continueToPayment() {
+        console.log('🔄 continueToPayment вызван');
+        
+        if (!this.selectedDates.checkin || !this.selectedDates.checkout) {
+            alert('Пожалуйста, выберите даты заезда и выезда');
+            return;
+        }
+    
+        if (!window.app || !window.app.selectedHouse) {
+            alert('Пожалуйста, выберите дом');
+            return;
+        }
+    
+        // Обновляем bookingData с выбранными датами
+        if (window.app.bookingData) {
+            window.app.bookingData.checkin = this.selectedDates.checkin;
+            window.app.bookingData.checkout = this.selectedDates.checkout;
+            window.app.bookingData.nights = this.calculateNights();
+            window.app.bookingData.basePrice = window.app.bookingData.house.price * window.app.bookingData.nights;
+            
+            console.log('✅ Данные для оплаты:', window.app.bookingData);
+        }
+    
+        // Показываем экран оплаты
+        setTimeout(() => {
+            if (window.app && window.app.showPaymentScreen) {
+                window.app.showPaymentScreen();
+            } else {
+                console.error('App или showPaymentScreen не найдены');
+                alert('Ошибка загрузки платежной системы');
+            }
+        }, 100);
     }
 }

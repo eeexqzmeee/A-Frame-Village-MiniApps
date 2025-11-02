@@ -2792,3 +2792,66 @@ body {
         box-shadow: 0 12px 40px rgba(0, 122, 255, 0.6);
     }
 }
+/* FIXED Sticky панель - исправляем позиционирование */
+.sticky-panel {
+    position: fixed !important;
+    bottom: 100px !important;
+    left: 16px !important;
+    right: 16px !important;
+    background: rgba(255, 255, 255, 0.15) !important;
+    backdrop-filter: blur(40px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.3) !important;
+    border-radius: 16px !important;
+    padding: 20px !important;
+    z-index: 1000 !important;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5) !important;
+}
+
+/* Убедимся что контент не перекрывает панель */
+.screen-content {
+    padding-bottom: 200px !important;
+}
+/* Эффекты для всех карточек как на примере */
+.house-card, .feature-card, .overview-item, .loyalty-level, .service-item {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.house-card::before, .feature-card::before, .overview-item::before, 
+.loyalty-level::before, .service-item::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    transition: left 0.5s;
+}
+
+.house-card:hover::before, .feature-card:hover::before, .overview-item:hover::before, 
+.loyalty-level:hover::before, .service-item:hover::before {
+    left: 100%;
+}
+
+.house-card:hover, .feature-card:hover, .overview-item:hover, 
+.loyalty-level:hover, .service-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+}
+
+/* Анимация pulse для кнопок */
+@keyframes pulse-glow {
+    0%, 100% { 
+        box-shadow: 0 0 20px rgba(0, 122, 255, 0.4);
+    }
+    50% { 
+        box-shadow: 0 0 30px rgba(0, 122, 255, 0.8);
+    }
+}
+
+.book-btn.primary, .btn-primary, #continue-to-payment:not(:disabled) {
+    animation: pulse-glow 2s infinite;
+}

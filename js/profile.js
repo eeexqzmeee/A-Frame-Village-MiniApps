@@ -30,6 +30,7 @@ class ProfileManager {
             {
                 name: 'Bronze',
                 icon: '🥉',
+                color: '#CD7F32',
                 description: 'Начните свой путь к эксклюзивным привилегиям',
                 requirements: '0 A-Coin',
                 benefits: ['Базовые скидки на бронирования', 'Круглосуточная поддержка', 'Доступ ко всем домам комплекса'],
@@ -39,6 +40,7 @@ class ProfileManager {
             {
                 name: 'Silver', 
                 icon: '🥈',
+                color: '#C0C0C0',
                 description: 'Расширенные возможности для постоянных гостей',
                 requirements: '5,000 A-Coin',
                 benefits: ['Скидка 5% на все бронирования', 'Приоритетная поддержка', 'Ранний доступ к акциям', 'Бесплатные улучшения'],
@@ -48,8 +50,9 @@ class ProfileManager {
             {
                 name: 'Gold',
                 icon: '🥇',
+                color: '#FFD700', 
                 description: 'Премиальные привилегии для самых верных гостей',
-                requirements: '15,000 A-Coin', 
+                requirements: '15,000 A-Coin',
                 benefits: ['Скидка 10% на все бронирования', 'Персональный менеджер', 'Бесплатные дополнительные услуги', 'Эксклюзивные предложения', 'Приоритетное бронирование'],
                 progress: this.userData.level === 'Silver' ? this.userData.progress : (this.userData.level === 'Gold' ? 100 : 0),
                 isCurrent: this.userData.level === 'Gold'
@@ -57,6 +60,7 @@ class ProfileManager {
             {
                 name: 'Brilliant',
                 icon: '💎',
+                color: '#52E0FF',
                 description: 'Максимальный уровень с эксклюзивными VIP-возможностями',
                 requirements: '30,000 A-Coin',
                 benefits: ['Скидка 15% на все бронирования', 'VIP обслуживание', 'Все дополнительные услуги бесплатно', 'Доступ к закрытым мероприятиям', 'Персональные скидки', 'Эксклюзивный доступ к новым домам'],
@@ -65,19 +69,15 @@ class ProfileManager {
             }
         ];
 
-        // СОЗДАЕМ СЕКЦИЮ УРОВНЕЙ ЕСЛИ ЕЁ НЕТ
         let loyaltySection = document.querySelector('.loyalty-section');
         if (!loyaltySection) {
-            const profileSections = document.querySelector('.profile-section');
-            if (profileSections) {
-                loyaltySection = document.createElement('div');
-                loyaltySection.className = 'profile-section loyalty-section';
-                loyaltySection.innerHTML = `
-                    <h3 class="section-title">💎 Уровни лояльности</h3>
-                    <div class="loyalty-levels"></div>
-                `;
-                document.querySelector('.screen-content').insertBefore(loyaltySection, document.querySelector('.profile-section'));
-            }
+            loyaltySection = document.createElement('div');
+            loyaltySection.className = 'profile-section loyalty-section';
+            loyaltySection.innerHTML = `
+                <h3 class="section-title">💎 Уровни лояльности</h3>
+                <div class="loyalty-levels"></div>
+            `;
+            document.querySelector('.screen-content').insertBefore(loyaltySection, document.querySelector('.profile-section'));
         }
 
         const container = document.querySelector('.loyalty-levels');
@@ -86,23 +86,27 @@ class ProfileManager {
         container.innerHTML = loyaltyLevels.map(level => `
             <div class="loyalty-level ${level.name.toLowerCase()} ${level.isCurrent ? 'active' : ''} scroll-reveal">
                 <div class="level-header">
-                    <div class="level-icon">${level.icon}</div>
+                    <div class="level-icon" style="background: linear-gradient(135deg, ${level.color}20, ${level.color}40); border: 2px solid ${level.color}40;">
+                        ${level.icon}
+                    </div>
                     <div class="level-info">
-                        <div class="level-name">${level.name}</div>
+                        <div class="level-name" style="background: linear-gradient(135deg, ${level.color}, ${level.color}CC); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+                            ${level.name}
+                        </div>
                         <div class="level-description">${level.description}</div>
                         <div class="level-requirements">${level.requirements}</div>
                     </div>
                 </div>
-                
+
                 <div class="level-benefits">
                     ${level.benefits.map(benefit => `
                         <div class="benefit-item">${benefit}</div>
                     `).join('')}
                 </div>
-                
+                    
                 ${level.progress > 0 ? `
                     <div class="level-progress">
-                        <div class="progress-bar" style="width: ${level.progress}%"></div>
+                        <div class="progress-bar" style="width: ${level.progress}%; background: linear-gradient(90deg, ${level.color}, ${level.color}CC);"></div>
                     </div>
                     ${level.isCurrent && level.progress < 100 ? `
                         <div class="progress-text">Прогресс до ${this.userData.nextLevel}: ${level.progress}%</div>
