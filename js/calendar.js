@@ -69,7 +69,7 @@ class Calendar {
             dayElement.textContent = day;
 
             const dateString = this.formatDate(new Date(this.currentDate.getFullYear(), this.currentDate.getMonth(), day));
-            
+
             if (this.isDateBooked(dateString)) {
                 dayElement.classList.add('disabled');
                 dayElement.title = 'Дата занята';
@@ -149,7 +149,7 @@ class Calendar {
         const nightsCount = document.getElementById('nights-count');
         const continueBtn = document.getElementById('continue-to-payment');
         const previewElement = document.getElementById('dates-preview');
-
+        
         if (checkinPreview) {
             checkinPreview.textContent = this.selectedDates.checkin ? this.formatDisplayDate(this.selectedDates.checkin) : '--';
         }
@@ -166,9 +166,15 @@ class Calendar {
                 `Перейти к оплате • ${this.calculateTotalPrice().toLocaleString()}₽` : 
                 'Выберите даты';
         }
-
-        // Превращаем превью в sticky панель если есть выбранные даты
+    
+        // ВСЕГДА показываем панель внизу
         if (previewElement) {
+            previewElement.style.position = 'fixed';
+            previewElement.style.bottom = '100px';
+            previewElement.style.left = '16px';
+            previewElement.style.right = '16px';
+            previewElement.style.marginTop = '0';
+            
             if (this.selectedDates.checkin && this.selectedDates.checkout) {
                 previewElement.classList.add('sticky-panel', 'compact');
             } else {
@@ -212,29 +218,42 @@ class Calendar {
         return 'ночей';
     }
 
+    // В классе Calendar замените метод continueToPayment на этот:
+
     continueToPayment() {
         console.log('🔄 continueToPayment вызван');
-        
+
         if (!this.selectedDates.checkin || !this.selectedDates.checkout) {
             alert('Пожалуйста, выберите даты заезда и выезда');
             return;
         }
-    
+
         if (!window.app || !window.app.selectedHouse) {
             alert('Пожалуйста, выберите дом');
             return;
         }
-    
+
         // Обновляем bookingData с выбранными датами
         if (window.app.bookingData) {
             window.app.bookingData.checkin = this.selectedDates.checkin;
             window.app.bookingData.checkout = this.selectedDates.checkout;
             window.app.bookingData.nights = this.calculateNights();
             window.app.bookingData.basePrice = window.app.bookingData.house.price * window.app.bookingData.nights;
-            
+
             console.log('✅ Данные для оплаты:', window.app.bookingData);
+        } else {
+            // Создаем bookingData если его нет
+            window.app.bookingData = {
+                house: window.app.selectedHouse,
+                checkin: this.selectedDates.checkin,
+                checkout: this.selectedDates.checkout,
+                nights: this.calculateNights(),
+                guests: window.app.selectedHouse.capacity,
+                basePrice: window.app.selectedHouse.price * this.calculateNights(),
+                services: window.app.selectedServices || []
+            };
         }
-    
+
         // Показываем экран оплаты
         setTimeout(() => {
             if (window.app && window.app.showPaymentScreen) {

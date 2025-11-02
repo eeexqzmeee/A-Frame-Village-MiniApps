@@ -1,5 +1,4 @@
 :root {
-    /* Цвета - синяя схема */
     --bg-primary: #0a0a0a;
     --bg-secondary: #1a1a1a;
     --bg-tertiary: #2a2a2a;
@@ -15,11 +14,9 @@
     --accent-error: #FF3B30;
     --accent-info: #5AC8FA;
     
-    /* Градиенты */
     --gradient-primary: linear-gradient(135deg, #007AFF 0%, #0056CC 100%);
     --gradient-secondary: linear-gradient(135deg, #5856D6 0%, #007AFF 100%);
     
-    /* Отступы */
     --space-xs: 4px;
     --space-sm: 8px;
     --space-md: 16px;
@@ -27,7 +24,6 @@
     --space-xl: 32px;
     --space-xxl: 48px;
     
-    /* Размеры шрифтов */
     --font-size-xs: 12px;
     --font-size-sm: 14px;
     --font-size-base: 16px;
@@ -36,40 +32,47 @@
     --font-size-xxl: 24px;
     --font-size-xxxl: 32px;
     
-    /* Насыщенность шрифтов */
     --font-weight-normal: 400;
     --font-weight-medium: 500;
     --font-weight-semibold: 600;
     --font-weight-bold: 700;
     
-    /* Скругления */
     --border-radius: 8px;
     --border-radius-lg: 12px;
     --border-radius-xl: 16px;
     --border-radius-xxl: 24px;
     
-    /* Высота шапки */
     --header-height: 60px;
     
-    /* Тени */
     --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.1);
     --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.15);
     --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.2);
     --shadow-xl: 0 16px 48px rgba(0, 0, 0, 0.3);
     
-    /* Анимации */
     --transition-fast: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     --transition-normal: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     --transition-slow: 0.5s cubic-bezier(0.4, 0, 0.2, 1);
     
-    /* Блюр эффекты */
     --backdrop-blur: blur(20px);
 }
 
-/* Уровни лояльности */
 :root {
     --bronze-color: #CD7F32;
     --silver-color: #C0C0C0;
     --gold-color: #FFD700;
     --brilliant-color: #52E0FF;
+}
+.feature-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.feature-icon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-left: auto;
+    margin-right: auto;
 }

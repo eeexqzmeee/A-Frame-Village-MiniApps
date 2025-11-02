@@ -1,4 +1,3 @@
-// payment.js - КРАСИВАЯ ПАНЕЛЬ ОПЛАТЫ
 class PaymentManager {
     constructor(app) {
         this.app = app;
@@ -6,7 +5,11 @@ class PaymentManager {
     }
 
     init() {
-        this.bindEvents();
+        console.log('PaymentManager initialized');
+    }
+
+    bindEvents() {
+        console.log('PaymentManager events bound');
     }
 
     renderPaymentScreen(bookingData) {
@@ -28,104 +31,155 @@ class PaymentManager {
             </header>
 
             <div class="screen-content">
+                <div class="payment-hero">
+                    <div class="payment-icon">💎</div>
+                    <h1 class="payment-title">Завершение бронирования</h1>
+                    <p class="payment-subtitle">Остался последний шаг для подтверждения вашего отдыха</p>
+                </div>
+
                 <div class="payment-container">
-                    <div class="booking-summary scroll-reveal">
-                        <h3>Детали бронирования</h3>
-                        
-                        <div class="summary-item">
-                            <div class="summary-label">Дом</div>
-                            <div class="summary-value">${bookingData.house.name}</div>
+                    <!-- Детали бронирования -->
+                    <div class="payment-section">
+                        <div class="section-header">
+                            <div class="section-icon">📋</div>
+                            <h3>Детали бронирования</h3>
                         </div>
                         
-                        <div class="summary-item">
-                            <div class="summary-label">Даты</div>
-                            <div class="summary-value">
-                                ${bookingData.checkin} - ${bookingData.checkout} (${nightsCount} ${this.getNightsText(nightsCount)})
-                            </div>
-                        </div>
-                        
-                        <div class="summary-item">
-                            <div class="summary-label">Гости</div>
-                            <div class="summary-value">${bookingData.guests} человек</div>
-                        </div>
-                        
-                        ${bookingData.services.length > 0 ? `
-                            <div class="summary-item">
-                                <div class="summary-label">Доп. услуги</div>
-                                <div class="summary-value">
-                                    ${bookingData.services.map(service => 
-                                        `${service.name} - ${service.selectedDuration ? service.selectedDuration.label : service.hours + ' ч'}: ${service.totalPrice.toLocaleString()}₽`
-                                    ).join('<br>')}
+                        <div class="booking-card">
+                            <div class="booking-main">
+                                <div class="house-image-mini">
+                                    <div class="image-placeholder">${bookingData.house.images && bookingData.house.images.length > 0 ? bookingData.house.images[0] : '🏠'}</div>
+                                </div>
+                                <div class="booking-info">
+                                    <h4>${bookingData.house.name}</h4>
+                                    <p class="booking-dates">
+                                        <span class="date-icon">📅</span>
+                                        ${this.formatDisplayDate(bookingData.checkin)} - ${this.formatDisplayDate(bookingData.checkout)}
+                                    </p>
+                                    <p class="booking-guests">
+                                        <span class="guest-icon">👥</span>
+                                        ${bookingData.guests} гостей • ${nightsCount} ${this.getNightsText(nightsCount)}
+                                    </p>
                                 </div>
                             </div>
-                        ` : ''}
+                        </div>
                     </div>
 
-                    <div class="price-breakdown scroll-reveal">
-                        <h3>Стоимость</h3>
-                        
-                        <div class="price-item">
-                            <div class="price-label">Проживание (${nightsCount} ${this.getNightsText(nightsCount)})</div>
-                            <div class="price-value">${bookingData.basePrice.toLocaleString()}₽</div>
+                    <!-- Способ оплаты -->
+                    <div class="payment-section">
+                        <div class="section-header">
+                            <div class="section-icon">💳</div>
+                            <h3>Способ оплаты</h3>
                         </div>
                         
-                        ${bookingData.services.map(service => `
-                            <div class="price-item">
-                                <div class="price-label">${service.name}${service.selectedDuration ? ' - ' + service.selectedDuration.label : ' - ' + service.hours + ' ч'}</div>
-                                <div class="price-value">${service.totalPrice.toLocaleString()}₽</div>
+                        <div class="payment-methods">
+                            <div class="method-card active" data-method="card">
+                                <div class="method-header">
+                                    <div class="method-icon">💳</div>
+                                    <div class="method-info">
+                                        <div class="method-name">Банковская карта</div>
+                                        <div class="method-description">Visa, Mastercard, Мир</div>
+                                    </div>
+                                    <div class="method-check">
+                                        <div class="check-circle"></div>
+                                    </div>
+                                </div>
                             </div>
-                        `).join('')}
+                            
+                            <div class="method-card" data-method="sbp">
+                                <div class="method-header">
+                                    <div class="method-icon">📱</div>
+                                    <div class="method-info">
+                                        <div class="method-name">СБП</div>
+                                        <div class="method-description">Быстрый платеж через ваш банк</div>
+                                    </div>
+                                    <div class="method-check">
+                                        <div class="check-circle"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
-                    <div class="payment-methods scroll-reveal">
-                        <h3>Способ оплаты</h3>
-                        
-                        <div class="method-option">
-                            <input type="radio" id="card-payment" name="payment-method" checked>
-                            <label for="card-payment">
-                                <span class="method-icon">💳</span>
-                                <span class="method-name">Банковская карта</span>
-                            </label>
-                        </div>
-                        
-                        <div class="method-option">
-                            <input type="radio" id="sbp-payment" name="payment-method">
-                            <label for="sbp-payment">
-                                <span class="method-icon">📱</span>
-                                <span class="method-name">СБП</span>
-                            </label>
+                    <!-- Дополнительная информация -->
+                    <div class="payment-section">
+                        <div class="info-cards">
+                            <div class="info-card">
+                                <div class="info-icon">🛡️</div>
+                                <div class="info-content">
+                                    <div class="info-title">Безопасная оплата</div>
+                                    <div class="info-text">Все платежи защищены шифрованием</div>
+                                </div>
+                            </div>
+                            
+                            <div class="info-card">
+                                <div class="info-icon">↩️</div>
+                                <div class="info-content">
+                                    <div class="info-title">Легкий возврат</div>
+                                    <div class="info-text">Возврат средств по правилам бронирования</div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- СУПЕР КРАСИВАЯ ПАНЕЛЬ ОПЛАТЫ -->
-                <div class="payment-panel">
-                    <div class="payment-total">
-                        <div class="total-amount">${totalAmount.toLocaleString()}₽</div>
-                        <div class="total-label">Итого к оплате</div>
+                <!-- ОБЪЕДИНЕННАЯ ПАНЕЛЬ С ДЕТАЛЯМИ СТОИМОСТИ И КНОПКОЙ ОПЛАТЫ -->
+                <div class="payment-summary-panel">
+                    <div class="payment-details">
+                        <div class="price-breakdown">
+                            <div class="price-item-final">
+                                <span class="price-label-final">Проживание (${nightsCount} ${this.getNightsText(nightsCount)})</span>
+                                <span class="price-value-final">${bookingData.basePrice.toLocaleString()}₽</span>
+                            </div>
+                            
+                            ${bookingData.services && bookingData.services.length > 0 ? 
+                                bookingData.services.map(service => `
+                                    <div class="price-item-final">
+                                        <span class="price-label-final">
+                                            ${service.name}
+                                            ${service.selectedDuration ? ` • ${service.selectedDuration.label}` : service.hours ? ` • ${service.hours} ч` : ''}
+                                        </span>
+                                        <span class="price-value-final">${service.totalPrice.toLocaleString()}₽</span>
+                                    </div>
+                                `).join('') : ''
+                            }
+                        </div>
+                        
+                        <div class="price-total-final">
+                            <div class="total-left">
+                                <div class="total-amount-final">${totalAmount.toLocaleString()}₽</div>
+                                <div class="total-label-final">Итого к оплате</div>
+                            </div>
+                            <div class="total-features">
+                                <div class="feature-final">
+                                    <span class="feature-icon-final">🔒</span>
+                                    <span class="feature-text-final">Безопасно</span>
+                                </div>
+                                <div class="feature-final">
+                                    <span class="feature-icon-final">⚡</span>
+                                    <span class="feature-text-final">Мгновенно</span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <button class="pay-button" id="confirm-payment">
-                        💳 Оплатить бронирование
+                    
+                    <button class="pay-button-final" id="confirm-payment">
+                        <span class="pay-icon-final">💎</span>
+                        <span class="pay-text-final">Оплатить бронирование</span>
+                        <span class="pay-arrow-final">→</span>
                     </button>
                 </div>
             </div>
         `;
 
         this.bindPaymentEvents();
-        this.initScrollReveal();
     }
 
-    initScrollReveal() {
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('revealed');
-                }
-            });
-        }, { threshold: 0.1 });
-
-        document.querySelectorAll('.scroll-reveal').forEach(el => {
-            observer.observe(el);
+    formatDisplayDate(dateString) {
+        const date = new Date(dateString);
+        return date.toLocaleDateString('ru-RU', {
+            day: 'numeric',
+            month: 'short'
         });
     }
 
@@ -159,6 +213,16 @@ class PaymentManager {
                 this.processPayment();
             };
         }
+
+        // Выбор способа оплаты
+        document.querySelectorAll('.method-card').forEach(card => {
+            card.addEventListener('click', () => {
+                document.querySelectorAll('.method-card').forEach(c => {
+                    c.classList.remove('active');
+                });
+                card.classList.add('active');
+            });
+        });
     }
 
     processPayment() {
@@ -177,19 +241,26 @@ class PaymentManager {
 
         // Эффект загрузки
         const payBtn = document.getElementById('confirm-payment');
-        const originalText = payBtn.textContent;
-        payBtn.textContent = 'Обрабатываем оплату...';
+        const originalText = payBtn.innerHTML;
+        payBtn.innerHTML = `
+            <div class="loading-spinner"></div>
+            <span>Обрабатываем оплату...</span>
+        `;
         payBtn.disabled = true;
 
+        // Имитация процесса оплаты
         setTimeout(() => {
-            payBtn.textContent = '✅ Оплата прошла успешно!';
+            payBtn.innerHTML = `
+                <span class="success-icon">✅</span>
+                <span>Оплата прошла успешно!</span>
+            `;
             payBtn.style.background = 'var(--accent-success)';
             
             setTimeout(() => {
-                alert('Бронирование успешно оплачено! С вами свяжется менеджер для подтверждения.');
+                alert('🎉 Бронирование успешно оплачено! С вами свяжется менеджер для подтверждения.');
                 this.app.showScreen('main-screen');
                 this.app.clearBookingData();
-            }, 1000);
-        }, 2000);
+            }, 1500);
+        }, 3000);
     }
 }

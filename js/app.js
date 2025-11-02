@@ -3,6 +3,7 @@ class AFrameApp {
         this.currentScreen = 'main-screen';
         this.selectedHouse = null;
         this.bookingData = null;
+        this.selectedServices = [];
         this.init();
     }
 
@@ -122,11 +123,18 @@ class AFrameApp {
     }
 
     showPaymentScreen() {
+        console.log('🔄 showPaymentScreen вызван');
+        console.log('📦 bookingData:', this.bookingData);
+        console.log('🏠 selectedHouse:', this.selectedHouse);
+        
         if (window.paymentManager && this.bookingData) {
             window.paymentManager.renderPaymentScreen(this.bookingData);
             this.showScreen('payment-screen');
+            console.log('✅ Экран оплаты показан');
         } else {
-            console.error('Payment manager or booking data not available');
+            console.error('❌ Payment manager или booking data не доступны');
+            console.error('paymentManager:', window.paymentManager);
+            console.error('bookingData:', this.bookingData);
             alert('Ошибка: данные бронирования не найдены');
         }
     }
@@ -190,6 +198,7 @@ class AFrameApp {
     clearBookingData() {
         this.bookingData = null;
         this.selectedHouse = null;
+        this.selectedServices = [];
         if (window.bookingManager) {
             window.bookingManager.selectedServices = [];
         }
@@ -198,23 +207,8 @@ class AFrameApp {
             window.calendar.renderCalendar();
         }
     }
-    showPaymentScreen() {
-        console.log('🔄 showPaymentScreen вызван');
-        console.log('📦 bookingData:', this.bookingData);
-        console.log('🏠 selectedHouse:', this.selectedHouse);
-        
-        if (window.paymentManager && this.bookingData) {
-            window.paymentManager.renderPaymentScreen(this.bookingData);
-            this.showScreen('payment-screen');
-            console.log('✅ Экран оплаты показан');
-        } else {
-            console.error('❌ Payment manager или booking data не доступны');
-            console.error('paymentManager:', window.paymentManager);
-            console.error('bookingData:', this.bookingData);
-            alert('Ошибка: данные бронирования не найдены');
-        }
-    }
 }
+
 // Отладка ошибок
 window.addEventListener('error', function(e) {
     console.error('❌ Global error:', e.error);

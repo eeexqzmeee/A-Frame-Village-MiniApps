@@ -1,5 +1,3 @@
-/* Базовые стили с анимациями */
-
 * {
     margin: 0;
     padding: 0;
@@ -39,7 +37,6 @@ body {
     position: relative;
 }
 
-/* Анимации */
 @keyframes fadeIn {
     from { 
         opacity: 0; 
@@ -93,7 +90,6 @@ body {
     }
 }
 
-/* ЭКРАНЫ */
 .screen {
     position: fixed;
     top: 0;
@@ -120,7 +116,6 @@ body {
     animation: fadeIn 0.4s var(--transition-normal);
 }
 
-/* ШАПКА */
 .header {
     position: sticky;
     top: 0;
@@ -166,7 +161,6 @@ body {
     margin: 0 var(--space-md);
 }
 
-/* ГЛАВНЫЙ ЭКРАН */
 .main-content {
     padding: var(--space-xl) var(--space-lg);
     padding-top: calc(var(--space-xl) + env(safe-area-inset-top));
@@ -274,7 +268,6 @@ body {
     margin-top: var(--space-xl);
 }
 
-/* КНОПКИ */
 .book-btn {
     width: 100%;
     padding: var(--space-lg);
@@ -352,7 +345,6 @@ body {
     border-color: var(--accent-primary);
 }
 
-/* СЕКЦИИ */
 .overview-section, .features-section {
     margin: var(--space-xl) 0;
     animation: fadeIn 0.6s var(--transition-normal) 0.3s both;
@@ -410,7 +402,6 @@ body {
     line-height: 1.5;
 }
 
-/* КАЛЕНДАРЬ */
 .calendar-container {
     background: rgba(255, 255, 255, 0.1);
     border-radius: var(--border-radius-xl);
@@ -615,7 +606,6 @@ body {
     transform: none;
 }
 
-/* ДОМА */
 .houses-container {
     padding-bottom: var(--space-lg);
 }
@@ -769,7 +759,6 @@ body {
     color: var(--text-secondary);
 }
 
-/* ПРОФИЛЬ */
 .profile-header {
     display: flex;
     align-items: center;
@@ -867,7 +856,6 @@ body {
     line-height: 1.3;
 }
 
-/* Уровни лояльности */
 .loyalty-levels {
     display: grid;
     gap: var(--space-md);
@@ -1096,7 +1084,6 @@ body {
     gap: var(--space-md);
 }
 
-/* Детали дома */
 .house-detail-container {
     padding-bottom: var(--space-lg);
     animation: fadeIn 0.5s var(--transition-normal);
@@ -1414,7 +1401,6 @@ body {
     color: var(--text-primary);
 }
 
-/* НАВИГАЦИОННАЯ ПАНЕЛЬ */
 .bottom-nav {
     position: fixed;
     bottom: 0;
@@ -1483,7 +1469,6 @@ body {
     font-weight: var(--font-weight-medium);
 }
 
-/* АДАПТИВНОСТЬ */
 @media (max-width: 768px) {
     .main-content {
         padding: var(--space-lg);
@@ -1560,22 +1545,20 @@ body {
         grid-template-columns: repeat(3, 1fr);
     }
 }
-/* Добавляем в конец файла */
 
-/* Sticky панели */
 .sticky-panel {
-    position: sticky;
-    bottom: var(--space-md);
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: var(--backdrop-blur);
-    -webkit-backdrop-filter: var(--backdrop-blur);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: var(--border-radius-xl);
-    padding: var(--space-lg);
-    margin-top: var(--space-lg);
-    z-index: 100;
-    transition: all var(--transition-normal);
-    animation: slideInUp 0.5s var(--transition-normal);
+    position: fixed !important;
+    bottom: 100px !important;
+    left: 16px !important;
+    right: 16px !important;
+    background: rgba(255, 255, 255, 0.15) !important;
+    backdrop-filter: blur(40px) saturate(200%) !important;
+    -webkit-backdrop-filter: blur(40px) saturate(200%) !important;
+    border: 1px solid rgba(255, 255, 255, 0.3) !important;
+    border-radius: 16px !important;
+    padding: 20px !important;
+    z-index: 1000 !important;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5) !important;
 }
 
 .sticky-panel:hover {
@@ -1620,30 +1603,6 @@ body {
     color: var(--text-primary);
 }
 
-/* Улучшаем анимации для sticky панелей */
-@keyframes slideInUp {
-    from {
-        opacity: 0;
-        transform: translateY(30px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-@keyframes slideInDown {
-    from {
-        opacity: 0;
-        transform: translateY(-30px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-/* Анимация появления при скролле */
 .scroll-reveal {
     opacity: 0;
     transform: translateY(30px);
@@ -1656,22 +1615,23 @@ body {
 }
 
 .sticky-panel {
-    position: sticky;
-    bottom: var(--space-md);
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(20px) saturate(180%);
-    -webkit-backdrop-filter: blur(20px) saturate(180%);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: var(--border-radius-xl);
-    padding: var(--space-lg);
-    margin-top: var(--space-lg);
-    z-index: 100;
-    transition: all var(--transition-normal);
-    animation: slideInUp 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    position: fixed !important;
+    bottom: 100px !important;
+    left: 16px !important;
+    right: 16px !important;
+    background: rgba(255, 255, 255, 0.15) !important;
+    backdrop-filter: blur(40px) saturate(200%) !important;
+    -webkit-backdrop-filter: blur(40px) saturate(200%) !important;
+    border: 1px solid rgba(255, 255, 255, 0.3) !important;
+    border-radius: 16px !important;
+    padding: 20px !important;
+    z-index: 1000 !important;
     box-shadow: 
+        0 20px 60px rgba(0, 0, 0, 0.5),
         0 8px 32px rgba(0, 0, 0, 0.3),
-        0 2px 8px rgba(0, 0, 0, 0.2),
-        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        inset 0 1px 0 rgba(255, 255, 255, 0.2),
+        0 0 0 1px rgba(255, 255, 255, 0.1) !important;
+    animation: slideInUp 0.6s cubic-bezier(0.4, 0, 0.2, 1) !important;
 }
 
 .sticky-panel:hover {
@@ -1719,7 +1679,6 @@ body {
     color: var(--text-primary);
 }
 
-/* Уровни лояльности */
 .loyalty-section {
     margin-bottom: var(--space-xl);
 }
@@ -1769,6 +1728,10 @@ body {
     border-color: var(--accent-primary);
     background: rgba(0, 122, 255, 0.1);
     box-shadow: 0 4px 16px rgba(0, 122, 255, 0.2);
+}
+
+.loyalty-level.active::before {
+    opacity: 1;
 }
 
 .loyalty-level.bronze.active {
@@ -1888,11 +1851,10 @@ body {
     font-weight: var(--font-weight-medium);
 }
 
-/* Улучшаем анимации для sticky панелей */
 @keyframes slideInUp {
     from {
         opacity: 0;
-        transform: translateY(30px) scale(0.95);
+        transform: translateY(50px) scale(0.95);
     }
     to {
         opacity: 1;
@@ -1911,11 +1873,10 @@ body {
     }
 }
 
-/* Анимация появления при скролле */
 .scroll-reveal {
     opacity: 0;
     transform: translateY(30px);
-    transition: all var(--transition-slow) cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .scroll-reveal.revealed {
@@ -1923,14 +1884,12 @@ body {
     transform: translateY(0);
 }
 
-/* Специфичные анимации для разных элементов */
 .scroll-reveal:nth-child(1) { transition-delay: 0.1s; }
 .scroll-reveal:nth-child(2) { transition-delay: 0.2s; }
 .scroll-reveal:nth-child(3) { transition-delay: 0.3s; }
 .scroll-reveal:nth-child(4) { transition-delay: 0.4s; }
 .scroll-reveal:nth-child(5) { transition-delay: 0.5s; }
 
-/* Убираем outline при нажатии везде кроме главного экрана и профиля */
 #calendar-screen *:focus,
 #houses-screen *:focus,
 #house-detail-screen *:focus,
@@ -1938,7 +1897,6 @@ body {
     outline: none !important;
 }
 
-/* Убираем border при активном состоянии */
 #calendar-screen *:active,
 #houses-screen *:active,
 #house-detail-screen *:active,
@@ -1946,7 +1904,6 @@ body {
     border-color: transparent !important;
 }
 
-/* Sticky панель - фиксированная внизу */
 .sticky-panel {
     position: fixed;
     bottom: 90px;
@@ -1999,7 +1956,6 @@ body {
     color: var(--text-primary);
 }
 
-/* Панель оплаты - супер стильная */
 .payment-panel {
     position: fixed;
     bottom: 90px;
@@ -2082,7 +2038,6 @@ body {
     transform: translateY(0);
 }
 
-/* Уровни лояльности - СУПЕР ВИДИМЫЕ */
 .loyalty-section {
     margin-bottom: var(--space-xl);
 }
@@ -2240,7 +2195,6 @@ body {
     font-weight: var(--font-weight-medium);
 }
 
-/* Анимации */
 @keyframes slideInUp {
     from {
         opacity: 0;
@@ -2257,7 +2211,6 @@ body {
     100% { left: 100%; }
 }
 
-/* Анимация появления при скролле */
 .scroll-reveal {
     opacity: 0;
     transform: translateY(30px);
@@ -2269,14 +2222,11 @@ body {
     transform: translateY(0);
 }
 
-/* Специфичные анимации для разных элементов */
 .scroll-reveal:nth-child(1) { transition-delay: 0.1s; }
 .scroll-reveal:nth-child(2) { transition-delay: 0.2s; }
 .scroll-reveal:nth-child(3) { transition-delay: 0.3s; }
 .scroll-reveal:nth-child(4) { transition-delay: 0.4s; }
-/* Добавляем в конец файла */
 
-/* Стили для кнопок опций услуг */
 .service-option-buttons {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -2311,7 +2261,6 @@ body {
     box-shadow: 0 4px 16px rgba(0, 122, 255, 0.3);
 }
 
-/* Улучшенные стили для sticky панели */
 .sticky-panel {
     position: fixed;
     bottom: 90px;
@@ -2332,486 +2281,6 @@ body {
     animation: slideInUp 0.6s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Улучшенные карточки уровней лояльности */
-.loyalty-level {
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: var(--border-radius-xl);
-    padding: var(--space-lg);
-    transition: all var(--transition-normal);
-    position: relative;
-    overflow: hidden;
-    margin-bottom: var(--space-md);
-}
-
-.loyalty-level::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 3px;
-    background: linear-gradient(90deg, var(--accent-primary), #00D4FF);
-    opacity: 0;
-    transition: opacity var(--transition-normal);
-}
-
-.loyalty-level:hover::before {
-    opacity: 1;
-}
-
-.loyalty-level:hover {
-    transform: translateY(-4px);
-    border-color: var(--accent-primary);
-    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
-}
-
-.loyalty-level.active {
-    border-color: var(--accent-primary);
-    background: rgba(0, 122, 255, 0.15);
-    box-shadow: 0 8px 32px rgba(0, 122, 255, 0.3);
-}
-
-.loyalty-level.active::before {
-    opacity: 1;
-}
-
-.level-header {
-    display: flex;
-    align-items: center;
-    gap: var(--space-md);
-    margin-bottom: var(--space-md);
-}
-
-.level-icon {
-    font-size: 2.5rem;
-    width: 60px;
-    height: 60px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: var(--border-radius-lg);
-    backdrop-filter: blur(10px);
-}
-
-.level-info {
-    flex: 1;
-}
-
-.level-name {
-    font-size: var(--font-size-xl);
-    font-weight: var(--font-weight-bold);
-    margin-bottom: var(--space-xs);
-    background: linear-gradient(135deg, var(--text-primary), var(--accent-primary));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-}
-
-.level-description {
-    font-size: var(--font-size-sm);
-    color: var(--text-secondary);
-    line-height: 1.4;
-}
-
-.level-requirements {
-    font-size: var(--font-size-xs);
-    color: var(--accent-primary);
-    font-weight: var(--font-weight-semibold);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-
-.level-benefits {
-    display: grid;
-    gap: var(--space-xs);
-    margin: var(--space-md) 0;
-}
-
-.benefit-item {
-    display: flex;
-    align-items: center;
-    gap: var(--space-sm);
-    font-size: var(--font-size-sm);
-    color: var(--text-secondary);
-}
-
-.benefit-item::before {
-    content: '✓';
-    color: var(--accent-success);
-    font-weight: bold;
-    font-size: var(--font-size-sm);
-}
-
-.level-progress {
-    width: 100%;
-    height: 8px;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 4px;
-    margin: var(--space-md) 0 var(--space-sm);
-    overflow: hidden;
-    position: relative;
-}
-
-.progress-bar {
-    height: 100%;
-    border-radius: 4px;
-    background: linear-gradient(90deg, var(--accent-primary), #00D4FF);
-    transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
-    position: relative;
-    overflow: hidden;
-}
-
-.progress-bar::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
-    animation: shimmer 2s infinite;
-}
-
-.progress-text {
-    font-size: var(--font-size-xs);
-    color: var(--text-secondary);
-    text-align: center;
-    font-weight: var(--font-weight-medium);
-}
-
-/* Анимации */
-@keyframes slideInUp {
-    from {
-        opacity: 0;
-        transform: translateY(50px) scale(0.95);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-    }
-}
-
-@keyframes shimmer {
-    0% { left: -100%; }
-    100% { left: 100%; }
-}
-/* Добавляем в конец файла */
-
-/* FIXED Sticky панель - всегда в самом низу */
-.sticky-panel {
-    position: fixed !important;
-    bottom: 90px !important;
-    left: var(--space-md) !important;
-    right: var(--space-md) !important;
-    background: rgba(255, 255, 255, 0.15) !important;
-    backdrop-filter: blur(40px) saturate(200%) !important;
-    -webkit-backdrop-filter: blur(40px) saturate(200%) !important;
-    border: 1px solid rgba(255, 255, 255, 0.3) !important;
-    border-radius: var(--border-radius-xl) !important;
-    padding: var(--space-lg) !important;
-    z-index: 1000 !important;
-    box-shadow: 
-        0 20px 60px rgba(0, 0, 0, 0.5),
-        0 8px 32px rgba(0, 0, 0, 0.3),
-        inset 0 1px 0 rgba(255, 255, 255, 0.2),
-        0 0 0 1px rgba(255, 255, 255, 0.1) !important;
-    animation: slideInUp 0.6s cubic-bezier(0.4, 0, 0.2, 1) !important;
-}
-
-/* Стили для кнопок опций услуг */
-.service-option-buttons {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: var(--space-sm);
-    margin-top: var(--space-md);
-}
-
-.service-option-btn {
-    padding: var(--space-md) var(--space-lg);
-    background: rgba(255, 255, 255, 0.1);
-    border: 2px solid rgba(255, 255, 255, 0.2);
-    border-radius: var(--border-radius-lg);
-    color: var(--text-primary);
-    font-size: var(--font-size-sm);
-    font-weight: var(--font-weight-medium);
-    cursor: pointer;
-    transition: all var(--transition-normal);
-    text-align: center;
-    backdrop-filter: blur(10px);
-}
-
-.service-option-btn:hover {
-    border-color: var(--accent-primary);
-    transform: translateY(-2px);
-}
-
-.service-option-btn.active {
-    background: var(--accent-primary);
-    color: var(--bg-primary);
-    border-color: var(--accent-primary);
-    transform: scale(1.05);
-    box-shadow: 0 4px 16px rgba(0, 122, 255, 0.3);
-}
-
-/* Улучшенные карточки уровней лояльности */
-.loyalty-section {
-    margin-bottom: var(--space-xl);
-}
-
-.loyalty-levels {
-    display: grid;
-    gap: var(--space-md);
-}
-
-.loyalty-level {
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: var(--border-radius-xl);
-    padding: var(--space-lg);
-    transition: all var(--transition-normal);
-    position: relative;
-    overflow: hidden;
-    margin-bottom: var(--space-md);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-}
-
-.loyalty-level::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 3px;
-    background: linear-gradient(90deg, var(--accent-primary), #00D4FF);
-    opacity: 0;
-    transition: opacity var(--transition-normal);
-}
-
-.loyalty-level:hover::before {
-    opacity: 1;
-}
-
-.loyalty-level:hover {
-    transform: translateY(-4px);
-    border-color: var(--accent-primary);
-    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
-}
-
-.loyalty-level.active {
-    border-color: var(--accent-primary);
-    background: rgba(0, 122, 255, 0.15);
-    box-shadow: 0 8px 32px rgba(0, 122, 255, 0.3);
-}
-
-.loyalty-level.active::before {
-    opacity: 1;
-}
-
-.level-header {
-    display: flex;
-    align-items: center;
-    gap: var(--space-md);
-    margin-bottom: var(--space-md);
-}
-
-.level-icon {
-    font-size: 2.5rem;
-    width: 60px;
-    height: 60px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: var(--border-radius-lg);
-    backdrop-filter: blur(10px);
-}
-
-.level-info {
-    flex: 1;
-}
-
-.level-name {
-    font-size: var(--font-size-xl);
-    font-weight: var(--font-weight-bold);
-    margin-bottom: var(--space-xs);
-    background: linear-gradient(135deg, var(--text-primary), var(--accent-primary));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-}
-
-.level-description {
-    font-size: var(--font-size-sm);
-    color: var(--text-secondary);
-    line-height: 1.4;
-}
-
-.level-requirements {
-    font-size: var(--font-size-xs);
-    color: var(--accent-primary);
-    font-weight: var(--font-weight-semibold);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-
-.level-benefits {
-    display: grid;
-    gap: var(--space-xs);
-    margin: var(--space-md) 0;
-}
-
-.benefit-item {
-    display: flex;
-    align-items: center;
-    gap: var(--space-sm);
-    font-size: var(--font-size-sm);
-    color: var(--text-secondary);
-}
-
-.benefit-item::before {
-    content: '✓';
-    color: var(--accent-success);
-    font-weight: bold;
-    font-size: var(--font-size-sm);
-}
-
-.level-progress {
-    width: 100%;
-    height: 8px;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 4px;
-    margin: var(--space-md) 0 var(--space-sm);
-    overflow: hidden;
-    position: relative;
-}
-
-.progress-bar {
-    height: 100%;
-    border-radius: 4px;
-    background: linear-gradient(90deg, var(--accent-primary), #00D4FF);
-    transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
-    position: relative;
-    overflow: hidden;
-}
-
-.progress-bar::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
-    animation: shimmer 2s infinite;
-}
-
-.progress-text {
-    font-size: var(--font-size-xs);
-    color: var(--text-secondary);
-    text-align: center;
-    font-weight: var(--font-weight-medium);
-}
-
-/* Эффекты как на примере карточки */
-.house-card, .feature-card, .overview-item, .loyalty-level {
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    position: relative;
-    overflow: hidden;
-}
-
-.house-card::before, .feature-card::before, .overview-item::before, .loyalty-level::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
-    transition: left 0.5s;
-}
-
-.house-card:hover::before, .feature-card:hover::before, .overview-item:hover::before, .loyalty-level:hover::before {
-    left: 100%;
-}
-
-/* Анимации */
-@keyframes slideInUp {
-    from {
-        opacity: 0;
-        transform: translateY(50px) scale(0.95);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-    }
-}
-
-@keyframes shimmer {
-    0% { left: -100%; }
-    100% { left: 100%; }
-}
-
-/* Анимация появления при скролле */
-.scroll-reveal {
-    opacity: 0;
-    transform: translateY(30px);
-    transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.scroll-reveal.revealed {
-    opacity: 1;
-    transform: translateY(0);
-}
-
-/* Специфичные анимации для разных элементов */
-.scroll-reveal:nth-child(1) { transition-delay: 0.1s; }
-.scroll-reveal:nth-child(2) { transition-delay: 0.2s; }
-.scroll-reveal:nth-child(3) { transition-delay: 0.3s; }
-.scroll-reveal:nth-child(4) { transition-delay: 0.4s; }
-
-/* Улучшаем кнопку продолжить в календаре */
-#continue-to-payment:not(:disabled) {
-    background: linear-gradient(135deg, var(--accent-primary), #0056CC);
-    color: white;
-    font-weight: var(--font-weight-bold);
-    box-shadow: 0 8px 32px rgba(0, 122, 255, 0.4);
-    animation: pulse 2s infinite;
-}
-
-@keyframes pulse {
-    0%, 100% { 
-        transform: scale(1);
-        box-shadow: 0 8px 32px rgba(0, 122, 255, 0.4);
-    }
-    50% { 
-        transform: scale(1.02);
-        box-shadow: 0 12px 40px rgba(0, 122, 255, 0.6);
-    }
-}
-/* FIXED Sticky панель - исправляем позиционирование */
-.sticky-panel {
-    position: fixed !important;
-    bottom: 100px !important;
-    left: 16px !important;
-    right: 16px !important;
-    background: rgba(255, 255, 255, 0.15) !important;
-    backdrop-filter: blur(40px) !important;
-    border: 1px solid rgba(255, 255, 255, 0.3) !important;
-    border-radius: 16px !important;
-    padding: 20px !important;
-    z-index: 1000 !important;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5) !important;
-}
-
-/* Убедимся что контент не перекрывает панель */
-.screen-content {
-    padding-bottom: 200px !important;
-}
-/* Эффекты для всех карточек как на примере */
 .house-card, .feature-card, .overview-item, .loyalty-level, .service-item {
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
@@ -2842,7 +2311,6 @@ body {
     box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
 }
 
-/* Анимация pulse для кнопок */
 @keyframes pulse-glow {
     0%, 100% { 
         box-shadow: 0 0 20px rgba(0, 122, 255, 0.4);
@@ -2854,4 +2322,1184 @@ body {
 
 .book-btn.primary, .btn-primary, #continue-to-payment:not(:disabled) {
     animation: pulse-glow 2s infinite;
+}
+
+#dates-preview {
+    position: fixed !important;
+    bottom: 100px !important;
+    left: 16px !important;
+    right: 16px !important;
+    background: rgba(255, 255, 255, 0.15) !important;
+    backdrop-filter: blur(40px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.3) !important;
+    border-radius: 16px !important;
+    padding: 20px !important;
+    z-index: 1000 !important;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5) !important;
+    margin-top: 0 !important;
+}
+
+.screen-content {
+    padding-bottom: 200px !important;
+}
+
+.feature-card {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.feature-icon {
+    font-size: 2.5rem;
+    margin-bottom: var(--space-md);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 60px;
+    height: 60px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    backdrop-filter: blur(10px);
+}
+
+.feature-card h4 {
+    text-align: center;
+    width: 100%;
+}
+
+.feature-card p {
+    text-align: center;
+    width: 100%;
+}
+
+.selected-dates-preview {
+    margin-top: 0 !important;
+    position: static !important;
+}
+
+#calendar-screen .screen-content {
+    padding-bottom: 200px !important;
+}
+
+#calendar-screen .selected-dates-preview {
+    position: fixed !important;
+    bottom: 100px !important;
+    left: 16px !important;
+    right: 16px !important;
+    transform: none !important;
+}
+
+#dates-preview {
+    animation: slideInUp 0.6s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(50px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+#house-detail-screen .sticky-panel {
+    position: sticky;
+    bottom: 20px;
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(40px) saturate(200%);
+    -webkit-backdrop-filter: blur(40px) saturate(200%);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 16px;
+    padding: 20px;
+    margin-top: 20px;
+    z-index: 100;
+    box-shadow: 
+        0 20px 60px rgba(0, 0, 0, 0.5),
+        0 8px 32px rgba(0, 0, 0, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2),
+        0 0 0 1px rgba(255, 255, 255, 0.1);
+    animation: slideInUp 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+#house-detail-screen .screen-content {
+    padding-bottom: 120px !important;
+}
+
+#house-detail-screen .sticky-panel .book-btn.primary {
+    width: 100%;
+    padding: var(--space-lg);
+    background: linear-gradient(135deg, var(--accent-primary), #0056CC);
+    color: white;
+    border: none;
+    border-radius: var(--border-radius-lg);
+    font-size: var(--font-size-base);
+    font-weight: var(--font-weight-semibold);
+    cursor: pointer;
+    transition: all var(--transition-normal);
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 8px 32px rgba(0, 122, 255, 0.4);
+}
+
+#house-detail-screen .sticky-panel .book-btn.primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 40px rgba(0, 122, 255, 0.6);
+}
+
+#house-detail-screen .sticky-panel .book-btn.primary:active {
+    transform: translateY(0);
+}
+
+.booking-panel {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    padding: 20px;
+    margin-top: 30px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(20px);
+}
+
+.booking-panel .book-btn.primary {
+    width: 100%;
+    padding: 16px;
+    background: var(--accent-primary);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 15px;
+}
+
+.payment-hero {
+    text-align: center;
+    padding: 30px 20px;
+    background: linear-gradient(135deg, var(--accent-primary), #0056CC);
+    border-radius: 20px;
+    margin-bottom: 30px;
+    color: white;
+}
+
+.payment-icon {
+    font-size: 3rem;
+    margin-bottom: 15px;
+    filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.3));
+}
+
+.payment-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+
+.payment-subtitle {
+    opacity: 0.9;
+    font-size: 0.9rem;
+}
+
+.payment-section {
+    margin-bottom: 30px;
+}
+
+.section-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.section-icon {
+    font-size: 1.2rem;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 8px;
+    border-radius: 10px;
+    backdrop-filter: blur(10px);
+}
+
+.section-header h3 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.booking-card {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    padding: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(20px);
+}
+
+.booking-main {
+    display: flex;
+    gap: 15px;
+    align-items: flex-start;
+}
+
+.house-image-mini {
+    width: 60px;
+    height: 60px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, var(--accent-primary), #0056CC);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    flex-shrink: 0;
+}
+
+.booking-info h4 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: var(--text-primary);
+}
+
+.booking-dates, .booking-guests {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    margin-bottom: 4px;
+}
+
+.date-icon, .guest-icon {
+    font-size: 0.8rem;
+}
+
+.price-details {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 16px;
+    padding: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.price-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.price-row:last-of-type {
+    border-bottom: none;
+}
+
+.price-row.total {
+    border-top: 2px solid rgba(255, 255, 255, 0.2);
+    margin-top: 10px;
+    padding-top: 15px;
+}
+
+.price-label {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+}
+
+.price-value {
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.total-amount {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--accent-primary);
+}
+
+.price-divider {
+    height: 1px;
+    background: rgba(255, 255, 255, 0.2);
+    margin: 10px 0;
+}
+
+.payment-methods {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.method-card {
+    background: rgba(255, 255, 255, 0.05);
+    border: 2px solid transparent;
+    border-radius: 16px;
+    padding: 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+}
+
+.method-card:hover {
+    background: rgba(255, 255, 255, 0.1);
+    transform: translateY(-2px);
+}
+
+.method-card.active {
+    border-color: var(--accent-primary);
+    background: rgba(0, 122, 255, 0.15);
+}
+
+.method-header {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.method-icon {
+    font-size: 1.5rem;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+}
+
+.method-info {
+    flex: 1;
+}
+
+.method-name {
+    font-weight: 600;
+    margin-bottom: 4px;
+    color: var(--text-primary);
+}
+
+.method-description {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+.method-check {
+    width: 24px;
+    height: 24px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.method-card.active .method-check {
+    border-color: var(--accent-primary);
+    background: var(--accent-primary);
+}
+
+.method-card.active .method-check::after {
+    content: '✓';
+    color: white;
+    font-size: 0.8rem;
+    font-weight: bold;
+}
+
+.info-cards {
+    display: grid;
+    gap: 12px;
+}
+
+.info-card {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 16px;
+    padding: 20px;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.info-icon {
+    font-size: 1.2rem;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    flex-shrink: 0;
+}
+
+.info-title {
+    font-weight: 600;
+    margin-bottom: 4px;
+    color: var(--text-primary);
+    font-size: 0.95rem;
+}
+
+.info-text {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+.payment-panel {
+    position: fixed;
+    bottom: 90px;
+    left: 16px;
+    right: 16px;
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(40px) saturate(200%);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 20px;
+    padding: 20px;
+    z-index: 1000;
+    box-shadow: 
+        0 20px 60px rgba(0, 0, 0, 0.5),
+        0 8px 32px rgba(0, 0, 0, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    animation: slideInUp 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.payment-total {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.total-main {
+    text-align: left;
+}
+
+.total-amount {
+    font-size: 1.8rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, var(--accent-primary), #00D4FF);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1;
+    margin-bottom: 4px;
+}
+
+.total-label {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.payment-features {
+    display: flex;
+    gap: 15px;
+}
+
+.feature {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+}
+
+.feature-icon {
+    font-size: 0.9rem;
+}
+
+.pay-button {
+    width: 100%;
+    padding: 18px 24px;
+    background: linear-gradient(135deg, var(--accent-primary), #0056CC);
+    color: white;
+    border: none;
+    border-radius: 16px;
+    font-size: 1.1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    box-shadow: 0 8px 32px rgba(0, 122, 255, 0.4);
+    position: relative;
+    overflow: hidden;
+}
+
+.pay-button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.6s;
+}
+
+.pay-button:hover::before {
+    left: 100%;
+}
+
+.pay-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 40px rgba(0, 122, 255, 0.6);
+}
+
+.pay-button:active {
+    transform: translateY(0);
+}
+
+.pay-icon {
+    font-size: 1.2rem;
+}
+
+.pay-text {
+    flex: 1;
+    text-align: center;
+}
+
+.pay-arrow {
+    font-size: 1.1rem;
+    transition: transform 0.3s ease;
+}
+
+.pay-button:hover .pay-arrow {
+    transform: translateX(3px);
+}
+
+.loading-spinner {
+    width: 20px;
+    height: 20px;
+    border: 2px solid transparent;
+    border-top: 2px solid white;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.success-icon {
+    animation: bounce 0.5s ease;
+}
+
+@keyframes bounce {
+    0%, 20%, 50%, 80%, 100% {transform: translateY(0);}
+    40% {transform: translateY(-5px);}
+    60% {transform: translateY(-3px);}
+}
+
+@media (max-width: 480px) {
+    .payment-total {
+        flex-direction: column;
+        gap: 15px;
+        text-align: center;
+    }
+    
+    .payment-features {
+        justify-content: center;
+    }
+    
+    .total-main {
+        text-align: center;
+    }
+    
+    .pay-button {
+        padding: 16px 20px;
+        font-size: 1rem;
+    }
+}
+
+.payment-panel-final {
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(40px) saturate(200%);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 20px;
+    padding: 20px;
+    margin-top: 30px;
+    box-shadow: 
+        0 20px 60px rgba(0, 0, 0, 0.5),
+        0 8px 32px rgba(0, 0, 0, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+.payment-total-final {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.total-main-final {
+    text-align: left;
+}
+
+.total-amount-final {
+    font-size: 1.8rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, var(--accent-primary), #00D4FF);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1;
+    margin-bottom: 4px;
+}
+
+.total-label-final {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.payment-features-final {
+    display: flex;
+    gap: 15px;
+}
+
+.feature-final {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+}
+
+.feature-icon-final {
+    font-size: 0.9rem;
+}
+
+.pay-button-final {
+    width: 100%;
+    padding: 18px 24px;
+    background: linear-gradient(135deg, var(--accent-primary), #0056CC);
+    color: white;
+    border: none;
+    border-radius: 16px;
+    font-size: 1.1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    box-shadow: 0 8px 32px rgba(0, 122, 255, 0.4);
+    position: relative;
+    overflow: hidden;
+}
+
+.pay-button-final::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.6s;
+}
+
+.pay-button-final:hover::before {
+    left: 100%;
+}
+
+.pay-button-final:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 40px rgba(0, 122, 255, 0.6);
+}
+
+.pay-button-final:active {
+    transform: translateY(0);
+}
+
+.pay-icon-final {
+    font-size: 1.2rem;
+}
+
+.pay-text-final {
+    flex: 1;
+    text-align: center;
+}
+
+.pay-arrow-final {
+    font-size: 1.1rem;
+    transition: transform 0.3s ease;
+}
+
+.pay-button-final:hover .pay-arrow-final {
+    transform: translateX(3px);
+}
+
+#payment-screen .screen-content {
+    padding-bottom: 20px !important;
+}
+
+@media (max-width: 480px) {
+    .payment-total-final {
+        flex-direction: column;
+        gap: 15px;
+        text-align: center;
+    }
+    
+    .payment-features-final {
+        justify-content: center;
+    }
+    
+    .total-main-final {
+        text-align: center;
+    }
+    
+    .pay-button-final {
+        padding: 16px 20px;
+        font-size: 1rem;
+    }
+    
+    .payment-panel-final {
+        margin-top: 20px;
+        padding: 16px;
+    }
+}
+
+.payment-summary-panel {
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(40px) saturate(200%);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 20px;
+    padding: 20px;
+    margin-top: 30px;
+    margin-bottom: 100px;
+    box-shadow: 
+        0 20px 60px rgba(0, 0, 0, 0.5),
+        0 8px 32px rgba(0, 0, 0, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+.payment-details {
+    margin-bottom: 20px;
+}
+
+.price-breakdown {
+    margin-bottom: 15px;
+}
+
+.price-item-final {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.price-item-final:last-child {
+    border-bottom: none;
+}
+
+.price-label-final {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    flex: 1;
+}
+
+.price-value-final {
+    font-weight: 600;
+    color: var(--text-primary);
+    font-size: 0.9rem;
+}
+
+.price-total-final {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 15px;
+    border-top: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+.total-left {
+    text-align: left;
+}
+
+.total-amount-final {
+    font-size: 1.8rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, var(--accent-primary), #00D4FF);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1;
+    margin-bottom: 4px;
+}
+
+.total-label-final {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.total-features {
+    display: flex;
+    gap: 12px;
+}
+
+.feature-final {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+}
+
+.feature-icon-final {
+    font-size: 0.9rem;
+}
+
+.pay-button-final {
+    width: 100%;
+    padding: 18px 24px;
+    background: linear-gradient(135deg, var(--accent-primary), #0056CC);
+    color: white;
+    border: none;
+    border-radius: 16px;
+    font-size: 1.1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    box-shadow: 0 8px 32px rgba(0, 122, 255, 0.4);
+    position: relative;
+    overflow: hidden;
+}
+
+.pay-button-final::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.6s;
+}
+
+.pay-button-final:hover::before {
+    left: 100%;
+}
+
+.pay-button-final:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 40px rgba(0, 122, 255, 0.6);
+}
+
+.pay-button-final:active {
+    transform: translateY(0);
+}
+
+.pay-icon-final {
+    font-size: 1.2rem;
+}
+
+.pay-text-final {
+    flex: 1;
+    text-align: center;
+}
+
+.pay-arrow-final {
+    font-size: 1.1rem;
+    transition: transform 0.3s ease;
+}
+
+.pay-button-final:hover .pay-arrow-final {
+    transform: translateX(3px);
+}
+
+#payment-screen .screen-content {
+    padding-bottom: 120px !important;
+}
+
+@media (max-width: 480px) {
+    .payment-summary-panel {
+        margin-top: 20px;
+        margin-bottom: 80px;
+        padding: 16px;
+    }
+    
+    .price-total-final {
+        flex-direction: column;
+        gap: 15px;
+        text-align: center;
+    }
+    
+    .total-left {
+        text-align: center;
+    }
+    
+    .total-features {
+        justify-content: center;
+    }
+    
+    .pay-button-final {
+        padding: 16px 20px;
+        font-size: 1rem;
+    }
+    
+    .total-amount-final {
+        font-size: 1.6rem;
+    }
+    
+    #payment-screen .screen-content {
+        padding-bottom: 100px !important;
+    }
+}
+
+@media (max-width: 380px) {
+    .price-total-final {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .total-features {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    
+    .payment-summary-panel {
+        margin-bottom: 70px;
+    }
+    
+    #payment-screen .screen-content {
+        padding-bottom: 90px !important;
+    }
+}
+
+.guests-selector {
+    margin-top: 15px;
+    padding: 15px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.guests-selector.hidden {
+    display: none;
+}
+
+.guests-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.guests-header label {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.guests-counter {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    padding: 5px;
+}
+
+.guest-btn {
+    width: 32px;
+    height: 32px;
+    border: none;
+    background: rgba(255, 255, 255, 0.2);
+    color: var(--text-primary);
+    border-radius: 8px;
+    font-size: 1.2rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.guest-btn:hover:not(:disabled) {
+    background: var(--accent-primary);
+    transform: scale(1.1);
+}
+
+.guest-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.guests-count {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    min-width: 30px;
+    text-align: center;
+}
+
+.guests-info {
+    font-size: 0.85rem;
+}
+
+.guests-base {
+    color: var(--text-secondary);
+    margin-bottom: 5px;
+}
+
+.guests-extra {
+    color: var(--accent-primary);
+    font-weight: 600;
+    background: rgba(0, 122, 255, 0.1);
+    padding: 4px 8px;
+    border-radius: 6px;
+    display: inline-block;
+}
+
+.guests-selector-main {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    padding: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(10px);
+}
+
+.guests-header-main {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.guests-info-main {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.guests-icon {
+    font-size: 1.5rem;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+}
+
+.guests-label {
+    font-weight: 600;
+    margin-bottom: 4px;
+    color: var(--text-primary);
+}
+
+.guests-description {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+.guests-counter-main {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 8px;
+}
+
+.guest-btn-main {
+    width: 40px;
+    height: 40px;
+    border: none;
+    background: rgba(255, 255, 255, 0.2);
+    color: var(--text-primary);
+    border-radius: 10px;
+    font-size: 1.3rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.guest-btn-main:hover:not(:disabled) {
+    background: var(--accent-primary);
+    transform: scale(1.1);
+}
+
+.guest-btn-main:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.guests-count-main {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    min-width: 40px;
+    text-align: center;
+}
+
+.guests-warning {
+    background: rgba(255, 152, 0, 0.1);
+    border: 1px solid rgba(255, 152, 0, 0.3);
+    color: #FF9800;
+    padding: 10px 15px;
+    border-radius: 10px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-top: 10px;
+}
+
+.chan-guests-info {
+    background: rgba(0, 122, 255, 0.1);
+    border: 1px solid rgba(0, 122, 255, 0.3);
+    color: var(--accent-primary);
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-top: 8px;
+    display: inline-block;
+}
+
+.guests-extra-price {
+    background: rgba(76, 175, 80, 0.1);
+    border: 1px solid rgba(76, 175, 80, 0.3);
+    color: #4CAF50;
+    padding: 10px 15px;
+    border-radius: 10px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-top: 10px;
+}
+
+@media (max-width: 480px) {
+    .guests-header-main {
+        flex-direction: column;
+        gap: 15px;
+        align-items: stretch;
+    }
+    
+    .guests-info-main {
+        justify-content: center;
+        text-align: center;
+    }
+    
+    .guests-counter-main {
+        justify-content: center;
+    }
+    
+    .guests-selector-main {
+        padding: 15px;
+    }
 }
