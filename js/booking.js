@@ -167,7 +167,9 @@ class BookingManager {
         const backBtn = document.querySelector('#house-detail-screen .header-btn.back');
         if (backBtn) {
             backBtn.addEventListener('click', () => {
-                window.app.goBack();
+                if (window.app) {
+                    window.app.goBack();
+                }
             });
         }
 
@@ -183,7 +185,9 @@ class BookingManager {
         this.bookingData.house = house;
         this.bookingData.dates = window.app.selectedDates;
         
-        window.app.showModalScreen('booking-screen');
+        if (window.app) {
+            window.app.showScreen('booking-screen');
+        }
         this.renderBookingForm();
     }
 
@@ -233,17 +237,17 @@ class BookingManager {
 
                         <div class="form-group">
                             <label>Имя и фамилия</label>
-                            <input type="text" class="form-input" required placeholder="Введите ваше имя">
+                            <input type="text" class="form-input" id="guest-name" required placeholder="Введите ваше имя">
                         </div>
 
                         <div class="form-group">
                             <label>Email</label>
-                            <input type="email" class="form-input" required placeholder="your@email.com">
+                            <input type="email" class="form-input" id="guest-email" required placeholder="your@email.com">
                         </div>
 
                         <div class="form-group">
                             <label>Телефон</label>
-                            <input type="tel" class="form-input" required placeholder="+7 (999) 999-99-99">
+                            <input type="tel" class="form-input" id="guest-phone" required placeholder="+7 (999) 999-99-99">
                         </div>
                     </div>
 
@@ -266,7 +270,7 @@ class BookingManager {
 
                     <div class="form-section">
                         <h4>Особые пожелания</h4>
-                        <textarea class="form-textarea" placeholder="Дополнительные пожелания..."></textarea>
+                        <textarea class="form-textarea" id="guest-comment" placeholder="Дополнительные пожелания..."></textarea>
                     </div>
 
                     <button type="submit" class="book-btn large">
@@ -284,7 +288,9 @@ class BookingManager {
         const backBtn = document.querySelector('#booking-screen .header-btn.back');
         if (backBtn) {
             backBtn.addEventListener('click', () => {
-                window.app.goBack();
+                if (window.app) {
+                    window.app.goBack();
+                }
             });
         }
 
@@ -298,7 +304,7 @@ class BookingManager {
 
         const guestsSelect = document.getElementById('guests-count');
         if (guestsSelect) {
-            guestsSelect.addEventListener('change', (e) => {
+            guestsSelect.addEventListener('change', () => {
                 this.updateBookingPrice();
             });
         }
@@ -331,15 +337,16 @@ class BookingManager {
     }
 
     processBooking() {
-        const form = document.getElementById('booking-form');
-        const formData = new FormData(form);
+        if (!this.validateBookingForm()) return;
+
+        const formData = new FormData(document.getElementById('booking-form'));
         
         this.bookingData.guestInfo = {
-            name: formData.get('name') || document.querySelector('input[type="text"]').value,
-            email: formData.get('email') || document.querySelector('input[type="email"]').value,
-            phone: formData.get('phone') || document.querySelector('input[type="tel"]').value,
+            name: document.getElementById('guest-name').value,
+            email: document.getElementById('guest-email').value,
+            phone: document.getElementById('guest-phone').value,
             guests: parseInt(document.getElementById('guests-count').value),
-            notes: document.querySelector('.form-textarea').value
+            notes: document.getElementById('guest-comment').value
         };
 
         const selectedServices = [];
@@ -351,8 +358,39 @@ class BookingManager {
         this.showPaymentScreen();
     }
 
+    validateBookingForm() {
+        const name = document.getElementById('guest-name')?.value.trim();
+        const email = document.getElementById('guest-email')?.value.trim();
+        const phone = document.getElementById('guest-phone')?.value.trim();
+
+        if (!name) {
+            this.showNotification('Пожалуйста, введите имя и фамилию');
+            return false;
+        }
+
+        if (!email) {
+            this.showNotification('Пожалуйста, введите email');
+            return false;
+        }
+
+        if (!phone) {
+            this.showNotification('Пожалуйста, введите телефон');
+            return false;
+        }
+
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            this.showNotification('Пожалуйста, введите корректный email');
+            return false;
+        }
+
+        return true;
+    }
+
     showPaymentScreen() {
-        window.app.showModalScreen('payment-screen');
+        if (window.app) {
+            window.app.showScreen('payment-screen');
+        }
         this.renderPaymentScreen();
     }
 
@@ -435,7 +473,9 @@ class BookingManager {
         const backBtn = document.querySelector('#payment-screen .header-btn.back');
         if (backBtn) {
             backBtn.addEventListener('click', () => {
-                window.app.goBack();
+                if (window.app) {
+                    window.app.goBack();
+                }
             });
         }
 
@@ -448,10 +488,12 @@ class BookingManager {
     }
 
     confirmPayment() {
-        window.app.showNotification('Бронирование подтверждено!');
+        this.showNotification('Бронирование подтверждено!');
         
         setTimeout(() => {
-            window.app.showScreen('main-screen');
+            if (window.app) {
+                window.app.returnToMain();
+            }
             this.resetBooking();
         }, 2000);
     }
@@ -485,4 +527,15 @@ class BookingManager {
         if (count >= 2 && count <= 4) return 'гостя';
         return 'гостей';
     }
+
+    showNotification(message) {
+        if (window.app) {
+            window.app.showNotification(message);
+        } else {
+            // Fallback notification
+            alert(message);
+        }
+    }
 }
+
+const bookingManager = new BookingManager();

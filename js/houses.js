@@ -37,9 +37,10 @@ class HousesManager {
         div.dataset.type = house.type;
 
         const isAvailable = this.isHouseAvailable(house.id);
+        const availabilityClass = isAvailable ? '' : 'unavailable';
 
         div.innerHTML = `
-            <div class="house-image ${!isAvailable ? 'unavailable' : ''}">
+            <div class="house-image ${availabilityClass}">
                 <div class="image-placeholder">${house.image}</div>
                 <div class="house-badge">До ${house.max_guests} гостей</div>
                 ${!isAvailable ? '<div class="unavailable-overlay">Занят</div>' : ''}
@@ -59,6 +60,9 @@ class HousesManager {
 
         if (isAvailable) {
             div.addEventListener('click', () => this.selectHouse(house));
+        } else {
+            div.style.opacity = '0.6';
+            div.style.cursor = 'not-allowed';
         }
 
         return div;
@@ -131,11 +135,7 @@ class HousesManager {
         this.selectedHouse = house;
         
         if (window.app) {
-            window.app.selectedHouse = house;
-            if (window.bookingManager) {
-                window.bookingManager.renderHouseDetail(house);
-            }
-            window.app.showModalScreen('house-detail-screen');
+            window.app.showHouseDetails(house);
         }
     }
 

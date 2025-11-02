@@ -110,6 +110,8 @@ class PaymentManager {
     copyToClipboard(text) {
         navigator.clipboard.writeText(text).then(() => {
             this.showToast('Номер скопирован в буфер');
+        }).catch(() => {
+            this.showToast('Не удалось скопировать номер');
         });
     }
 
@@ -126,12 +128,16 @@ class PaymentManager {
             border-radius: var(--border-radius);
             z-index: 1000;
             font-weight: 500;
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
         `;
         toast.textContent = message;
         document.body.appendChild(toast);
 
         setTimeout(() => {
-            document.body.removeChild(toast);
+            if (document.body.contains(toast)) {
+                document.body.removeChild(toast);
+            }
         }, 3000);
     }
 
@@ -212,11 +218,11 @@ class PaymentManager {
 
     returnToMain() {
         if (window.app) {
-            window.app.showScreen('main-screen');
-            
-            if (window.bookingManager) {
-                window.bookingManager.resetBooking();
-            }
+            window.app.returnToMain();
+        }
+        
+        if (window.bookingManager) {
+            window.bookingManager.resetBooking();
         }
     }
 

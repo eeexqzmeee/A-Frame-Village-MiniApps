@@ -157,3 +157,30 @@ function getFavoriteHouse(bookings) {
         houseCount[a] > houseCount[b] ? a : b
     );
 }
+
+function updateUserStats() {
+    const stats = getUserStats();
+    const statsElement = document.getElementById('user-stats');
+    
+    if (statsElement) {
+        statsElement.innerHTML = `
+            <div class="stat-item">
+                <span class="stat-label">Всего бронирований:</span>
+                <span class="stat-value">${stats.totalBookings}</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">Всего потрачено:</span>
+                <span class="stat-value">${formatPrice(stats.totalSpent)}</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">Любимый дом:</span>
+                <span class="stat-value">${stats.favoriteHouse || 'Нет данных'}</span>
+            </div>
+        `;
+    }
+}
+
+// Инициализация при загрузке
+document.addEventListener('DOMContentLoaded', function() {
+    updateUserStats();
+});

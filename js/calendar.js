@@ -17,8 +17,12 @@ class Calendar {
         const prevBtn = document.getElementById('prev-month');
         const nextBtn = document.getElementById('next-month');
         
-        if (prevBtn) prevBtn.addEventListener('click', () => this.prevMonth());
-        if (nextBtn) nextBtn.addEventListener('click', () => this.nextMonth());
+        if (prevBtn) {
+            prevBtn.addEventListener('click', () => this.prevMonth());
+        }
+        if (nextBtn) {
+            nextBtn.addEventListener('click', () => this.nextMonth());
+        }
     }
 
     generateCalendar() {
@@ -93,6 +97,7 @@ class Calendar {
 
         if (isBooked) {
             day.classList.add('disabled');
+            day.title = 'Дата занята';
         }
 
         if (isSelected) {
@@ -116,6 +121,8 @@ class Calendar {
     }
 
     isDateBooked(date) {
+        if (!bookedDates) return false;
+        
         const dateStr = date.toISOString().split('T')[0];
         
         for (const houseId in bookedDates) {

@@ -18,6 +18,96 @@ const housesData = {
                 { name: 'Деревянная купель', description: 'Дополнительные часы', price: 2000, unit: 'час', min_hours: 2 },
                 { name: 'Завтрак', description: 'Континентальный завтрак', price: 500, unit: 'человек' }
             ]
+        },
+        {
+            id: 2,
+            type: 'large',
+            name: 'Большой дом 2',
+            description: 'Просторный дом с сауной для больших компаний',
+            max_guests: 12,
+            base_guests: 6,
+            extra_guest_price: 1000,
+            price_weekday: 15000,
+            price_weekend: 25000,
+            checkin_times: ['13:00', '15:00', '17:00'],
+            checkout_time: '11:00',
+            image: '🏠',
+            services: [
+                { name: 'Сауна', description: '3 часа включено', price: 0, unit: 'сеанс' },
+                { name: 'Деревянная купель', description: 'Дополнительные часы', price: 2000, unit: 'час', min_hours: 2 }
+            ]
+        },
+        {
+            id: 3,
+            type: 'large',
+            name: 'Большой дом 3',
+            description: 'Просторный дом с сауной для больших компаний',
+            max_guests: 12,
+            base_guests: 6,
+            extra_guest_price: 1000,
+            price_weekday: 15000,
+            price_weekend: 25000,
+            checkin_times: ['13:00', '15:00', '17:00'],
+            checkout_time: '11:00',
+            image: '🏠',
+            services: [
+                { name: 'Сауна', description: '3 часа включено', price: 0, unit: 'сеанс' },
+                { name: 'Деревянная купель', description: 'Дополнительные часы', price: 2000, unit: 'час', min_hours: 2 }
+            ]
+        },
+        {
+            id: 4,
+            type: 'large',
+            name: 'Большой дом 4',
+            description: 'Просторный дом с сауной для больших компаний',
+            max_guests: 12,
+            base_guests: 6,
+            extra_guest_price: 1000,
+            price_weekday: 15000,
+            price_weekend: 25000,
+            checkin_times: ['13:00', '15:00', '17:00'],
+            checkout_time: '11:00',
+            image: '🏠',
+            services: [
+                { name: 'Сауна', description: '3 часа включено', price: 0, unit: 'сеанс' },
+                { name: 'Деревянная купель', description: 'Дополнительные часы', price: 2000, unit: 'час', min_hours: 2 }
+            ]
+        },
+        {
+            id: 5,
+            type: 'large',
+            name: 'Большой дом 5',
+            description: 'Просторный дом с сауной для больших компаний',
+            max_guests: 12,
+            base_guests: 6,
+            extra_guest_price: 1000,
+            price_weekday: 15000,
+            price_weekend: 25000,
+            checkin_times: ['13:00', '15:00', '17:00'],
+            checkout_time: '11:00',
+            image: '🏠',
+            services: [
+                { name: 'Сауна', description: '3 часа включено', price: 0, unit: 'сеанс' },
+                { name: 'Деревянная купель', description: 'Дополнительные часы', price: 2000, unit: 'час', min_hours: 2 }
+            ]
+        },
+        {
+            id: 6,
+            type: 'large',
+            name: 'Большой дом 6',
+            description: 'Просторный дом с сауной для больших компаний',
+            max_guests: 12,
+            base_guests: 6,
+            extra_guest_price: 1000,
+            price_weekday: 15000,
+            price_weekend: 25000,
+            checkin_times: ['13:00', '15:00', '17:00'],
+            checkout_time: '11:00',
+            image: '🏠',
+            services: [
+                { name: 'Сауна', description: '3 часа включено', price: 0, unit: 'сеанс' },
+                { name: 'Деревянная купель', description: 'Дополнительные часы', price: 2000, unit: 'час', min_hours: 2 }
+            ]
         }
     ],
     couple: {
@@ -33,7 +123,8 @@ const housesData = {
         checkout_time: '11:00',
         image: '❤️',
         services: [
-            { name: 'Романтический ужин', description: 'Свечи и цветы', price: 3000 }
+            { name: 'Романтический ужин', description: 'Свечи и цветы', price: 3000 },
+            { name: 'Джакузи', description: '2 часа включено', price: 0 }
         ]
     },
     family: {
@@ -57,6 +148,7 @@ const housesData = {
 
 const bookedDates = {
     1: ['2024-12-25', '2024-12-26'],
-    7: ['2024-12-20'],
-    8: ['2024-12-15', '2024-12-16']
+    2: ['2024-12-20', '2024-12-21'],
+    7: ['2024-12-15'],
+    8: ['2024-12-10', '2024-12-11']
 };

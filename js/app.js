@@ -20,13 +20,20 @@ class App {
         this.initProfile();
         this.initEventListeners();
         this.loadUserData();
+        
+        // Инициализируем менеджеры
+        if (window.calendar) {
+            window.calendar.selectedDates = this.selectedDates;
+        }
     }
 
     initNavigation() {
+        // Инициализация bottom navigation
         const navItems = document.querySelectorAll('.nav-item');
         
         navItems.forEach(item => {
-            item.addEventListener('click', () => {
+            item.addEventListener('click', (e) => {
+                e.preventDefault();
                 const targetScreen = item.getAttribute('data-screen');
                 this.showScreen(targetScreen);
                 
@@ -42,11 +49,39 @@ class App {
                 this.goBack();
             }
         });
+
+        // Кнопка "Посмотреть дома" на главной
+        const viewHousesBtn = document.getElementById('view-houses-btn');
+        if (viewHousesBtn) {
+            viewHousesBtn.addEventListener('click', () => {
+                this.showScreen('calendar-screen');
+            });
+        }
+
+        // Кнопка продолжения в календаре
+        const continueBtn = document.getElementById('continue-to-houses');
+        if (continueBtn) {
+            continueBtn.addEventListener('click', () => {
+                if (this.selectedDates.checkin && this.selectedDates.checkout) {
+                    this.showScreen('houses-screen');
+                    this.updateHeaderDates();
+                    
+                    // Обновляем доступность домов
+                    if (window.housesManager) {
+                        window.housesManager.updateAvailability();
+                    }
+                } else {
+                    this.showNotification('Выберите даты заезда и выезда');
+                }
+            });
+        }
     }
 
     showScreen(screenId) {
+        console.log('Showing screen:', screenId);
+        
         // Скрываем все экраны
-        document.querySelectorAll('.swipe-screen').forEach(screen => {
+        document.querySelectorAll('.screen, .swipe-screen').forEach(screen => {
             screen.classList.remove('active');
         });
         
@@ -55,21 +90,33 @@ class App {
         if (targetScreen) {
             targetScreen.classList.add('active');
             this.currentScreen = screenId;
+            
+            // Обновляем навигацию для основных экранов
+            if (screenId === 'main-screen' || screenId === 'profile-screen') {
+                document.querySelectorAll('.nav-item').forEach(nav => {
+                    nav.classList.remove('active');
+                    if (nav.getAttribute('data-screen') === screenId) {
+                        nav.classList.add('active');
+                    }
+                });
+            }
         }
     }
 
-    showModalScreen(screenId) {
-        const screen = document.getElementById(screenId);
-        if (screen) {
-            screen.classList.add('active');
-            this.currentScreen = screenId;
+    showHouseDetails(house) {
+        this.selectedHouse = house;
+        if (window.bookingManager) {
+            window.bookingManager.renderHouseDetail(house);
         }
+        this.showScreen('house-detail-screen');
     }
 
     goBack() {
+        console.log('Going back from:', this.currentScreen);
+        
         const screenHistory = {
             'calendar-screen': 'main-screen',
-            'houses-screen': 'calendar-screen', 
+            'houses-screen': 'calendar-screen',
             'house-detail-screen': 'houses-screen',
             'booking-screen': 'house-detail-screen',
             'payment-screen': 'booking-screen',
@@ -79,24 +126,268 @@ class App {
         const previousScreen = screenHistory[this.currentScreen];
         if (previousScreen) {
             this.showScreen(previousScreen);
-            
-            // Обновляем навигацию
-            document.querySelectorAll('.nav-item').forEach(nav => {
-                nav.classList.remove('active');
-                if (nav.getAttribute('data-screen') === previousScreen) {
-                    nav.classList.add('active');
+        } else {
+            // Если нет в истории, показываем главную
+            this.showScreen('main-screen');
+        }
+    }
+
+    initCalendar() {
+        this.renderCalendar();
+        
+        const prevBtn = document.getElementById('prev-month');
+        const nextBtn = document.getElementById('next-month');
+        
+        if (prevBtn) {
+            prevBtn.addEventListener('click', () => {
+                this.currentMonth--;
+                if (this.currentMonth < 0) {
+                    this.currentMonth = 11;
+                    this.currentYear--;
                 }
+                this.renderCalendar();
+            });
+        }
+
+        if (nextBtn) {
+            nextBtn.addEventListener('click', () => {
+                this.currentMonth++;
+                if (this.currentMonth > 11) {
+                    this.currentMonth = 0;
+                    this.currentYear++;
+                }
+                this.renderCalendar();
             });
         }
     }
 
-    // ... остальные методы остаются без изменений ...
+    renderCalendar() {
+        const monthNames = [
+            'Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь',
+            'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'
+        ];
+
+        const monthElement = document.getElementById('current-month');
+        const yearElement = document.getElementById('current-year');
+        const calendarGrid = document.getElementById('calendar-grid');
+
+        if (!monthElement || !yearElement || !calendarGrid) return;
+
+        monthElement.textContent = monthNames[this.currentMonth];
+        yearElement.textContent = this.currentYear;
+
+        const firstDay = new Date(this.currentYear, this.currentMonth, 1);
+        const lastDay = new Date(this.currentYear, this.currentMonth + 1, 0);
+        const startDate = new Date(firstDay);
+        startDate.setDate(startDate.getDate() - firstDay.getDay() + 1);
+
+        calendarGrid.innerHTML = '';
+
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        for (let i = 0; i < 42; i++) {
+            const currentDate = new Date(startDate);
+            currentDate.setDate(startDate.getDate() + i);
+
+            const dayElement = document.createElement('div');
+            dayElement.className = 'calendar-day';
+            dayElement.textContent = currentDate.getDate();
+
+            if (currentDate.getMonth() !== this.currentMonth) {
+                dayElement.classList.add('disabled');
+            } else {
+                if (currentDate < today) {
+                    dayElement.classList.add('disabled');
+                } else {
+                    dayElement.addEventListener('click', () => this.selectDate(currentDate));
+                }
+
+                if (this.isToday(currentDate)) {
+                    dayElement.classList.add('today');
+                }
+
+                if (this.isDateSelected(currentDate)) {
+                    dayElement.classList.add('selected');
+                } else if (this.isDateInRange(currentDate)) {
+                    dayElement.classList.add('range');
+                }
+            }
+
+            calendarGrid.appendChild(dayElement);
+        }
+
+        this.updateDatesPreview();
+    }
+
+    isToday(date) {
+        const today = new Date();
+        return date.getDate() === today.getDate() &&
+               date.getMonth() === today.getMonth() &&
+               date.getFullYear() === today.getFullYear();
+    }
+
+    isDateSelected(date) {
+        return (this.selectedDates.checkin && this.isSameDate(date, this.selectedDates.checkin)) ||
+               (this.selectedDates.checkout && this.isSameDate(date, this.selectedDates.checkout));
+    }
+
+    isDateInRange(date) {
+        if (!this.selectedDates.checkin || !this.selectedDates.checkout) return false;
+        
+        return date > this.selectedDates.checkin && 
+               date < this.selectedDates.checkout &&
+               !this.isSameDate(date, this.selectedDates.checkin) &&
+               !this.isSameDate(date, this.selectedDates.checkout);
+    }
+
+    isSameDate(date1, date2) {
+        if (!date1 || !date2) return false;
+        return date1.getDate() === date2.getDate() &&
+               date1.getMonth() === date2.getMonth() &&
+               date1.getFullYear() === date2.getFullYear();
+    }
+
+    selectDate(date) {
+        if (!this.selectedDates.checkin || (this.selectedDates.checkin && this.selectedDates.checkout)) {
+            this.selectedDates.checkin = date;
+            this.selectedDates.checkout = null;
+        } else if (this.selectedDates.checkin && !this.selectedDates.checkout) {
+            if (date > this.selectedDates.checkin) {
+                this.selectedDates.checkout = date;
+            } else {
+                this.selectedDates.checkin = date;
+                this.selectedDates.checkout = null;
+            }
+        }
+
+        this.updateDatesPreview();
+        this.renderCalendar();
+        
+        // Синхронизируем с calendar manager
+        if (window.calendar) {
+            window.calendar.selectedDates = {...this.selectedDates};
+            window.calendar.generateCalendar();
+        }
+    }
+
+    updateDatesPreview() {
+        const checkinPreview = document.getElementById('checkin-preview');
+        const checkoutPreview = document.getElementById('checkout-preview');
+        const nightsCount = document.getElementById('nights-count');
+        const continueBtn = document.getElementById('continue-to-houses');
+
+        if (!checkinPreview || !checkoutPreview || !nightsCount || !continueBtn) return;
+
+        if (this.selectedDates.checkin) {
+            checkinPreview.textContent = this.formatDate(this.selectedDates.checkin);
+        } else {
+            checkinPreview.textContent = '--';
+        }
+
+        if (this.selectedDates.checkout) {
+            checkoutPreview.textContent = this.formatDate(this.selectedDates.checkout);
+            const nights = Math.ceil((this.selectedDates.checkout - this.selectedDates.checkin) / (1000 * 60 * 60 * 24));
+            nightsCount.textContent = `${nights} ночей`;
+            continueBtn.disabled = false;
+        } else {
+            checkoutPreview.textContent = '--';
+            nightsCount.textContent = '0 ночей';
+            continueBtn.disabled = true;
+        }
+    }
+
+    formatDate(date) {
+        const day = date.getDate().toString().padStart(2, '0');
+        const month = (date.getMonth() + 1).toString().padStart(2, '0');
+        return `${day}.${month}`;
+    }
+
+    updateHeaderDates() {
+        const headerDates = document.getElementById('header-dates');
+        if (headerDates && this.selectedDates.checkin && this.selectedDates.checkout) {
+            headerDates.textContent = 
+                `${this.formatDate(this.selectedDates.checkin)} - ${this.formatDate(this.selectedDates.checkout)}`;
+        } else if (headerDates) {
+            headerDates.textContent = 'Выберите даты';
+        }
+    }
+
+    initHouses() {
+        this.renderLargeHouses();
+    }
+
+    renderLargeHouses() {
+        const largeHousesContainer = document.getElementById('large-houses');
+        if (!largeHousesContainer) return;
+        
+        largeHousesContainer.innerHTML = '';
+
+        for (let i = 1; i <= 6; i++) {
+            const houseCard = document.createElement('div');
+            houseCard.className = 'house-card';
+            houseCard.setAttribute('data-house-id', i.toString());
+            houseCard.setAttribute('data-type', 'large');
+            
+            houseCard.innerHTML = `
+                <div class="house-image">
+                    <div class="image-placeholder">🏠</div>
+                    <div class="house-badge">Большой дом</div>
+                </div>
+                <div class="house-info">
+                    <h4>Большой дом ${i}</h4>
+                    <div class="house-features">
+                        <span class="feature">👥 до 12 гостей</span>
+                        <span class="feature">⏰ 13:00-11:00</span>
+                    </div>
+                    <div class="house-pricing">
+                        <span class="price">15 000₽ - 25 000₽</span>
+                        <span class="price-note">за ночь</span>
+                    </div>
+                </div>
+            `;
+            
+            houseCard.addEventListener('click', () => {
+                this.selectHouse(i, 'large');
+            });
+            
+            largeHousesContainer.appendChild(houseCard);
+        }
+
+        // Обработчики для готовых домов
+        document.querySelectorAll('.house-card[data-house-id="7"], .house-card[data-house-id="8"]').forEach(card => {
+            card.addEventListener('click', () => {
+                const houseId = card.getAttribute('data-house-id');
+                const houseType = card.getAttribute('data-type');
+                this.selectHouse(houseId, houseType);
+            });
+        });
+    }
+
+    selectHouse(houseId, houseType) {
+        let house;
+        if (houseType === 'large') {
+            house = housesData.large.find(h => h.id === parseInt(houseId)) || housesData.large[0];
+            if (house) {
+                house.id = parseInt(houseId);
+                house.name = `Большой дом ${houseId}`;
+            }
+        } else if (houseType === 'couple') {
+            house = housesData.couple;
+        } else if (houseType === 'family') {
+            house = housesData.family;
+        }
+
+        if (house) {
+            this.selectedHouse = house;
+            this.showHouseDetails(house);
+        }
+    }
 
     initProfile() {
         this.initReferralSystem();
         this.initShop();
         this.initFeedback();
-        this.updateProfileData(); // Добавил принудительное обновление
     }
 
     initReferralSystem() {
@@ -105,6 +396,8 @@ class App {
                 const referralLink = 'https://t.me/aframe_village_bot?start=ref_' + (this.userData?.id || 'user');
                 navigator.clipboard.writeText(referralLink).then(() => {
                     this.showNotification('Реферальная ссылка скопирована!');
+                }).catch(() => {
+                    this.showNotification('Не удалось скопировать ссылку');
                 });
             }
         });
@@ -164,11 +457,11 @@ class App {
     loadUserData() {
         this.userData = {
             id: '12345',
-            name: 'Пользователь',
+            name: 'Алексей Иванов',
             level: 'Bronze',
             coins: 1000,
-            referrals: 0,
-            earnedCoins: 0
+            referrals: 3,
+            earnedCoins: 1500
         };
         
         this.updateProfileData();
@@ -177,8 +470,11 @@ class App {
     updateProfileData() {
         if (!this.userData) return;
 
-        document.querySelector('.user-name').textContent = this.userData.name;
-        document.querySelector('.user-id').textContent = `ID: ${this.userData.id}`;
+        const userName = document.querySelector('.user-name');
+        const userId = document.querySelector('.user-id');
+        
+        if (userName) userName.textContent = this.userData.name;
+        if (userId) userId.textContent = `ID: ${this.userData.id}`;
         
         document.querySelectorAll('.stat-card .stat-value').forEach(stat => {
             const label = stat.nextElementSibling.textContent;
@@ -187,26 +483,33 @@ class App {
             if (label.includes('Рефералы')) stat.textContent = this.userData.referrals;
         });
 
-        document.querySelector('.coin-balance').textContent = `Баланс: ${this.userData.coins} A-Coin`;
+        const coinBalance = document.querySelector('.coin-balance');
+        if (coinBalance) {
+            coinBalance.textContent = `Баланс: ${this.userData.coins} A-Coin`;
+        }
         
         const referralStats = document.querySelectorAll('.referral-stat strong');
-        referralStats[0].textContent = `${this.userData.referrals} человек`;
-        referralStats[1].textContent = `${this.userData.earnedCoins} A-Coin`;
+        if (referralStats[0]) referralStats[0].textContent = `${this.userData.referrals} человек`;
+        if (referralStats[1]) referralStats[1].textContent = `${this.userData.earnedCoins} A-Coin`;
     }
 
     initEventListeners() {
-        document.addEventListener('click', (e) => {
-            if (e.target.matches('.book-btn') || e.target.closest('.book-btn')) {
-                if (e.target.id !== 'view-houses-btn') {
-                    this.showModalScreen('calendar-screen');
-                }
+        // Global escape handler
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                this.goBack();
             }
+        });
+
+        // Prevent default form submission
+        document.addEventListener('submit', (e) => {
+            e.preventDefault();
         });
     }
 
-    showNotification(message) {
+    showNotification(message, type = 'info') {
         const notification = document.createElement('div');
-        notification.className = 'notification';
+        notification.className = `notification notification-${type}`;
         notification.textContent = message;
         
         notification.style.cssText = `
@@ -220,6 +523,8 @@ class App {
             border-radius: var(--border-radius-lg);
             z-index: var(--z-tooltip);
             transition: transform 0.3s ease;
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
         `;
         
         document.body.appendChild(notification);
@@ -231,9 +536,21 @@ class App {
         setTimeout(() => {
             notification.style.transform = 'translateX(-50%) translateY(-100px)';
             setTimeout(() => {
-                document.body.removeChild(notification);
+                if (document.body.contains(notification)) {
+                    document.body.removeChild(notification);
+                }
             }, 300);
         }, 3000);
+    }
+
+    returnToMain() {
+        this.showScreen('main-screen');
+        document.querySelectorAll('.nav-item').forEach(nav => {
+            nav.classList.remove('active');
+            if (nav.getAttribute('data-screen') === 'main-screen') {
+                nav.classList.add('active');
+            }
+        });
     }
 }
 
@@ -270,21 +587,29 @@ class ProfileManager {
     }
 
     loadUserProfile() {
-        const savedData = localStorage.getItem('aframe_user_data');
-        if (savedData) {
-            const userData = JSON.parse(savedData);
-            if (this.app.userData) {
-                this.app.userData = { ...this.app.userData, ...userData };
-            } else {
-                this.app.userData = userData;
+        try {
+            const savedData = localStorage.getItem('aframe_user_data');
+            if (savedData) {
+                const userData = JSON.parse(savedData);
+                if (this.app.userData) {
+                    this.app.userData = { ...this.app.userData, ...userData };
+                } else {
+                    this.app.userData = userData;
+                }
+                this.app.updateProfileData();
             }
-            this.app.updateProfileData();
+        } catch (error) {
+            console.error('Error loading user profile:', error);
         }
     }
 
     saveUserProfile() {
         if (this.app.userData) {
-            localStorage.setItem('aframe_user_data', JSON.stringify(this.app.userData));
+            try {
+                localStorage.setItem('aframe_user_data', JSON.stringify(this.app.userData));
+            } catch (error) {
+                console.error('Error saving user profile:', error);
+            }
         }
     }
 
@@ -305,8 +630,22 @@ class ProfileManager {
     }
 }
 
+// Инициализация при загрузке DOM
 document.addEventListener('DOMContentLoaded', () => {
     window.app = new App();
     window.profileManager = new ProfileManager(window.app);
-    window.bookingManager = new BookingManager();
+    
+    // Инициализируем другие менеджеры
+    if (typeof Calendar !== 'undefined') {
+        window.calendar = new Calendar();
+    }
+    if (typeof HousesManager !== 'undefined') {
+        window.housesManager = new HousesManager();
+    }
+    if (typeof BookingManager !== 'undefined') {
+        window.bookingManager = new BookingManager();
+    }
+    if (typeof PaymentManager !== 'undefined') {
+        window.paymentManager = new PaymentManager();
+    }
 });
